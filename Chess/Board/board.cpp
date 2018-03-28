@@ -70,3 +70,36 @@ Board::Board() {
 int Board::getPiece(int x, int y) {
     return board[y][x];
 }
+
+QVector<QPoint> Board::getMoves(int x, int y) {
+    QVector<QPoint> moves;
+
+    bool whiteTeam = true;
+
+    if(board[y][x] < 0)
+        whiteTeam = false;
+
+    if(board[y][x]==2||board[y][x]==-2){
+        for (int i = y; i >= 0; i--) {
+            if(board[i][x]==0){
+                moves.append(QPoint(x,i));
+            }else{
+
+
+                break;
+            }
+        }
+        for (int j = x; j < 8; ++j) {
+            if(board[y][j]==0){
+                moves.append(QPoint(j,y));
+            }else{
+                break;
+            }
+        }
+
+    }
+
+    return moves;
+}
+
+
