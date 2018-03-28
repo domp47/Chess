@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/dom/Projects/Chess/Chess/cmake-build-debug/main_autogen/mocs_compilation.cpp
+
+/home/dom/Projects/Chess/Chess/main.cpp
+iostream
+-
+

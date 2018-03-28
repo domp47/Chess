@@ -1,0 +1,4 @@
+/home/dom/IDEs/clion-2017.3.1/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/dom/Projects/Chess/Chess
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/dom/Projects/Chess/Chess/cmake-build-debug
