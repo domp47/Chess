@@ -1,4 +1,0 @@
-/home/dom/Projects/Chess/Chess/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/dom/Projects/Chess/Chess/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/dom/Projects/Chess/Chess/cmake-build-debug/CMakeFiles/chess.dir
-/home/dom/Projects/Chess/Chess/cmake-build-debug/CMakeFiles/chess_autogen.dir
