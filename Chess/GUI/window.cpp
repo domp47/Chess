@@ -11,7 +11,7 @@ Window::Window(Board* board) {
 
     highlightedCords[0] = -1;
     highlightedCords[1] = -1;
-
+    possibleMoves.clear();
 }
 
 void Window::paintEvent(QPaintEvent *)
@@ -57,6 +57,32 @@ void Window::paintEvent(QPaintEvent *)
         }
     }
 
+    for(QPoint p: possibleMoves){
+        int xLoc = (p.x() * 100) + STARTING_X;
+        int yLoc = (p.y() * 100) + STARTING_Y;
+
+        painter.fillRect(xLoc,yLoc,100,100,Colors::move());
+        yLoc +=10;
+        xLoc +=10;
+
+        if((p.x()+p.y())%2==0)
+            painter.fillRect(xLoc, yLoc,80,80,Colors::light());
+        else
+            painter.fillRect(xLoc, yLoc,80,80,Colors::dark());
+
+        int piece = board->getPiece(p.x(), p.y());
+
+        xLoc -= 10;
+        yLoc -= 10;
+
+        if(piece!=0){
+            std::string imgLoc = map->getItem(piece);
+            QImage image(QString::fromStdString(imgLoc));
+            QPoint pt(xLoc+20,yLoc+20);
+            painter.drawImage(pt,image);
+        }
+    }
+
     QFont font = painter.font();
     font.setPixelSize(32);
     painter.setFont(font);
@@ -85,23 +111,39 @@ void Window::paintEvent(QPaintEvent *)
 void Window::mousePressEvent(QMouseEvent *event) {
     if(event->x()>=STARTING_X&&event->x()<=STARTING_X+800){
         if(event->y()>=STARTING_Y&&event->y()<=STARTING_Y+800){
-            int prevY = highlightedCords[0];
-            int prevX = highlightedCords[1];
-
             int x = (event->x() - STARTING_X)/100;
             int y = (event->y() - STARTING_Y)/100;
             std::cout << "Mouse Pressed at quadrant:" << x << ", " << y << std::endl;
 
-            if(y!=prevY||x!=prevX){
+            int prevY = highlightedCords[0];
+            int prevX = highlightedCords[1];
+
+            if(prevY==-1 && prevX==-1){
                 highlightedCords[0] = y;
                 highlightedCords[1] = x;
-            }else{
+                possibleMoves = board->getMoves(x,y);
+                repaint();
+            }else if(prevY==y && prevX==x){
                 highlightedCords[0] = -1;
                 highlightedCords[1] = -1;
+                possibleMoves.clear();
+                repaint();
+            }else if(isMovePossible(QPoint(x,y))){
+                board->movePiece(highlightedCords[1],highlightedCords[0],x,y);
+                highlightedCords[0] = -1;
+                highlightedCords[1] = -1;
+                possibleMoves.clear();
+                repaint();
             }
-
-            repaint();
         }
     }
     std::cout << "Mouse Pressed at pixels:" << event->x() << ", " << event->y() << std::endl << std::endl;
+}
+
+bool Window::isMovePossible(QPoint p) {
+    for(QPoint point: possibleMoves){
+        if(point.x()==p.x() && point.y()==p.y())
+            return true;
+    }
+    return false;
 }

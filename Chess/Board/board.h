@@ -9,6 +9,7 @@ public:
     Board();
     int getPiece(int x, int y);
     QVector<QPoint> getMoves(int x, int y);
+    void movePiece(int srcX, int srcY, int desX, int desY);
 
 private:
     int** board;

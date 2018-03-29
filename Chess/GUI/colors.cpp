@@ -16,3 +16,7 @@ QColor Colors::background() {
 QColor Colors::highlight() {
     return QColor(255,223,50);
 }
+
+QColor Colors::move() {
+    return QColor(185,255,50);
+}

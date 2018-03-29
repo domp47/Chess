@@ -10,6 +10,7 @@ public:
     static QColor dark();
     static QColor light();
     static QColor highlight();
+    static QColor move();
 };
 
 #endif // COLORS_H

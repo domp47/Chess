@@ -57,7 +57,7 @@ Board::Board() {
     board[7][6] = 3;
     board[7][7] = 2;
 
-    board[6][0] = 1;
+    board[6][0] = 0; //change to 1
     board[6][1] = 1;
     board[6][2] = 1;
     board[6][3] = 1;
@@ -80,19 +80,47 @@ QVector<QPoint> Board::getMoves(int x, int y) {
         whiteTeam = false;
 
     if(board[y][x]==2||board[y][x]==-2){
-        for (int i = y; i >= 0; i--) {
+        for (int i = y-1; i >= 0; i--) { //check above
             if(board[i][x]==0){
                 moves.append(QPoint(x,i));
             }else{
-
-
+                if(whiteTeam&&board[i][x]<0)
+                    moves.append(QPoint(x,i));
+                if(!whiteTeam&&board[i][x]>0)
+                    moves.append(QPoint(x,i));
                 break;
             }
         }
-        for (int j = x; j < 8; ++j) {
-            if(board[y][j]==0){
-                moves.append(QPoint(j,y));
+        for (int i = x + 1; i < 8; ++i) { //check right
+            if(board[y][i]==0){
+                moves.append(QPoint(i,y));
             }else{
+                if(whiteTeam&&board[y][i]<0)
+                    moves.append(QPoint(i,y));
+                if(!whiteTeam&&board[y][i]>0)
+                    moves.append(QPoint(i,y));
+                break;
+            }
+        }
+        for (int i = y + 1; i < 8; i++) { //check below
+            if(board[i][x]==0){
+                moves.append(QPoint(x,i));
+            }else{
+                if(whiteTeam&&board[i][x]<0)
+                    moves.append(QPoint(x,i));
+                if(!whiteTeam&&board[i][x]>0)
+                    moves.append(QPoint(x,i));
+                break;
+            }
+        }
+        for (int i = x - 1; i >= 0; i--) { //check left
+            if(board[y][i]==0){
+                moves.append(QPoint(i,y));
+            }else{
+                if(whiteTeam&&board[y][i]<0)
+                    moves.append(QPoint(i,y));
+                if(!whiteTeam&&board[y][i]>0)
+                    moves.append(QPoint(i,y));
                 break;
             }
         }
@@ -100,6 +128,11 @@ QVector<QPoint> Board::getMoves(int x, int y) {
     }
 
     return moves;
+}
+
+void Board::movePiece(int srcX, int srcY, int desX, int desY) {
+    board[desY][desX] = board[srcY][srcX];
+    board[srcY][srcX] = 0;
 }
 
 
