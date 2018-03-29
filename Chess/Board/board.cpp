@@ -1,3 +1,8 @@
+#include <Board/Moves/rook.h>
+#include <Board/Moves/bishop.h>
+#include <Board/Moves/queen.h>
+#include <Board/Moves/knight.h>
+#include <Board/Moves/pawn.h>
 #include "board.h"
 
 /**
@@ -57,7 +62,7 @@ Board::Board() {
     board[7][6] = 3;
     board[7][7] = 2;
 
-    board[6][0] = 0; //change to 1
+    board[6][0] = 1;
     board[6][1] = 1;
     board[6][2] = 1;
     board[6][3] = 1;
@@ -65,6 +70,8 @@ Board::Board() {
     board[6][5] = 1;
     board[6][6] = 1;
     board[6][7] = 1;
+
+    turn = 0;
 }
 
 int Board::getPiece(int x, int y) {
@@ -72,67 +79,43 @@ int Board::getPiece(int x, int y) {
 }
 
 QVector<QPoint> Board::getMoves(int x, int y) {
-    QVector<QPoint> moves;
 
-    bool whiteTeam = true;
-
-    if(board[y][x] < 0)
-        whiteTeam = false;
-
-    if(board[y][x]==2||board[y][x]==-2){
-        for (int i = y-1; i >= 0; i--) { //check above
-            if(board[i][x]==0){
-                moves.append(QPoint(x,i));
-            }else{
-                if(whiteTeam&&board[i][x]<0)
-                    moves.append(QPoint(x,i));
-                if(!whiteTeam&&board[i][x]>0)
-                    moves.append(QPoint(x,i));
-                break;
-            }
-        }
-        for (int i = x + 1; i < 8; ++i) { //check right
-            if(board[y][i]==0){
-                moves.append(QPoint(i,y));
-            }else{
-                if(whiteTeam&&board[y][i]<0)
-                    moves.append(QPoint(i,y));
-                if(!whiteTeam&&board[y][i]>0)
-                    moves.append(QPoint(i,y));
-                break;
-            }
-        }
-        for (int i = y + 1; i < 8; i++) { //check below
-            if(board[i][x]==0){
-                moves.append(QPoint(x,i));
-            }else{
-                if(whiteTeam&&board[i][x]<0)
-                    moves.append(QPoint(x,i));
-                if(!whiteTeam&&board[i][x]>0)
-                    moves.append(QPoint(x,i));
-                break;
-            }
-        }
-        for (int i = x - 1; i >= 0; i--) { //check left
-            if(board[y][i]==0){
-                moves.append(QPoint(i,y));
-            }else{
-                if(whiteTeam&&board[y][i]<0)
-                    moves.append(QPoint(i,y));
-                if(!whiteTeam&&board[y][i]>0)
-                    moves.append(QPoint(i,y));
-                break;
-            }
-        }
-
+    if(board[y][x]==1 || board[y][x]==-1){
+        return Pawn::getMoves(x,y,this);
+    }
+    if(board[y][x]==2 || board[y][x]==-2){
+        return Rook::getMoves(x,y,board);
+    }
+    if(board[y][x]==3 || board[y][x]==-3){
+        return Knight::getMoves(x,y,board);
+    }
+    if(board[y][x]==4 || board[y][x] ==-4){
+        return Bishop::getMoves(x,y,board);
+    }
+    if(board[y][x]==5 || board[y][x] ==-5){
+        return Queen::getMoves(x,y,board);
     }
 
-    return moves;
+    return QVector<QPoint>();
 }
 
 void Board::movePiece(int srcX, int srcY, int desX, int desY) {
     board[desY][desX] = board[srcY][srcX];
     board[srcY][srcX] = 0;
+    turn++;
+
+    if(board[srcY][srcX]==-1 || board[srcY][srcX]==1){//is pawn being moved
+        if(srcY-desY==-2 || srcY-desY==2){//is a first double move
+
+        }
+    }
+
+    //TODO pawn upgrading stuff here
+    //TODO pawn en passant
+}
+
+int Board::getTurn() {
+    return turn;
 }
 
 

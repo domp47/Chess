@@ -19,13 +19,27 @@ set( project_sources
         ./GUI/colors.cpp
         ./GUI/map.cpp
         ./Board/board.cpp
-        )
+        ./Board/Moves/pawn.cpp
+        ./Board/Moves/rook.cpp
+        ./Board/Moves/knight.cpp
+        ./Board/Moves/bishop.cpp
+        ./Board/Moves/queen.cpp
+        ./Board/Moves/king.cpp
+        ./Board/elPassant.cpp
+    )
 
 set(headers
         ./GUI/window.h
         ./GUI/colors.h
         ./GUI/map.h
         ./Board/board.h
+        ./Board/Moves/pawn.h
+        ./Board/Moves/rook.h
+        ./Board/Moves/knight.h
+        ./Board/Moves/bishop.h
+        ./Board/Moves/queen.h
+        ./Board/Moves/king.h
+        ./Board/elPassant.h
         )
 
 add_executable(chess

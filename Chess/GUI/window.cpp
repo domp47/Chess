@@ -119,10 +119,12 @@ void Window::mousePressEvent(QMouseEvent *event) {
             int prevX = highlightedCords[1];
 
             if(prevY==-1 && prevX==-1){
-                highlightedCords[0] = y;
-                highlightedCords[1] = x;
-                possibleMoves = board->getMoves(x,y);
-                repaint();
+                if( (board->getPiece(x,y)>0 && board->getTurn()%2==0) || (board->getPiece(x,y)<0 && board->getTurn()%2==1) ){
+                    highlightedCords[0] = y;
+                    highlightedCords[1] = x;
+                    possibleMoves = board->getMoves(x,y);
+                    repaint();
+                }
             }else if(prevY==y && prevX==x){
                 highlightedCords[0] = -1;
                 highlightedCords[1] = -1;
@@ -133,6 +135,11 @@ void Window::mousePressEvent(QMouseEvent *event) {
                 highlightedCords[0] = -1;
                 highlightedCords[1] = -1;
                 possibleMoves.clear();
+                repaint();
+            }else if( (board->getPiece(x,y)>0 && board->getTurn()%2==0) || (board->getPiece(x,y)<0 && board->getTurn()%2==1) ){
+                highlightedCords[0] = y;
+                highlightedCords[1] = x;
+                possibleMoves = board->getMoves(x,y);
                 repaint();
             }
         }
