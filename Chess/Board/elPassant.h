@@ -15,7 +15,6 @@ public:
     bool getPresent();
     QPoint getAttacker1();
     QPoint getAttacker2();
-
     QPoint getVictim();
 private:
     bool isPresent;

@@ -83,18 +83,14 @@ void Window::paintEvent(QPaintEvent *)
         }
     }
 
-    std::cout << "Is there a black passant: " << board->getBlackPassant().getPresent() << std::endl;
-    std::cout << "Is there a white passant: " << board->getWhitePassant().getPresent() << std::endl;
-
-
     if(highlightedCords[0] != -1 || highlightedCords[1] != -1){//if a piece is highlighted
         if(board->getPiece(highlightedCords[1],highlightedCords[0])==-1){//black pawn
             if(board->getBlackPassant().getPresent()){//passant possible
 
                 //selected piece is one of the possible passant attacks
                 if(board->getBlackPassant().getAttacker1().x()==highlightedCords[0] && board->getBlackPassant().getAttacker1().y()==highlightedCords[0]){
-                    int x = (board->getBlackPassant().getVictim().x() - STARTING_X)/100;
-                    int y = ((board->getBlackPassant().getVictim().y() + 1) - STARTING_Y)/100;
+                    int x = (board->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
+                    int y = ((board->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
 
                     painter.fillRect(x, y,100,100,Colors::special());
 
@@ -106,8 +102,8 @@ void Window::paintEvent(QPaintEvent *)
 
                 }
                 if(board->getBlackPassant().getAttacker2().x()==highlightedCords[0] && board->getBlackPassant().getAttacker2().y()==highlightedCords[0]){
-                    int x = (board->getBlackPassant().getVictim().x() - STARTING_X)/100;
-                    int y = ((board->getBlackPassant().getVictim().y() + 1) - STARTING_Y)/100;
+                    int x = (board->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
+                    int y = ((board->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
 
                     painter.fillRect(x, y,100,100,Colors::special());
 
@@ -124,9 +120,16 @@ void Window::paintEvent(QPaintEvent *)
             if(board->getWhitePassant().getPresent()){//passant possible
 
                 //selected piece is one of the possible passant attacks
-                if(board->getWhitePassant().getAttacker1().x()==highlightedCords[0] && board->getWhitePassant().getAttacker1().y()==highlightedCords[0]){
-                    int x = (board->getWhitePassant().getVictim().x() - STARTING_X)/100;
-                    int y = ((board->getWhitePassant().getVictim().y() + 1) - STARTING_Y)/100;
+
+                int attack1x = board->getWhitePassant().getAttacker1().x();
+                int attack1y = board->getWhitePassant().getAttacker1().y();
+
+                int attack2x = board->getWhitePassant().getAttacker2().x();
+                int attack2y = board->getWhitePassant().getAttacker2().y();
+
+                if(attack1x==highlightedCords[1] && attack1y==highlightedCords[0]){
+                    int x = (board->getWhitePassant().getVictim().x() * 100) + STARTING_X;
+                    int y = ((board->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
 
                     painter.fillRect(x, y,100,100,Colors::special());
 
@@ -136,12 +139,9 @@ void Window::paintEvent(QPaintEvent *)
                         painter.fillRect(x+10,y+10,80,80,Colors::dark());
                     }
 
-                } else if(board->getWhitePassant().getAttacker2().x()==highlightedCords[0] && board->getWhitePassant().getAttacker2().y()==highlightedCords[0]){
-                    int x = (board->getWhitePassant().getVictim().x() - STARTING_X)/100;
-                    int y = ((board->getWhitePassant().getVictim().y() + 1) - STARTING_Y)/100;
-
-                    std::cout << "Victim loc : " << board->getWhitePassant().getVictim().x() << ", " << board->getWhitePassant().getVictim().y() << std::endl;
-                    std::cout << "Special box: " << x << "," << y << std::endl;
+                } else if(attack2x==highlightedCords[1] && attack2y==highlightedCords[0]){
+                    int x = (board->getWhitePassant().getVictim().x() * 100) + STARTING_X;
+                    int y = ((board->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
 
                     painter.fillRect(x, y,100,100,Colors::special());
 
@@ -183,34 +183,55 @@ void Window::paintEvent(QPaintEvent *)
 }
 
 void Window::mousePressEvent(QMouseEvent *event) {
-    if(event->x()>=STARTING_X&&event->x()<=STARTING_X+800){
-        if(event->y()>=STARTING_Y&&event->y()<=STARTING_Y+800){
-            int x = (event->x() - STARTING_X)/100;
-            int y = (event->y() - STARTING_Y)/100;
+    if(event->x()>=STARTING_X&&event->x()<=STARTING_X+800){ //if inside the playing area x
+        if(event->y()>=STARTING_Y&&event->y()<=STARTING_Y+800){//if inside the playing area y
+            int x = (event->x() - STARTING_X)/100; //get x quadrant
+            int y = (event->y() - STARTING_Y)/100; //get y quadrant
             std::cout << "Mouse Pressed at quadrant:" << x << ", " << y << std::endl;
 
-            int prevY = highlightedCords[0];
+            int prevY = highlightedCords[0]; //gets previous selected box
             int prevX = highlightedCords[1];
 
-            if(prevY==-1 && prevX==-1){
+            if(prevY==-1 && prevX==-1){ //if nothing previously selected its on highlight piece state
                 if( (board->getPiece(x,y)>0 && board->getTurn()%2==0) || (board->getPiece(x,y)<0 && board->getTurn()%2==1) ){
                     highlightedCords[0] = y;
                     highlightedCords[1] = x;
                     possibleMoves = board->getMoves(x,y);
                     repaint();
                 }
-            }else if(prevY==y && prevX==x){
+            }else if(prevY==y && prevX==x){ //if clicking same piece deselect piece
                 highlightedCords[0] = -1;
                 highlightedCords[1] = -1;
                 possibleMoves.clear();
                 repaint();
-            }else if(isMovePossible(QPoint(x,y))){
+            }else if(isMovePossible(QPoint(x,y))){ //checks possible regular moves and moves to that piece
                 board->movePiece(highlightedCords[1],highlightedCords[0],x,y);
                 highlightedCords[0] = -1;
                 highlightedCords[1] = -1;
                 possibleMoves.clear();
                 repaint();
-            }else if( (board->getPiece(x,y)>0 && board->getTurn()%2==0) || (board->getPiece(x,y)<0 && board->getTurn()%2==1) ){
+            }
+            else if(board->getTurn()%2==0 && board->getWhitePassant().getPresent()){ //if its white persons turn and there is a passant
+                //check if the passant spot was clicked
+                if(board->getWhitePassant().getVictim().x()==x && board->getWhitePassant().getVictim().y()-1==y){
+                    board->movePassant(highlightedCords[1],highlightedCords[0],board->getWhitePassant().getVictim(), true);
+                    highlightedCords[0] = -1;
+                    highlightedCords[1] = -1;
+                    possibleMoves.clear();
+                    repaint();
+                }
+            }
+            else if(board->getTurn()%2==1 && board->getBlackPassant().getPresent()){ //if its black persons turn and there is a passant
+                if(board->getBlackPassant().getVictim().x()==x && board->getBlackPassant().getVictim().y()+1==y){
+                    board->movePassant(highlightedCords[1],highlightedCords[0],board->getBlackPassant().getVictim(), false);
+                    highlightedCords[0] = -1;
+                    highlightedCords[1] = -1;
+                    possibleMoves.clear();
+                    repaint();
+                }
+            }
+            //if it's another of the same piece highlight that one instead
+            else if( (board->getPiece(x,y)>0 && board->getTurn()%2==0) || (board->getPiece(x,y)<0 && board->getTurn()%2==1) ){
                 highlightedCords[0] = y;
                 highlightedCords[1] = x;
                 possibleMoves = board->getMoves(x,y);

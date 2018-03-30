@@ -72,6 +72,8 @@ Board::Board() {
     board[6][7] = 1;
 
     turn = 0;
+    whitePassant.clearElPassant();
+    blackPassant.clearElPassant();
 }
 
 int Board::getPiece(int x, int y) {
@@ -142,6 +144,15 @@ ElPassant Board::getWhitePassant() {
 
 ElPassant Board::getBlackPassant() {
     return blackPassant;
+}
+
+void Board::movePassant(int srcX, int srcY, QPoint victim, bool whiteTeam) {
+    board[victim.y()][victim.x()] = 0;
+    if(whiteTeam){
+        movePiece(srcX,srcY,victim.x(),victim.y()-1);
+    }else{
+        movePiece(srcX,srcY,victim.x(),victim.y()+1);
+    }
 }
 
 

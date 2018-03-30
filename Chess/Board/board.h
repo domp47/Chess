@@ -11,6 +11,7 @@ public:
     int getPiece(int x, int y);
     QVector<QPoint> getMoves(int x, int y);
     void movePiece(int srcX, int srcY, int desX, int desY);
+    void movePassant(int srcX, int srcY, QPoint victim, bool whiteTeam);
     int getTurn();
     ElPassant getWhitePassant();
     ElPassant getBlackPassant();
