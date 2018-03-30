@@ -100,15 +100,33 @@ QVector<QPoint> Board::getMoves(int x, int y) {
 }
 
 void Board::movePiece(int srcX, int srcY, int desX, int desY) {
+    whitePassant.clearElPassant();
+    blackPassant.clearElPassant();
+
+    if(board[srcY][srcX]==-1){//is black pawn being moved
+        if(srcY-desY==-2 || srcY-desY==2){//is a first double move
+            if(desX-1 >= 0 && board[desY][desX-1]==1){//check left for white pawn
+                whitePassant.setElPassant(QPoint(desX-1,desY),QPoint(desX,desY));
+            }
+            if(desX+1 < 8 && board[desY][desX+1]==1){//check right for white pawn
+                whitePassant.setElPassant(QPoint(desX+1,desY),QPoint(desX,desY));
+            }
+        }
+    }
+    else if(board[srcY][srcX]==1){//is white pawn being moved
+        if(srcY-desY==-2 || srcY-desY==2){//is a first double move
+            if(desX-1 >= 0 && board[desY][desX-1]==1){//check left for black pawn
+                blackPassant.setElPassant(QPoint(desX-1,desY),QPoint(desX,desY));
+            }
+            if(desX+1 < 8 && board[desY][desX+1]==1){//check right for black pawn
+                whitePassant.setElPassant(QPoint(desX+1,desY),QPoint(desX,desY));
+            }
+        }
+    }
     board[desY][desX] = board[srcY][srcX];
     board[srcY][srcX] = 0;
     turn++;
 
-    if(board[srcY][srcX]==-1 || board[srcY][srcX]==1){//is pawn being moved
-        if(srcY-desY==-2 || srcY-desY==2){//is a first double move
-
-        }
-    }
 
     //TODO pawn upgrading stuff here
     //TODO pawn en passant
@@ -116,6 +134,14 @@ void Board::movePiece(int srcX, int srcY, int desX, int desY) {
 
 int Board::getTurn() {
     return turn;
+}
+
+ElPassant Board::getWhitePassant() {
+    return whitePassant;
+}
+
+ElPassant Board::getBlackPassant() {
+    return blackPassant;
 }
 
 

@@ -10,15 +10,18 @@
 class ElPassant{
 public:
     ElPassant();
-    void setElPassant(QPoint attacker, QPoint victim);
+    void setElPassant(QPoint attacker1, QPoint victim);
     void clearElPassant();
     bool getPresent();
-    QPoint getAttacker();
-    QPoint getVictim();
+    QPoint getAttacker1();
+    QPoint getAttacker2();
 
+    QPoint getVictim();
 private:
     bool isPresent;
-    QPoint attacker;
+    QPoint attacker1;
+    QPoint attacker2;
+
     QPoint victim;
 };
 

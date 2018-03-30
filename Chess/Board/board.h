@@ -12,6 +12,8 @@ public:
     QVector<QPoint> getMoves(int x, int y);
     void movePiece(int srcX, int srcY, int desX, int desY);
     int getTurn();
+    ElPassant getWhitePassant();
+    ElPassant getBlackPassant();
 
 private:
     int** board;

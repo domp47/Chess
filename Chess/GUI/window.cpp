@@ -83,6 +83,80 @@ void Window::paintEvent(QPaintEvent *)
         }
     }
 
+    std::cout << "Is there a black passant: " << board->getBlackPassant().getPresent() << std::endl;
+    std::cout << "Is there a white passant: " << board->getWhitePassant().getPresent() << std::endl;
+
+
+    if(highlightedCords[0] != -1 || highlightedCords[1] != -1){//if a piece is highlighted
+        if(board->getPiece(highlightedCords[1],highlightedCords[0])==-1){//black pawn
+            if(board->getBlackPassant().getPresent()){//passant possible
+
+                //selected piece is one of the possible passant attacks
+                if(board->getBlackPassant().getAttacker1().x()==highlightedCords[0] && board->getBlackPassant().getAttacker1().y()==highlightedCords[0]){
+                    int x = (board->getBlackPassant().getVictim().x() - STARTING_X)/100;
+                    int y = ((board->getBlackPassant().getVictim().y() + 1) - STARTING_Y)/100;
+
+                    painter.fillRect(x, y,100,100,Colors::special());
+
+                    if(((board->getBlackPassant().getVictim().x())+(board->getBlackPassant().getVictim().y() + 1))%2==0){
+                        painter.fillRect(x+10,y+10,80,80,Colors::light());
+                    }else{
+                        painter.fillRect(x+10,y+10,80,80,Colors::dark());
+                    }
+
+                }
+                if(board->getBlackPassant().getAttacker2().x()==highlightedCords[0] && board->getBlackPassant().getAttacker2().y()==highlightedCords[0]){
+                    int x = (board->getBlackPassant().getVictim().x() - STARTING_X)/100;
+                    int y = ((board->getBlackPassant().getVictim().y() + 1) - STARTING_Y)/100;
+
+                    painter.fillRect(x, y,100,100,Colors::special());
+
+                    if(((board->getBlackPassant().getVictim().x())+(board->getBlackPassant().getVictim().y() + 1))%2==0){
+                        painter.fillRect(x+10,y+10,80,80,Colors::light());
+                    }else{
+                        painter.fillRect(x+10,y+10,80,80,Colors::dark());
+                    }
+
+                }
+            }
+        }
+        if(board->getPiece(highlightedCords[1],highlightedCords[0])==1){//white pawn
+            if(board->getWhitePassant().getPresent()){//passant possible
+
+                //selected piece is one of the possible passant attacks
+                if(board->getWhitePassant().getAttacker1().x()==highlightedCords[0] && board->getWhitePassant().getAttacker1().y()==highlightedCords[0]){
+                    int x = (board->getWhitePassant().getVictim().x() - STARTING_X)/100;
+                    int y = ((board->getWhitePassant().getVictim().y() + 1) - STARTING_Y)/100;
+
+                    painter.fillRect(x, y,100,100,Colors::special());
+
+                    if(((board->getWhitePassant().getVictim().x())+(board->getWhitePassant().getVictim().y() + 1))%2==0){
+                        painter.fillRect(x+10,y+10,80,80,Colors::light());
+                    }else{
+                        painter.fillRect(x+10,y+10,80,80,Colors::dark());
+                    }
+
+                } else if(board->getWhitePassant().getAttacker2().x()==highlightedCords[0] && board->getWhitePassant().getAttacker2().y()==highlightedCords[0]){
+                    int x = (board->getWhitePassant().getVictim().x() - STARTING_X)/100;
+                    int y = ((board->getWhitePassant().getVictim().y() + 1) - STARTING_Y)/100;
+
+                    std::cout << "Victim loc : " << board->getWhitePassant().getVictim().x() << ", " << board->getWhitePassant().getVictim().y() << std::endl;
+                    std::cout << "Special box: " << x << "," << y << std::endl;
+
+                    painter.fillRect(x, y,100,100,Colors::special());
+
+                    if(((board->getWhitePassant().getVictim().x())+(board->getWhitePassant().getVictim().y() + 1))%2==0){
+                        painter.fillRect(x+10,y+10,80,80,Colors::light());
+                    }else{
+                        painter.fillRect(x+10,y+10,80,80,Colors::dark());
+                    }
+
+                }
+            }
+        }
+    }
+
+
     QFont font = painter.font();
     font.setPixelSize(32);
     painter.setFont(font);
@@ -144,6 +218,8 @@ void Window::mousePressEvent(QMouseEvent *event) {
             }
         }
     }
+
+
     std::cout << "Mouse Pressed at pixels:" << event->x() << ", " << event->y() << std::endl << std::endl;
 }
 

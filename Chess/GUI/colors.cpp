@@ -20,3 +20,7 @@ QColor Colors::highlight() {
 QColor Colors::move() {
     return QColor(185,255,50);
 }
+
+QColor Colors::special() {
+    return QColor(255,50,50);
+}

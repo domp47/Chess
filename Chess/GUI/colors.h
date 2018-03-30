@@ -11,6 +11,7 @@ public:
     static QColor light();
     static QColor highlight();
     static QColor move();
+    static QColor special();
 };
 
 #endif // COLORS_H
