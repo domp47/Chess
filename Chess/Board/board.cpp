@@ -3,6 +3,7 @@
 #include <Board/Moves/queen.h>
 #include <Board/Moves/knight.h>
 #include <Board/Moves/pawn.h>
+#include <QtWidgets/QInputDialog>
 #include "board.h"
 
 /**
@@ -35,7 +36,7 @@ Board::Board() {
         }
     }
 
-    board[0][0] = -2;
+//    board[0][0] = -2;
     board[0][1] = -3;
     board[0][2] = -4;
     board[0][3] = -5;
@@ -44,7 +45,7 @@ Board::Board() {
     board[0][6] = -3;
     board[0][7] = -2;
 
-    board[1][0] = -1;
+//    board[1][0] = -1;
     board[1][1] = -1;
     board[1][2] = -1;
     board[1][3] = -1;
@@ -60,7 +61,7 @@ Board::Board() {
     board[7][4] = 6;
     board[7][5] = 4;
     board[7][6] = 3;
-    board[7][7] = 2;
+//    board[7][7] = 2;
 
     board[6][0] = 1;
     board[6][1] = 1;
@@ -69,7 +70,7 @@ Board::Board() {
     board[6][4] = 1;
     board[6][5] = 1;
     board[6][6] = 1;
-    board[6][7] = 1;
+//    board[6][7] = 1;
 
     turn = 0;
     whitePassant.clearElPassant();
@@ -129,7 +130,6 @@ void Board::movePiece(int srcX, int srcY, int desX, int desY) {
     board[srcY][srcX] = 0;
     turn++;
 
-
     //TODO pawn upgrading stuff here
     //TODO pawn en passant
 }
@@ -152,6 +152,45 @@ void Board::movePassant(int srcX, int srcY, QPoint victim, bool whiteTeam) {
         movePiece(srcX,srcY,victim.x(),victim.y()-1);
     }else{
         movePiece(srcX,srcY,victim.x(),victim.y()+1);
+    }
+}
+
+void Board::upgradePawn(int x, int y, char upgrade) {
+    if(board[y][x]==1){
+        switch (upgrade){
+            case 'q':
+                board[y][x] = 5;
+                break;
+            case 'b':
+                board[y][x] = 4;
+                break;
+            case 'k':
+                board[y][x] = 3;
+                break;
+            case 'r':
+                board[y][x] = 2;
+                break;
+            default:
+                break;
+        }
+    }
+    else if(board[y][x]==-1){
+        switch (upgrade){
+            case 'q':
+                board[y][x] = -5;
+                break;
+            case 'b':
+                board[y][x] = -4;
+                break;
+            case 'k':
+                board[y][x] = -3;
+                break;
+            case 'r':
+                board[y][x] = -2;
+                break;
+            default:
+                break;
+        }
     }
 }
 

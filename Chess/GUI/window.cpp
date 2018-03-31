@@ -1,4 +1,5 @@
 #include <iostream>
+#include <QtWidgets/QInputDialog>
 #include "window.h"
 #include "colors.h"
 
@@ -205,6 +206,33 @@ void Window::mousePressEvent(QMouseEvent *event) {
                 possibleMoves.clear();
                 repaint();
             }else if(isMovePossible(QPoint(x,y))){ //checks possible regular moves and moves to that piece
+                //if its a pawn and moving to end of board
+                if((board->getPiece(highlightedCords[1],highlightedCords[0])==1 && y==0) || (board->getPiece(highlightedCords[1],highlightedCords[0])==-1 && y==7)){
+                    bool correctInput = false;
+                    char upgrade = '0';
+
+                    while(!correctInput){
+                        QString response = QInputDialog::getText(this, "Pawn Promotion", "Enter: Q for queen, B for bishop, K for knight, R for rook.");
+
+                        if(response == "q" || response == "Q"){
+                            upgrade = 'q';
+                            correctInput = true;
+                        }else if(response == "b" || response == "B"){
+                            upgrade = 'b';
+                            correctInput = true;
+                        }else if(response == "k" || response == "K"){
+                            upgrade = 'k';
+                            correctInput = true;
+                        }else if(response == "r" || response == "R"){
+                            upgrade = 'r';
+                            correctInput = true;
+                        }
+                    }
+
+                    board->upgradePawn(highlightedCords[1],highlightedCords[0],upgrade);
+                }
+
+
                 board->movePiece(highlightedCords[1],highlightedCords[0],x,y);
                 highlightedCords[0] = -1;
                 highlightedCords[1] = -1;
@@ -239,7 +267,6 @@ void Window::mousePressEvent(QMouseEvent *event) {
             }
         }
     }
-
 
     std::cout << "Mouse Pressed at pixels:" << event->x() << ", " << event->y() << std::endl << std::endl;
 }

@@ -3,7 +3,10 @@
 
 #include <QtCore/QPoint>
 #include <QVector>
+//#include <GUI/window.h>
 #include "elPassant.h"
+
+class Window;
 
 class Board{
 public:
@@ -15,6 +18,7 @@ public:
     int getTurn();
     ElPassant getWhitePassant();
     ElPassant getBlackPassant();
+    void upgradePawn(int x, int y, char upgrade);
 
 private:
     int** board;
