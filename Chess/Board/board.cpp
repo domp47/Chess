@@ -4,6 +4,7 @@
 #include <Board/Moves/knight.h>
 #include <Board/Moves/pawn.h>
 #include <QtWidgets/QInputDialog>
+#include <Board/Moves/king.h>
 #include "board.h"
 
 /**
@@ -36,7 +37,7 @@ Board::Board() {
         }
     }
 
-//    board[0][0] = -2;
+    board[0][0] = -2;
     board[0][1] = -3;
     board[0][2] = -4;
     board[0][3] = -5;
@@ -45,11 +46,11 @@ Board::Board() {
     board[0][6] = -3;
     board[0][7] = -2;
 
-//    board[1][0] = -1;
+    board[1][0] = -1;
     board[1][1] = -1;
     board[1][2] = -1;
     board[1][3] = -1;
-    board[1][4] = -1;
+//    board[1][4] = -1;
     board[1][5] = -1;
     board[1][6] = -1;
     board[1][7] = -1;
@@ -61,20 +62,28 @@ Board::Board() {
     board[7][4] = 6;
     board[7][5] = 4;
     board[7][6] = 3;
-//    board[7][7] = 2;
+    board[7][7] = 2;
 
     board[6][0] = 1;
     board[6][1] = 1;
     board[6][2] = 1;
     board[6][3] = 1;
-    board[6][4] = 1;
+//    board[6][4] = 1;
     board[6][5] = 1;
     board[6][6] = 1;
-//    board[6][7] = 1;
+    board[6][7] = 1;
 
     turn = 0;
     whitePassant.clearElPassant();
     blackPassant.clearElPassant();
+
+    whiteKingMoved = false;
+    blackKingMoved = false;
+
+    whiteLeftRookMoved = false;
+    whiteRightRookMoved= false;
+    blackLeftRookMoved = false;
+    blackRightRookMoved= false;
 }
 
 int Board::getPiece(int x, int y) {
@@ -98,6 +107,9 @@ QVector<QPoint> Board::getMoves(int x, int y) {
     if(board[y][x]==5 || board[y][x] ==-5){
         return Queen::getMoves(x,y,board);
     }
+    if(board[y][x]==6 || board[y][x] ==-6){
+        return King::getMoves(x,y,this);
+    }
 
     return QVector<QPoint>();
 }
@@ -105,6 +117,25 @@ QVector<QPoint> Board::getMoves(int x, int y) {
 void Board::movePiece(int srcX, int srcY, int desX, int desY) {
     whitePassant.clearElPassant();
     blackPassant.clearElPassant();
+
+    if(srcY==7 && srcX==0 && board[srcY][srcX]==2){
+        whiteLeftRookMoved = true;
+    }
+    if(srcY==7 && srcX==7 && board[srcY][srcX]==2){
+        whiteRightRookMoved = true;
+    }
+    if(srcY==0 && srcX==0 && board[srcY][srcX]==-2){
+        blackLeftRookMoved = true;
+    }
+    if(srcY==0 && srcX==7 && board[srcY][srcX]==-2){
+        blackRightRookMoved = true;
+    }
+    if(srcY==7 && srcX==4 && board[srcY][srcX]==6){
+        whiteKingMoved = true;
+    }
+    if(srcY==0 && srcX==4 && board[srcY][srcX]==-6){
+        blackKingMoved = true;
+    }
 
     if(board[srcY][srcX]==-1){//is black pawn being moved
         if(srcY-desY==-2 || srcY-desY==2){//is a first double move
@@ -192,6 +223,38 @@ void Board::upgradePawn(int x, int y, char upgrade) {
                 break;
         }
     }
+}
+
+bool Board::getWLR() {
+    return whiteLeftRookMoved;
+}
+
+bool Board::getWRR() {
+    return whiteRightRookMoved;
+}
+
+bool Board::getBLR() {
+    return blackLeftRookMoved;
+}
+
+bool Board::getBRR() {
+    return blackRightRookMoved;
+}
+
+bool Board::getWKing() {
+    return whiteKingMoved;
+}
+
+bool Board::getBKing() {
+    return blackKingMoved;
+}
+
+bool Board::checkCheck(bool whiteTeam) {
+    return false;
+}
+
+bool Board::checkCheckMate(bool whiteTeam) {
+    return false;
 }
 
 

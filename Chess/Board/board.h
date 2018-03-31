@@ -19,12 +19,27 @@ public:
     ElPassant getWhitePassant();
     ElPassant getBlackPassant();
     void upgradePawn(int x, int y, char upgrade);
+    bool getWLR();
+    bool getWRR();
+    bool getBLR();
+    bool getBRR();
+    bool getWKing();
+    bool getBKing();
+    bool checkCheck(bool whiteTeam);
+    bool checkCheckMate(bool whiteTeam);
+
 
 private:
     int** board;
     int turn;
     ElPassant whitePassant;
     ElPassant blackPassant;
+    bool whiteLeftRookMoved;
+    bool whiteRightRookMoved;
+    bool blackLeftRookMoved;
+    bool blackRightRookMoved;
+    bool whiteKingMoved;
+    bool blackKingMoved;
 };
 
 #endif //BOARD_H

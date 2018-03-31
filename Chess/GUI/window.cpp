@@ -62,7 +62,11 @@ void Window::paintEvent(QPaintEvent *)
         int xLoc = (p.x() * 100) + STARTING_X;
         int yLoc = (p.y() * 100) + STARTING_Y;
 
-        painter.fillRect(xLoc,yLoc,100,100,Colors::move());
+        if(board->getPiece(p.x(),p.y())==0)
+            painter.fillRect(xLoc,yLoc,100,100,Colors::move());
+        else
+            painter.fillRect(xLoc,yLoc,100,100,Colors::special());
+
         yLoc +=10;
         xLoc +=10;
 
