@@ -27,8 +27,15 @@ public:
     bool getBKing();
     bool checkCheck(bool whiteTeam);
     bool checkCheckMate(bool whiteTeam);
-
-
+    bool checkForAttack(int x, int y, bool whiteTeam);
+    bool isBlackLongCastle() const;
+    void setBlackLongCastle(bool blackLongCastle);
+    bool isBlackCastle() const;
+    void setBlackCastle(bool blackCastle);
+    bool isWhiteLongCastle() const;
+    void setWhiteLongCastle(bool whiteLongCastle);
+    bool isWhiteCastle() const;
+    void setWhiteCastle(bool whiteCastle);
 private:
     int** board;
     int turn;
@@ -40,6 +47,13 @@ private:
     bool blackRightRookMoved;
     bool whiteKingMoved;
     bool blackKingMoved;
+
+    bool blackLongCastle;
+
+private:
+    bool blackCastle;
+    bool whiteLongCastle;
+    bool whiteCastle;
 };
 
 #endif //BOARD_H

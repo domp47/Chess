@@ -84,6 +84,11 @@ Board::Board() {
     whiteRightRookMoved= false;
     blackLeftRookMoved = false;
     blackRightRookMoved= false;
+
+    blackCastle = false;
+    blackLongCastle = false;
+    whiteCastle = false;
+    whiteLongCastle = false;
 }
 
 int Board::getPiece(int x, int y) {
@@ -256,5 +261,151 @@ bool Board::checkCheck(bool whiteTeam) {
 bool Board::checkCheckMate(bool whiteTeam) {
     return false;
 }
+
+
+bool Board::checkForAttack(int srcX, int srcY, bool whiteTeam) {
+
+
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            if(board[y][x] < 0 && whiteTeam){ // if spot is a black piece and we want to check for attack on white
+                if(board[y][x] == -1){
+                    QVector<QPoint> moves;
+                    moves.append(QPoint(x+1,y+1));
+                    moves.append(QPoint(x-1,y+1));
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == -2){
+                    QVector<QPoint> moves = Rook::getMoves(x,y,board);
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == -3){
+                    QVector<QPoint> moves = Knight::getMoves(x,y,board);
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == -4){
+                    QVector<QPoint> moves = Bishop::getMoves(x,y,board);
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == -5){
+                    QVector<QPoint> moves = Queen::getMoves(x,y,board);
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == -6){
+                    QVector<QPoint> moves;
+
+                    moves.append(QPoint(x+1,y));
+                    moves.append(QPoint(x-1,y));
+                    moves.append(QPoint(x,y+1));
+                    moves.append(QPoint(x,y-1));
+                    moves.append(QPoint(x+1,y+1));
+                    moves.append(QPoint(x-1,y+1));
+                    moves.append(QPoint(x+1,y-1));
+                    moves.append(QPoint(x-1,y-1));
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }
+            }
+            else if(board[y][x] > 0 && !whiteTeam){ // if spot is a white piece and we want to check for attack on black
+                if(board[y][x] == 1){
+                    QVector<QPoint> moves;
+                    moves.append(QPoint(x+1,y-1));
+                    moves.append(QPoint(x-1,y-1));
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == 2){
+                    QVector<QPoint> moves = Rook::getMoves(x,y,board);
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == 3){
+                    QVector<QPoint> moves = Knight::getMoves(x,y,board);
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == 4){
+                    QVector<QPoint> moves = Bishop::getMoves(x,y,board);
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == 5){
+                    QVector<QPoint> moves = Queen::getMoves(x,y,board);
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }else if(board[y][x] == 6){
+                    QVector<QPoint> moves;
+
+                    moves.append(QPoint(x+1,y));
+                    moves.append(QPoint(x-1,y));
+                    moves.append(QPoint(x,y+1));
+                    moves.append(QPoint(x,y-1));
+                    moves.append(QPoint(x+1,y+1));
+                    moves.append(QPoint(x-1,y+1));
+                    moves.append(QPoint(x+1,y-1));
+                    moves.append(QPoint(x-1,y-1));
+
+                    if(moves.contains(QPoint(srcX,srcY))){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Board::isBlackLongCastle() const {
+    return blackLongCastle;
+}
+
+void Board::setBlackLongCastle(bool blackLongCastle) {
+    Board::blackLongCastle = blackLongCastle;
+}
+
+bool Board::isBlackCastle() const {
+    return blackCastle;
+}
+
+void Board::setBlackCastle(bool blackCastle) {
+    Board::blackCastle = blackCastle;
+}
+
+bool Board::isWhiteLongCastle() const {
+    return whiteLongCastle;
+}
+
+void Board::setWhiteLongCastle(bool whiteLongCastle) {
+    Board::whiteLongCastle = whiteLongCastle;
+}
+
+bool Board::isWhiteCastle() const {
+    return whiteCastle;
+}
+
+void Board::setWhiteCastle(bool whiteCastle) {
+    Board::whiteCastle = whiteCastle;
+}
+
+
 
 
