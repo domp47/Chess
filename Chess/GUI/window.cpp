@@ -121,7 +121,7 @@ void Window::paintEvent(QPaintEvent *)
                 }
             }
         }
-        if(board->getPiece(highlightedCords[1],highlightedCords[0])==1){//white pawn
+        else if(board->getPiece(highlightedCords[1],highlightedCords[0])==1){//white pawn
             if(board->getWhitePassant().getPresent()){//passant possible
 
                 //selected piece is one of the possible passant attacks
@@ -157,6 +157,38 @@ void Window::paintEvent(QPaintEvent *)
                     }
 
                 }
+            }
+        }
+        else if(board->getPiece(highlightedCords[1],highlightedCords[0])==6){//white knight
+            if(board->isWhiteLongCastle()){
+                int x = 200 + STARTING_X;
+                int y = 700 + STARTING_Y;
+
+                painter.fillRect(x,y,100,100,Colors::move());
+                painter.fillRect(x+10,y+10,80,80,Colors::dark());
+            }
+            if(board->isWhiteCastle()){
+                int x = 600 + STARTING_X;
+                int y = 700 + STARTING_Y;
+
+                painter.fillRect(x,y,100,100,Colors::move());
+                painter.fillRect(x+10,y+10,80,80,Colors::dark());
+            }
+        }
+        else if(board->getPiece(highlightedCords[1],highlightedCords[0])==-6){//black knight
+            if(board->isBlackLongCastle()){
+                int x = 200 + STARTING_X;
+                int y = 000 + STARTING_Y;
+
+                painter.fillRect(x,y,100,100,Colors::move());
+                painter.fillRect(x+10,y+10,80,80,Colors::light());
+            }
+            if(board->isBlackCastle()){
+                int x = 600 + STARTING_X;
+                int y = 000 + STARTING_Y;
+
+                painter.fillRect(x,y,100,100,Colors::move());
+                painter.fillRect(x+10,y+10,80,80,Colors::light());
             }
         }
     }
@@ -256,6 +288,38 @@ void Window::mousePressEvent(QMouseEvent *event) {
             else if(board->getTurn()%2==1 && board->getBlackPassant().getPresent()){ //if its black persons turn and there is a passant
                 if(board->getBlackPassant().getVictim().x()==x && board->getBlackPassant().getVictim().y()+1==y){
                     board->movePassant(highlightedCords[1],highlightedCords[0],board->getBlackPassant().getVictim(), false);
+                    highlightedCords[0] = -1;
+                    highlightedCords[1] = -1;
+                    possibleMoves.clear();
+                    repaint();
+                }
+            }
+            //if white knight is highlighted and there is a white castle move possible
+            else if(board->getPiece(highlightedCords[1],highlightedCords[0])==6 && (board->isWhiteCastle() || board->isWhiteLongCastle())){
+                if(board->isWhiteLongCastle() && y==7 && x==2){
+                    board->moveCastling(1);
+                    highlightedCords[0] = -1;
+                    highlightedCords[1] = -1;
+                    possibleMoves.clear();
+                    repaint();
+                }else if(board->isWhiteCastle() && y==7 && x==6){
+                    board->moveCastling(2);
+                    highlightedCords[0] = -1;
+                    highlightedCords[1] = -1;
+                    possibleMoves.clear();
+                    repaint();
+                }
+            }
+            //if black knight is highlighted and there is a black castle move possible
+            else if(board->getPiece(highlightedCords[1],highlightedCords[0])==-6 && (board->isBlackCastle() || board->isBlackLongCastle())){
+                if(board->isBlackLongCastle() && y==0 && x==2){
+                    board->moveCastling(3);
+                    highlightedCords[0] = -1;
+                    highlightedCords[1] = -1;
+                    possibleMoves.clear();
+                    repaint();
+                }else if(board->isBlackCastle() && y==0 && x==6){
+                    board->moveCastling(4);
                     highlightedCords[0] = -1;
                     highlightedCords[1] = -1;
                     possibleMoves.clear();

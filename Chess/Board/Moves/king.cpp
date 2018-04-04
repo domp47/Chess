@@ -44,7 +44,7 @@ QVector<QPoint> King::getMoves(int x, int y, Board* board) {
                     }
                 }
             }
-            if(!board->getWRR() && board->getWKing()){
+            if(!board->getWRR() && !board->getWKing()){
                 if(board->getPiece(5,7)==0 && board->getPiece(6,7)==0){
                     if(!board->checkForAttack(5,7,true) && !board->checkForAttack(6,7,true)){
                         board->setWhiteCastle(true);
@@ -62,7 +62,7 @@ QVector<QPoint> King::getMoves(int x, int y, Board* board) {
                     }
                 }
             }
-            if(!board->getBRR() && board->getBKing()){
+            if(!board->getBRR() && !board->getBKing()){
                 if(board->getPiece(5,0)==0 && board->getPiece(6,0)==0){
                     if(!board->checkForAttack(5,0,false) && !board->checkForAttack(6,0,false)){
                         board->setBlackCastle(true);
