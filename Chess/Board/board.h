@@ -37,6 +37,7 @@ public:
     void setWhiteLongCastle(bool whiteLongCastle);
     bool isWhiteCastle() const;
     void setWhiteCastle(bool whiteCastle);
+    void findKing(bool whiteTeam, int cords[2]);
 private:
     int** board;
     int turn;

@@ -256,7 +256,10 @@ bool Board::getBKing() {
 }
 
 bool Board::checkCheck(bool whiteTeam) {
-    return false;
+    int kingCords[2];
+    findKing(whiteTeam, kingCords);
+
+    return checkForAttack(kingCords[1],kingCords[0], whiteTeam);
 }
 
 bool Board::checkCheckMate(bool whiteTeam) {
@@ -433,6 +436,22 @@ void Board::moveCastling(int type) {
         board[0][5] = -2;
         board[0][7] =  0;
         turn++;
+    }
+}
+
+void Board::findKing(bool whiteTeam, int cords[2]) {
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            if(whiteTeam && board[y][x]==6){
+                cords[0] = y;
+                cords[1] = x;
+                return;
+            }else if(!whiteTeam && board[y][x]==-6){
+                cords[0] = y;
+                cords[1] = x;
+                return;
+            }
+        }
     }
 }
 
