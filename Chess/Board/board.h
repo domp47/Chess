@@ -3,14 +3,20 @@
 
 #include <QtCore/QPoint>
 #include <QVector>
-//#include <GUI/window.h>
 #include "elPassant.h"
-
-class Window;
+#include <Board/Moves/rook.h>
+#include <Board/Moves/bishop.h>
+#include <Board/Moves/queen.h>
+#include <Board/Moves/knight.h>
+#include <Board/Moves/pawn.h>
+#include <QtWidgets/QInputDialog>
+#include <Board/Moves/king.h>
+#include <QtWidgets/QMessageBox>
 
 class Board{
 public:
     Board();
+    void initBoard();
     int getPiece(int x, int y);
     QVector<QPoint> getMoves(int x, int y);
     void movePiece(int srcX, int srcY, int desX, int desY);
@@ -38,6 +44,7 @@ public:
     bool isWhiteCastle() const;
     void setWhiteCastle(bool whiteCastle);
     void findKing(bool whiteTeam, int cords[2]);
+    QVector<QPoint> stripCheck(int x, int y, QVector<QPoint> moves);
 private:
     int** board;
     int turn;

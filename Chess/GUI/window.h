@@ -19,14 +19,15 @@ public:
 private:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *);
     bool isMovePossible(QPoint p);
-
 public:
 private:
     int highlightedCords[2];
     QVector<QPoint> possibleMoves;
     Map* map;
     Board* board;
+    int lastKey;
 };
 
 #endif // WINDOW_H

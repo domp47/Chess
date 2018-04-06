@@ -1,5 +1,6 @@
 #include <iostream>
 #include <QtWidgets/QInputDialog>
+#include <QtWidgets/QPushButton>
 #include "window.h"
 #include "colors.h"
 
@@ -13,6 +14,7 @@ Window::Window(Board* board) {
     highlightedCords[0] = -1;
     highlightedCords[1] = -1;
     possibleMoves.clear();
+    lastKey = 0;
 }
 
 void Window::paintEvent(QPaintEvent *)
@@ -217,6 +219,40 @@ void Window::paintEvent(QPaintEvent *)
     painter.drawText(775,840,"H");
 
 
+    //Put all this stuff in new thread to finish gui
+    int kingCords[2] = {-1,-1};
+    board->findKing(true,kingCords);
+
+    if(board->checkCheckMate(true)){//white king check mate
+        QMessageBox msg;
+        msg.setText("Black Team wins");
+        QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
+        QPushButton *end = msg.addButton("Exit", QMessageBox::NoRole);
+
+        msg.exec();
+
+        if(msg.clickedButton() == ng){
+            board->initBoard();
+//            repaint();
+        }else if(msg.clickedButton() == end){
+            this->close();
+        }
+    }
+    else if(board->checkCheckMate(false)){
+        QMessageBox msg;
+        msg.setText("White Team wins");
+        QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
+        QPushButton *end = msg.addButton("Exit", QMessageBox::NoRole);
+
+        msg.exec();
+
+        if(msg.clickedButton() == ng){
+            board->initBoard();
+//            repaint();
+        }else if(msg.clickedButton() == end){
+            this->close();
+        }
+    }
 }
 
 void Window::mousePressEvent(QMouseEvent *event) {
@@ -274,6 +310,12 @@ void Window::mousePressEvent(QMouseEvent *event) {
                 highlightedCords[1] = -1;
                 possibleMoves.clear();
                 repaint();
+
+                /**if(board->checkCheck(board->getTurn() % 2 == 0)){//checks if white team is in check
+
+                }else if(board->checkCheck(board->getTurn() % 2 == 1)){//checks if black team is in check
+
+                }**/
             }
             else if(board->getTurn()%2==0 && board->getWhitePassant().getPresent()){ //if its white persons turn and there is a passant
                 //check if the passant spot was clicked
@@ -336,7 +378,17 @@ void Window::mousePressEvent(QMouseEvent *event) {
         }
     }
 
-    std::cout << "Mouse Pressed at pixels:" << event->x() << ", " << event->y() << std::endl << std::endl;
+//    std::cout << "Mouse Pressed at pixels:" << event->x() << ", " << event->y() << std::endl << std::endl;
+}
+
+void Window::keyPressEvent(QKeyEvent *event) {
+//    std::cout << "Key pressed: " <<  event->key() << std::endl;
+
+    if(lastKey == Qt::Key_Control && event->key() == Qt::Key_N){
+        board->initBoard();
+        repaint();
+    }
+    lastKey = event->key();
 }
 
 bool Window::isMovePossible(QPoint p) {
