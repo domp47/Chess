@@ -12,6 +12,9 @@
 #include <QtWidgets/QInputDialog>
 #include <Board/Moves/king.h>
 #include <QtWidgets/QMessageBox>
+#include <QPushButton>
+#include <QWidget>
+#include <AI/alphaBeta.h>
 
 class Board{
 public:
@@ -45,7 +48,9 @@ public:
     void setWhiteCastle(bool whiteCastle);
     void findKing(bool whiteTeam, int cords[2]);
     QVector<QPoint> stripCheck(int x, int y, QVector<QPoint> moves);
+    void setWindow(QWidget* window);
 private:
+    void nextMove();
     int** board;
     int turn;
     ElPassant whitePassant;
@@ -56,13 +61,16 @@ private:
     bool blackRightRookMoved;
     bool whiteKingMoved;
     bool blackKingMoved;
-
     bool blackLongCastle;
 
 private:
     bool blackCastle;
     bool whiteLongCastle;
     bool whiteCastle;
+    int gameMode;
+    AlphaBeta alphaBeta;
+    QWidget* window;
+    bool windowSet;
 };
 
 #endif //BOARD_H

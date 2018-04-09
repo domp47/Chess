@@ -15,6 +15,8 @@ Window::Window(Board* board) {
     highlightedCords[1] = -1;
     possibleMoves.clear();
     lastKey = 0;
+
+    board->setWindow(this);
 }
 
 void Window::paintEvent(QPaintEvent *)

@@ -26,6 +26,8 @@ set( project_sources
         ./Board/Moves/queen.cpp
         ./Board/Moves/king.cpp
         ./Board/elPassant.cpp
+        ./AI/alphaBeta.cpp
+        ./AI/random.cpp
     )
 
 set(headers
@@ -40,6 +42,8 @@ set(headers
         ./Board/Moves/queen.h
         ./Board/Moves/king.h
         ./Board/elPassant.h
+        ./AI/alphaBeta.h
+        ./AI/random.h
         )
 
 add_executable(chess

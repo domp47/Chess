@@ -25,9 +25,23 @@ Board::Board() {
     }
 
     initBoard();
+    windowSet = false;
 }
 
 void Board::initBoard(){
+
+    QMessageBox msg;
+    msg.setText("Choose a game mode");
+    QPushButton *op = msg.addButton("One Player", QMessageBox::ActionRole);
+    QPushButton *tp = msg.addButton("Two Players", QMessageBox::ActionRole);
+
+    msg.exec();
+
+    if(msg.clickedButton() == op){
+        gameMode = 0;
+    }else if(msg.clickedButton() == tp){
+        gameMode = 1;
+    }
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
@@ -87,6 +101,8 @@ void Board::initBoard(){
     blackLongCastle = false;
     whiteCastle = false;
     whiteLongCastle = false;
+
+    nextMove();
 }
 
 int Board::getPiece(int x, int y) {
@@ -230,6 +246,8 @@ void Board::movePiece(int srcX, int srcY, int desX, int desY) {
         msg.setText("Check On White");
         msg.exec();
     }
+
+    nextMove();
 }
 
 int Board::getTurn() {
@@ -508,24 +526,28 @@ void Board::moveCastling(int type) {
         board[7][3] = 2;
         board[7][0] = 0;
         turn++;
+        nextMove();
     }else if(type == 2){//white
         board[7][6] = 6;
         board[7][4] = 0;
         board[7][5] = 2;
         board[7][7] = 0;
         turn++;
+        nextMove();
     }else if(type == 3){//black long
         board[0][2] = -6;
         board[0][4] =  0;
         board[0][3] = -2;
         board[0][0] =  0;
         turn++;
+        nextMove();
     }else if(type == 4){//black
         board[0][6] = -6;
         board[0][4] =  0;
         board[0][5] = -2;
         board[0][7] =  0;
         turn++;
+        nextMove();
     }
 }
 
@@ -576,7 +598,22 @@ QVector<QPoint> Board::stripCheck(int x, int y,QVector<QPoint> moves) {
     return strippedMoves;
 }
 
+void Board::nextMove() {
+    if(gameMode == 0){ //one player game, therefore need to do ai to choose black move
+        if(turn%2 == 1){
+            int move[4];
+            alphaBeta.findMove(this,false,move);
+            movePiece(move[0],move[1],move[2],move[3]);
+        }
+    }else if(gameMode == 1){ //two player game, let other player choose move
+        return;
+    }
+    if(windowSet){
+        window->repaint();
+    }
+}
 
-
-
-
+void Board::setWindow(QWidget *window) {
+    this->window = window;
+    windowSet = true;
+}
