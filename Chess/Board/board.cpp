@@ -221,11 +221,11 @@ void Board::movePiece(int srcX, int srcY, int desX, int desY) {
     board[srcY][srcX] = 0;
     turn++;
 
-    if(!checkCheckMate(turn % 2 == 0) && checkCheck(turn % 2 == 0)){//checks if white team is in check
+    if(!checkMateStalemate(turn % 2 == 0) && checkCheck(turn % 2 == 0)){//checks if white team is in check
         QMessageBox msg;
         msg.setText("Check On Black");
         msg.exec();
-    }else if(!checkCheckMate(turn % 2 == 1) && checkCheck(turn % 2 == 1)){//checks if black team is in check
+    }else if(!checkMateStalemate(turn % 2 == 1) && checkCheck(turn % 2 == 1)){//checks if black team is in check
         QMessageBox msg;
         msg.setText("Check On White");
         msg.exec();
@@ -323,24 +323,37 @@ bool Board::checkCheck(bool whiteTeam) {
     return checkForAttack(kingCords[1],kingCords[0], whiteTeam);
 }
 
-bool Board::checkCheckMate(bool whiteTeam) {
+/**
+ *  Checks for ending condition of game,
+ *  if team cannot make any legal moves and is in check its mate.
+ *  if team cannot make any legal moves and is not in check its stalemate
+ * @param whiteTeam - is whtie team the one being attacked on
+ * @return 0 = no mate or stalemate, 1 = mate, 2 = stalemate
+ */
+int Board::checkMateStalemate(bool whiteTeam) {
 
-    //if the team cannot make any moves that don't end up in them check then it's check mate game over
+    //if the team cannot make any moves that don't end up in them check and currently in check
+    // then it's check mate game over
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
             if(whiteTeam && board[y][x] > 0){
                 if(!getMoves(x,y).empty()){
-                    return false;
+                    return 0;
                 }
             }
             else if(!whiteTeam && board[y][x] < 0){
                 if(!getMoves(x,y).empty()){
-                    return false;
+                    return 0;
                 }
             }
         }
     }
-    return true;
+
+    if(checkCheck(whiteTeam)){
+        return 1;
+    }else{
+        return 2;
+    }
 }
 
 

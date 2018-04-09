@@ -33,7 +33,7 @@ public:
     bool getWKing();
     bool getBKing();
     bool checkCheck(bool whiteTeam);
-    bool checkCheckMate(bool whiteTeam);
+    int checkMateStalemate(bool whiteTeam);
     bool checkForAttack(int x, int y, bool whiteTeam);
     bool isBlackLongCastle() const;
     void setBlackLongCastle(bool blackLongCastle);

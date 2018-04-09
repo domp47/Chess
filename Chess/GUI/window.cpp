@@ -223,7 +223,10 @@ void Window::paintEvent(QPaintEvent *)
     int kingCords[2] = {-1,-1};
     board->findKing(true,kingCords);
 
-    if(board->checkCheckMate(true)){//white king check mate
+    int white = board->checkMateStalemate(true);
+    int black = board->checkMateStalemate(false);
+
+    if(white == 1){//white king check mate
         QMessageBox msg;
         msg.setText("Black Team wins");
         QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
@@ -238,9 +241,23 @@ void Window::paintEvent(QPaintEvent *)
             this->close();
         }
     }
-    else if(board->checkCheckMate(false)){
+    else if(black == 1){
         QMessageBox msg;
         msg.setText("White Team wins");
+        QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
+        QPushButton *end = msg.addButton("Exit", QMessageBox::NoRole);
+
+        msg.exec();
+
+        if(msg.clickedButton() == ng){
+            board->initBoard();
+//            repaint();
+        }else if(msg.clickedButton() == end){
+            this->close();
+        }
+    }else if((board->getTurn()%2==0 && white==2) || (board->getTurn()%2==1 && black==2)){
+        QMessageBox msg;
+        msg.setText("It's a Draw");
         QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
         QPushButton *end = msg.addButton("Exit", QMessageBox::NoRole);
 
