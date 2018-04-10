@@ -1,14 +1,11 @@
-#include <iostream>
-#include <QtWidgets/QInputDialog>
-#include <QtWidgets/QPushButton>
 #include "window.h"
-#include "colors.h"
+#include "Controller/controller.h"
 
-Window::Window(Board* board) {
+Window::Window(Controller* controller) {
     this->setFixedWidth(850);
     this->setFixedHeight(850);
 
-    this->board = board;
+    this->controller = controller;
     map = new Map();
 
     highlightedCords[0] = -1;
@@ -16,7 +13,7 @@ Window::Window(Board* board) {
     possibleMoves.clear();
     lastKey = 0;
 
-    board->setWindow(this);
+//    connect(controller->getBoard(), SIGNAL(controller->getBoard()->sendRefresh()),this,SLOT(refresh()));
 }
 
 void Window::paintEvent(QPaintEvent *)
@@ -51,7 +48,7 @@ void Window::paintEvent(QPaintEvent *)
 
             painter.drawRect(xLoc,yLoc,100,100);
 
-            int piece = board->getPiece(x, y);
+            int piece = controller->getBoard()->getPiece(x, y);
 
             if(piece!=0){
                 std::string imgLoc = map->getItem(piece);
@@ -66,7 +63,7 @@ void Window::paintEvent(QPaintEvent *)
         int xLoc = (p.x() * 100) + STARTING_X;
         int yLoc = (p.y() * 100) + STARTING_Y;
 
-        if(board->getPiece(p.x(),p.y())==0)
+        if(controller->getBoard()->getPiece(p.x(),p.y())==0)
             painter.fillRect(xLoc,yLoc,100,100,Colors::move());
         else
             painter.fillRect(xLoc,yLoc,100,100,Colors::special());
@@ -79,7 +76,7 @@ void Window::paintEvent(QPaintEvent *)
         else
             painter.fillRect(xLoc, yLoc,80,80,Colors::dark());
 
-        int piece = board->getPiece(p.x(), p.y());
+        int piece = controller->getBoard()->getPiece(p.x(), p.y());
 
         xLoc -= 10;
         yLoc -= 10;
@@ -93,30 +90,30 @@ void Window::paintEvent(QPaintEvent *)
     }
 
     if(highlightedCords[0] != -1 || highlightedCords[1] != -1){//if a piece is highlighted
-        if(board->getPiece(highlightedCords[1],highlightedCords[0])==-1){//black pawn
-            if(board->getBlackPassant().getPresent()){//passant possible
+        if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==-1){//black pawn
+            if(controller->getBoard()->getBlackPassant().getPresent()){//passant possible
 
                 //selected piece is one of the possible passant attacks
-                if(board->getBlackPassant().getAttacker1().x()==highlightedCords[0] && board->getBlackPassant().getAttacker1().y()==highlightedCords[0]){
-                    int x = (board->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
-                    int y = ((board->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
+                if(controller->getBoard()->getBlackPassant().getAttacker1().x()==highlightedCords[0] && controller->getBoard()->getBlackPassant().getAttacker1().y()==highlightedCords[0]){
+                    int x = (controller->getBoard()->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
+                    int y = ((controller->getBoard()->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
 
                     painter.fillRect(x, y,100,100,Colors::special());
 
-                    if(((board->getBlackPassant().getVictim().x())+(board->getBlackPassant().getVictim().y() + 1))%2==0){
+                    if(((controller->getBoard()->getBlackPassant().getVictim().x())+(controller->getBoard()->getBlackPassant().getVictim().y() + 1))%2==0){
                         painter.fillRect(x+10,y+10,80,80,Colors::light());
                     }else{
                         painter.fillRect(x+10,y+10,80,80,Colors::dark());
                     }
 
                 }
-                if(board->getBlackPassant().getAttacker2().x()==highlightedCords[0] && board->getBlackPassant().getAttacker2().y()==highlightedCords[0]){
-                    int x = (board->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
-                    int y = ((board->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
+                if(controller->getBoard()->getBlackPassant().getAttacker2().x()==highlightedCords[0] && controller->getBoard()->getBlackPassant().getAttacker2().y()==highlightedCords[0]){
+                    int x = (controller->getBoard()->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
+                    int y = ((controller->getBoard()->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
 
                     painter.fillRect(x, y,100,100,Colors::special());
 
-                    if(((board->getBlackPassant().getVictim().x())+(board->getBlackPassant().getVictim().y() + 1))%2==0){
+                    if(((controller->getBoard()->getBlackPassant().getVictim().x())+(controller->getBoard()->getBlackPassant().getVictim().y() + 1))%2==0){
                         painter.fillRect(x+10,y+10,80,80,Colors::light());
                     }else{
                         painter.fillRect(x+10,y+10,80,80,Colors::dark());
@@ -125,36 +122,36 @@ void Window::paintEvent(QPaintEvent *)
                 }
             }
         }
-        else if(board->getPiece(highlightedCords[1],highlightedCords[0])==1){//white pawn
-            if(board->getWhitePassant().getPresent()){//passant possible
+        else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==1){//white pawn
+            if(controller->getBoard()->getWhitePassant().getPresent()){//passant possible
 
                 //selected piece is one of the possible passant attacks
 
-                int attack1x = board->getWhitePassant().getAttacker1().x();
-                int attack1y = board->getWhitePassant().getAttacker1().y();
+                int attack1x = controller->getBoard()->getWhitePassant().getAttacker1().x();
+                int attack1y = controller->getBoard()->getWhitePassant().getAttacker1().y();
 
-                int attack2x = board->getWhitePassant().getAttacker2().x();
-                int attack2y = board->getWhitePassant().getAttacker2().y();
+                int attack2x = controller->getBoard()->getWhitePassant().getAttacker2().x();
+                int attack2y = controller->getBoard()->getWhitePassant().getAttacker2().y();
 
                 if(attack1x==highlightedCords[1] && attack1y==highlightedCords[0]){
-                    int x = (board->getWhitePassant().getVictim().x() * 100) + STARTING_X;
-                    int y = ((board->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
+                    int x = (controller->getBoard()->getWhitePassant().getVictim().x() * 100) + STARTING_X;
+                    int y = ((controller->getBoard()->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
 
                     painter.fillRect(x, y,100,100,Colors::special());
 
-                    if(((board->getWhitePassant().getVictim().x())+(board->getWhitePassant().getVictim().y() + 1))%2==0){
+                    if(((controller->getBoard()->getWhitePassant().getVictim().x())+(controller->getBoard()->getWhitePassant().getVictim().y() + 1))%2==0){
                         painter.fillRect(x+10,y+10,80,80,Colors::light());
                     }else{
                         painter.fillRect(x+10,y+10,80,80,Colors::dark());
                     }
 
                 } else if(attack2x==highlightedCords[1] && attack2y==highlightedCords[0]){
-                    int x = (board->getWhitePassant().getVictim().x() * 100) + STARTING_X;
-                    int y = ((board->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
+                    int x = (controller->getBoard()->getWhitePassant().getVictim().x() * 100) + STARTING_X;
+                    int y = ((controller->getBoard()->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
 
                     painter.fillRect(x, y,100,100,Colors::special());
 
-                    if(((board->getWhitePassant().getVictim().x())+(board->getWhitePassant().getVictim().y() + 1))%2==0){
+                    if(((controller->getBoard()->getWhitePassant().getVictim().x())+(controller->getBoard()->getWhitePassant().getVictim().y() + 1))%2==0){
                         painter.fillRect(x+10,y+10,80,80,Colors::light());
                     }else{
                         painter.fillRect(x+10,y+10,80,80,Colors::dark());
@@ -163,15 +160,15 @@ void Window::paintEvent(QPaintEvent *)
                 }
             }
         }
-        else if(board->getPiece(highlightedCords[1],highlightedCords[0])==6){//white knight
-            if(board->isWhiteLongCastle()){
+        else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==6){//white knight
+            if(controller->getBoard()->isWhiteLongCastle()){
                 int x = 200 + STARTING_X;
                 int y = 700 + STARTING_Y;
 
                 painter.fillRect(x,y,100,100,Colors::move());
                 painter.fillRect(x+10,y+10,80,80,Colors::dark());
             }
-            if(board->isWhiteCastle()){
+            if(controller->getBoard()->isWhiteCastle()){
                 int x = 600 + STARTING_X;
                 int y = 700 + STARTING_Y;
 
@@ -179,15 +176,15 @@ void Window::paintEvent(QPaintEvent *)
                 painter.fillRect(x+10,y+10,80,80,Colors::dark());
             }
         }
-        else if(board->getPiece(highlightedCords[1],highlightedCords[0])==-6){//black knight
-            if(board->isBlackLongCastle()){
+        else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==-6){//black knight
+            if(controller->getBoard()->isBlackLongCastle()){
                 int x = 200 + STARTING_X;
                 int y = 000 + STARTING_Y;
 
                 painter.fillRect(x,y,100,100,Colors::move());
                 painter.fillRect(x+10,y+10,80,80,Colors::light());
             }
-            if(board->isBlackCastle()){
+            if(controller->getBoard()->isBlackCastle()){
                 int x = 600 + STARTING_X;
                 int y = 000 + STARTING_Y;
 
@@ -223,10 +220,10 @@ void Window::paintEvent(QPaintEvent *)
 
     //Put all this stuff in new thread to finish gui
     int kingCords[2] = {-1,-1};
-    board->findKing(true,kingCords);
+    controller->getBoard()->findKing(true,kingCords);
 
-    int white = board->checkMateStalemate(true);
-    int black = board->checkMateStalemate(false);
+    int white = controller->getBoard()->checkMateStalemate(true);
+    int black = controller->getBoard()->checkMateStalemate(false);
 
     if(white == 1){//white king check mate
         QMessageBox msg;
@@ -237,7 +234,7 @@ void Window::paintEvent(QPaintEvent *)
         msg.exec();
 
         if(msg.clickedButton() == ng){
-            board->initBoard();
+            controller->getBoard()->initBoard();
 //            repaint();
         }else if(msg.clickedButton() == end){
             this->close();
@@ -252,12 +249,12 @@ void Window::paintEvent(QPaintEvent *)
         msg.exec();
 
         if(msg.clickedButton() == ng){
-            board->initBoard();
+            controller->getBoard()->initBoard();
 //            repaint();
         }else if(msg.clickedButton() == end){
             this->close();
         }
-    }else if((board->getTurn()%2==0 && white==2) || (board->getTurn()%2==1 && black==2)){
+    }else if((controller->getBoard()->getTurn()%2==0 && white==2) || (controller->getBoard()->getTurn()%2==1 && black==2)){
         QMessageBox msg;
         msg.setText("It's a Draw");
         QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
@@ -266,7 +263,7 @@ void Window::paintEvent(QPaintEvent *)
         msg.exec();
 
         if(msg.clickedButton() == ng){
-            board->initBoard();
+            controller->getBoard()->initBoard();
 //            repaint();
         }else if(msg.clickedButton() == end){
             this->close();
@@ -285,10 +282,10 @@ void Window::mousePressEvent(QMouseEvent *event) {
             int prevX = highlightedCords[1];
 
             if(prevY==-1 && prevX==-1){ //if nothing previously selected its on highlight piece state
-                if( (board->getPiece(x,y)>0 && board->getTurn()%2==0) || (board->getPiece(x,y)<0 && board->getTurn()%2==1) ){
+                if( (controller->getBoard()->getPiece(x,y)>0 && controller->getBoard()->getTurn()%2==0) || (controller->getBoard()->getPiece(x,y)<0 && controller->getBoard()->getTurn()%2==1) ){
                     highlightedCords[0] = y;
                     highlightedCords[1] = x;
-                    possibleMoves = board->getMoves(x,y);
+                    possibleMoves = controller->getBoard()->getMoves(x,y);
                     repaint();
                 }
             }else if(prevY==y && prevX==x){ //if clicking same piece deselect piece
@@ -298,7 +295,7 @@ void Window::mousePressEvent(QMouseEvent *event) {
                 repaint();
             }else if(isMovePossible(QPoint(x,y))){ //checks possible regular moves and moves to that piece
                 //if its a pawn and moving to end of board
-                if((board->getPiece(highlightedCords[1],highlightedCords[0])==1 && y==0) || (board->getPiece(highlightedCords[1],highlightedCords[0])==-1 && y==7)){
+                if((controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==1 && y==0) || (controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==-1 && y==7)){
                     bool correctInput = false;
                     char upgrade = '0';
 
@@ -320,11 +317,11 @@ void Window::mousePressEvent(QMouseEvent *event) {
                         }
                     }
 
-                    board->upgradePawn(highlightedCords[1],highlightedCords[0],upgrade);
+                    controller->getBoard()->upgradePawn(highlightedCords[1],highlightedCords[0],upgrade);
                 }
 
 
-                board->movePiece(highlightedCords[1],highlightedCords[0],x,y);
+                controller->getBoard()->movePiece(highlightedCords[1],highlightedCords[0],x,y);
                 highlightedCords[0] = -1;
                 highlightedCords[1] = -1;
                 possibleMoves.clear();
@@ -336,19 +333,19 @@ void Window::mousePressEvent(QMouseEvent *event) {
 
                 }**/
             }
-            else if(board->getTurn()%2==0 && board->getWhitePassant().getPresent()){ //if its white persons turn and there is a passant
+            else if(controller->getBoard()->getTurn()%2==0 && controller->getBoard()->getWhitePassant().getPresent()){ //if its white persons turn and there is a passant
                 //check if the passant spot was clicked
-                if(board->getWhitePassant().getVictim().x()==x && board->getWhitePassant().getVictim().y()-1==y){
-                    board->movePassant(highlightedCords[1],highlightedCords[0],board->getWhitePassant().getVictim(), true);
+                if(controller->getBoard()->getWhitePassant().getVictim().x()==x && controller->getBoard()->getWhitePassant().getVictim().y()-1==y){
+                    controller->getBoard()->movePassant(highlightedCords[1],highlightedCords[0],controller->getBoard()->getWhitePassant().getVictim(), true);
                     highlightedCords[0] = -1;
                     highlightedCords[1] = -1;
                     possibleMoves.clear();
                     repaint();
                 }
             }
-            else if(board->getTurn()%2==1 && board->getBlackPassant().getPresent()){ //if its black persons turn and there is a passant
-                if(board->getBlackPassant().getVictim().x()==x && board->getBlackPassant().getVictim().y()+1==y){
-                    board->movePassant(highlightedCords[1],highlightedCords[0],board->getBlackPassant().getVictim(), false);
+            else if(controller->getBoard()->getTurn()%2==1 && controller->getBoard()->getBlackPassant().getPresent()){ //if its black persons turn and there is a passant
+                if(controller->getBoard()->getBlackPassant().getVictim().x()==x && controller->getBoard()->getBlackPassant().getVictim().y()+1==y){
+                    controller->getBoard()->movePassant(highlightedCords[1],highlightedCords[0],controller->getBoard()->getBlackPassant().getVictim(), false);
                     highlightedCords[0] = -1;
                     highlightedCords[1] = -1;
                     possibleMoves.clear();
@@ -356,15 +353,15 @@ void Window::mousePressEvent(QMouseEvent *event) {
                 }
             }
             //if white knight is highlighted and there is a white castle move possible
-            else if(board->getPiece(highlightedCords[1],highlightedCords[0])==6 && (board->isWhiteCastle() || board->isWhiteLongCastle())){
-                if(board->isWhiteLongCastle() && y==7 && x==2){
-                    board->moveCastling(1);
+            else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==6 && (controller->getBoard()->isWhiteCastle() || controller->getBoard()->isWhiteLongCastle())){
+                if(controller->getBoard()->isWhiteLongCastle() && y==7 && x==2){
+                    controller->getBoard()->moveCastling(1);
                     highlightedCords[0] = -1;
                     highlightedCords[1] = -1;
                     possibleMoves.clear();
                     repaint();
-                }else if(board->isWhiteCastle() && y==7 && x==6){
-                    board->moveCastling(2);
+                }else if(controller->getBoard()->isWhiteCastle() && y==7 && x==6){
+                    controller->getBoard()->moveCastling(2);
                     highlightedCords[0] = -1;
                     highlightedCords[1] = -1;
                     possibleMoves.clear();
@@ -372,15 +369,15 @@ void Window::mousePressEvent(QMouseEvent *event) {
                 }
             }
             //if black knight is highlighted and there is a black castle move possible
-            else if(board->getPiece(highlightedCords[1],highlightedCords[0])==-6 && (board->isBlackCastle() || board->isBlackLongCastle())){
-                if(board->isBlackLongCastle() && y==0 && x==2){
-                    board->moveCastling(3);
+            else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==-6 && (controller->getBoard()->isBlackCastle() || controller->getBoard()->isBlackLongCastle())){
+                if(controller->getBoard()->isBlackLongCastle() && y==0 && x==2){
+                    controller->getBoard()->moveCastling(3);
                     highlightedCords[0] = -1;
                     highlightedCords[1] = -1;
                     possibleMoves.clear();
                     repaint();
-                }else if(board->isBlackCastle() && y==0 && x==6){
-                    board->moveCastling(4);
+                }else if(controller->getBoard()->isBlackCastle() && y==0 && x==6){
+                    controller->getBoard()->moveCastling(4);
                     highlightedCords[0] = -1;
                     highlightedCords[1] = -1;
                     possibleMoves.clear();
@@ -388,10 +385,10 @@ void Window::mousePressEvent(QMouseEvent *event) {
                 }
             }
             //if it's another of the same piece highlight that one instead
-            else if( (board->getPiece(x,y)>0 && board->getTurn()%2==0) || (board->getPiece(x,y)<0 && board->getTurn()%2==1) ){
+            else if( (controller->getBoard()->getPiece(x,y)>0 && controller->getBoard()->getTurn()%2==0) || (controller->getBoard()->getPiece(x,y)<0 && controller->getBoard()->getTurn()%2==1) ){
                 highlightedCords[0] = y;
                 highlightedCords[1] = x;
-                possibleMoves = board->getMoves(x,y);
+                possibleMoves = controller->getBoard()->getMoves(x,y);
                 repaint();
             }
         }
@@ -404,7 +401,7 @@ void Window::keyPressEvent(QKeyEvent *event) {
 //    std::cout << "Key pressed: " <<  event->key() << std::endl;
 
     if(lastKey == Qt::Key_Control && event->key() == Qt::Key_N){
-        board->initBoard();
+        controller->getBoard()->initBoard();
         repaint();
     }
     lastKey = event->key();
@@ -416,4 +413,8 @@ bool Window::isMovePossible(QPoint p) {
             return true;
     }
     return false;
+}
+
+void Window::redraw() {
+    repaint();
 }

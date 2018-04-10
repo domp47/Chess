@@ -1,10 +1,10 @@
 #include "alphaBeta.h"
-#include <../Board/board.h>
+#include "Controller/controller.h"
 
 AlphaBeta::AlphaBeta() {
 
 }
 
-int AlphaBeta::findMove(Board *board, bool whiteTeam, int move[4]) {
-    return randomMove.getRandomMove(board, whiteTeam, move);
+int AlphaBeta::findMove(Controller* controller, bool whiteTeam, int move[4]) {
+    return randomMove.getRandomMove(controller, whiteTeam, move);
 }

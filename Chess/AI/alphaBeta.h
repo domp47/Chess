@@ -3,13 +3,13 @@
 
 #include "random.h"
 
-class Board;
+class Controller;
 
 class AlphaBeta{
 
 public:
     AlphaBeta();
-    int findMove(Board* board, bool whiteTeam, int move[4]);
+    int findMove(Controller* controller, bool whiteTeam, int move[4]);
 
 private:
     Random randomMove;

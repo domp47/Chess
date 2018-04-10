@@ -28,6 +28,7 @@ set( project_sources
         ./Board/elPassant.cpp
         ./AI/alphaBeta.cpp
         ./AI/random.cpp
+        ./Controller/controller.cpp
     )
 
 set(headers
@@ -44,6 +45,7 @@ set(headers
         ./Board/elPassant.h
         ./AI/alphaBeta.h
         ./AI/random.h
+        ./Controller/controller.h
         )
 
 add_executable(chess
@@ -52,7 +54,7 @@ add_executable(chess
 
 link_directories(/lib/x86_64-linux-gnu/)
 
-target_link_libraries(chess dl-2.23)
+target_link_libraries(chess dl-2.23 -lpthread)
 
 qt5_use_modules( chess Core )
 qt5_use_modules( chess Gui )

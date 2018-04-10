@@ -14,11 +14,15 @@
 #include <QtWidgets/QMessageBox>
 #include <QPushButton>
 #include <QWidget>
-#include <AI/alphaBeta.h>
 
-class Board{
+class Controller;
+
+class Board : public QObject{
+
+    Q_OBJECT
+
 public:
-    Board();
+    Board(Controller* controller);
     void initBoard();
     int getPiece(int x, int y);
     QVector<QPoint> getMoves(int x, int y);
@@ -48,9 +52,7 @@ public:
     void setWhiteCastle(bool whiteCastle);
     void findKing(bool whiteTeam, int cords[2]);
     QVector<QPoint> stripCheck(int x, int y, QVector<QPoint> moves);
-    void setWindow(QWidget* window);
 private:
-    void nextMove();
     int** board;
     int turn;
     ElPassant whitePassant;
@@ -62,15 +64,19 @@ private:
     bool whiteKingMoved;
     bool blackKingMoved;
     bool blackLongCastle;
-
 private:
+
     bool blackCastle;
     bool whiteLongCastle;
     bool whiteCastle;
     int gameMode;
-    AlphaBeta alphaBeta;
-    QWidget* window;
-    bool windowSet;
+    Controller* controller;
+public slots:
+    void nextMove();
+
+signals:
+    void signalNext();
+
 };
 
 #endif //BOARD_H

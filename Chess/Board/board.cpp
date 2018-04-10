@@ -1,5 +1,7 @@
+#include <chrono>
+#include <thread>
 #include "board.h"
-
+#include "Controller/controller.h"
 /**
  *  -6 = BLK KING
  *  -5 = BLK QUEEN
@@ -18,14 +20,17 @@
  *   6 = WHT KING
  */
 
-Board::Board() {
+Board::Board(Controller* controller) {
+    this->controller = controller;
+
+    connect(this, SIGNAL(signalNext()), this, SLOT(nextMove()));
+
     board = new int*[8];
     for (int i = 0; i < 8; ++i) {
         board[i] = new int[8];
     }
 
     initBoard();
-    windowSet = false;
 }
 
 void Board::initBoard(){
@@ -102,7 +107,9 @@ void Board::initBoard(){
     whiteCastle = false;
     whiteLongCastle = false;
 
-    nextMove();
+//    nextMove();
+    emit signalNext();
+    controller->getWindow()->repaint();
 }
 
 int Board::getPiece(int x, int y) {
@@ -247,7 +254,9 @@ void Board::movePiece(int srcX, int srcY, int desX, int desY) {
         msg.exec();
     }
 
-    nextMove();
+//    nextMove();
+    emit signalNext();
+    controller->getWindow()->repaint();
 }
 
 int Board::getTurn() {
@@ -526,28 +535,36 @@ void Board::moveCastling(int type) {
         board[7][3] = 2;
         board[7][0] = 0;
         turn++;
-        nextMove();
+//        nextMove();
+        emit signalNext();
+        controller->getWindow()->repaint();
     }else if(type == 2){//white
         board[7][6] = 6;
         board[7][4] = 0;
         board[7][5] = 2;
         board[7][7] = 0;
         turn++;
-        nextMove();
+//        nextMove();
+        emit signalNext();
+        controller->getWindow()->repaint();
     }else if(type == 3){//black long
         board[0][2] = -6;
         board[0][4] =  0;
         board[0][3] = -2;
         board[0][0] =  0;
         turn++;
-        nextMove();
+//        nextMove();
+        emit signalNext();
+        controller->getWindow()->repaint();
     }else if(type == 4){//black
         board[0][6] = -6;
         board[0][4] =  0;
         board[0][5] = -2;
         board[0][7] =  0;
         turn++;
-        nextMove();
+//        nextMove();
+        emit signalNext();
+        controller->getWindow()->repaint();
     }
 }
 
@@ -599,21 +616,23 @@ QVector<QPoint> Board::stripCheck(int x, int y,QVector<QPoint> moves) {
 }
 
 void Board::nextMove() {
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+
+
     if(gameMode == 0){ //one player game, therefore need to do ai to choose black move
         if(turn%2 == 1){
             int move[4];
-            alphaBeta.findMove(this,false,move);
-            movePiece(move[0],move[1],move[2],move[3]);
+            int ret = controller->findMove(false, move);
+
+            if(ret != 0){
+                movePiece(move[0],move[1],move[2],move[3]);
+            }
         }
     }else if(gameMode == 1){ //two player game, let other player choose move
         return;
     }
-    if(windowSet){
-        window->repaint();
-    }
+
 }
 
-void Board::setWindow(QWidget *window) {
-    this->window = window;
-    windowSet = true;
-}

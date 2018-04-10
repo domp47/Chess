@@ -4,8 +4,13 @@
 #include <QMainWindow>
 #include <QtGui/QPainter>
 #include <QMouseEvent>
-#include <Board/board.h>
 #include "map.h"
+#include <iostream>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QPushButton>
+#include "colors.h"
+
+class Controller;
 
 class Window : public QWidget
 {
@@ -14,19 +19,21 @@ class Window : public QWidget
     const int STARTING_Y = 10;
 
 public:
-    Window(Board*);
+    Window(Controller *);
+
+public slots:
+    void redraw();
 
 private:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *);
     bool isMovePossible(QPoint p);
-public:
 private:
+    Controller* controller;
     int highlightedCords[2];
     QVector<QPoint> possibleMoves;
     Map* map;
-    Board* board;
     int lastKey;
 };
 
