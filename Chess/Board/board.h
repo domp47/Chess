@@ -52,6 +52,7 @@ public:
     void setWhiteCastle(bool whiteCastle);
     void findKing(bool whiteTeam, int cords[2]);
     QVector<QPoint> stripCheck(int x, int y, QVector<QPoint> moves);
+    void nextMove();
 private:
     int** board;
     int turn;
@@ -64,18 +65,13 @@ private:
     bool whiteKingMoved;
     bool blackKingMoved;
     bool blackLongCastle;
-private:
 
+private:
     bool blackCastle;
     bool whiteLongCastle;
     bool whiteCastle;
     int gameMode;
     Controller* controller;
-public slots:
-    void nextMove();
-
-signals:
-    void signalNext();
 
 };
 

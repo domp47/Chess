@@ -21,8 +21,6 @@ class Window : public QWidget
 public:
     Window(Controller *);
 
-public slots:
-    void redraw();
 
 private:
     void paintEvent(QPaintEvent *) override;

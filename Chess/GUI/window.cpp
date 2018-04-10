@@ -414,7 +414,3 @@ bool Window::isMovePossible(QPoint p) {
     }
     return false;
 }
-
-void Window::redraw() {
-    repaint();
-}

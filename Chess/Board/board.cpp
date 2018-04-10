@@ -23,8 +23,6 @@
 Board::Board(Controller* controller) {
     this->controller = controller;
 
-    connect(this, SIGNAL(signalNext()), this, SLOT(nextMove()));
-
     board = new int*[8];
     for (int i = 0; i < 8; ++i) {
         board[i] = new int[8];
@@ -106,10 +104,6 @@ void Board::initBoard(){
     blackLongCastle = false;
     whiteCastle = false;
     whiteLongCastle = false;
-
-//    nextMove();
-    emit signalNext();
-    controller->getWindow()->repaint();
 }
 
 int Board::getPiece(int x, int y) {
@@ -253,10 +247,6 @@ void Board::movePiece(int srcX, int srcY, int desX, int desY) {
         msg.setText("Check On White");
         msg.exec();
     }
-
-//    nextMove();
-    emit signalNext();
-    controller->getWindow()->repaint();
 }
 
 int Board::getTurn() {
@@ -535,36 +525,24 @@ void Board::moveCastling(int type) {
         board[7][3] = 2;
         board[7][0] = 0;
         turn++;
-//        nextMove();
-        emit signalNext();
-        controller->getWindow()->repaint();
     }else if(type == 2){//white
         board[7][6] = 6;
         board[7][4] = 0;
         board[7][5] = 2;
         board[7][7] = 0;
         turn++;
-//        nextMove();
-        emit signalNext();
-        controller->getWindow()->repaint();
     }else if(type == 3){//black long
         board[0][2] = -6;
         board[0][4] =  0;
         board[0][3] = -2;
         board[0][0] =  0;
         turn++;
-//        nextMove();
-        emit signalNext();
-        controller->getWindow()->repaint();
     }else if(type == 4){//black
         board[0][6] = -6;
         board[0][4] =  0;
         board[0][5] = -2;
         board[0][7] =  0;
         turn++;
-//        nextMove();
-        emit signalNext();
-        controller->getWindow()->repaint();
     }
 }
 

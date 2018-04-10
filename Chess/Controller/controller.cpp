@@ -1,3 +1,4 @@
+#include <thread>
 #include "controller.h"
 #include "AI/alphaBeta.h"
 
