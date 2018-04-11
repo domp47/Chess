@@ -1,7 +1,7 @@
 #include "bishop.h"
 
-QVector<QPoint> Bishop::getMoves(int x, int y, int **board) {
-    QVector<QPoint> moves;
+QVector<Move> Bishop::getMoves(int x, int y, int **board) {
+    QVector<Move> moves;
 
     bool whiteTeam = true;
 
@@ -12,13 +12,13 @@ QVector<QPoint> Bishop::getMoves(int x, int y, int **board) {
     int ii = y-1;
     for (; i < 8 && ii >= 0; i++,ii--) {
         if(board[ii][i]==0){
-            moves.append(QPoint(i,ii));
+            moves.append(Move(QPoint(x,y),QPoint(i,ii)));
         }else{
             if(whiteTeam && board[ii][i] < 0){
-                moves.append(QPoint(i,ii));
+                moves.append(Move(QPoint(x,y),QPoint(i,ii)));
             }
             if(!whiteTeam && board[ii][i] > 0){
-                moves.append(QPoint(i,ii));
+                moves.append(Move(QPoint(x,y),QPoint(i,ii)));
             }
             break;
         }
@@ -28,13 +28,13 @@ QVector<QPoint> Bishop::getMoves(int x, int y, int **board) {
     ii= y+1;
     for (; i < 8 && ii < 8 ; i++, ii++) {
         if(board[ii][i]==0){
-            moves.append(QPoint(i,ii));
+            moves.append(Move(QPoint(x,y),QPoint(i,ii)));
         }else{
             if(whiteTeam && board[ii][i] < 0){
-                moves.append(QPoint(i,ii));
+                moves.append(Move(QPoint(x,y),QPoint(i,ii)));
             }
             if(!whiteTeam && board[ii][i] > 0){
-                moves.append(QPoint(i,ii));
+                moves.append(Move(QPoint(x,y),QPoint(i,ii)));
             }
             break;
         }
@@ -44,13 +44,13 @@ QVector<QPoint> Bishop::getMoves(int x, int y, int **board) {
     ii= y+1;
     for (; i >= 0 && ii < 8 ; i--, ii++) {
         if(board[ii][i]==0){
-            moves.append(QPoint(i,ii));
+            moves.append(Move(QPoint(x,y),QPoint(i,ii)));
         }else{
             if(whiteTeam && board[ii][i] < 0){
-                moves.append(QPoint(i,ii));
+                moves.append(Move(QPoint(x,y),QPoint(i,ii)));
             }
             if(!whiteTeam && board[ii][i] > 0){
-                moves.append(QPoint(i,ii));
+                moves.append(Move(QPoint(x,y),QPoint(i,ii)));
             }
             break;
         }
@@ -60,13 +60,13 @@ QVector<QPoint> Bishop::getMoves(int x, int y, int **board) {
     ii= y-1;
     for (; i >= 0 && ii>= 0 ; i--,ii--) {
         if(board[ii][i]==0){
-            moves.append(QPoint(i,ii));
+            moves.append(Move(QPoint(x,y),QPoint(i,ii)));
         }else{
             if(whiteTeam && board[ii][i] < 0){
-                moves.append(QPoint(i,ii));
+                moves.append(Move(QPoint(x,y),QPoint(i,ii)));
             }
             if(!whiteTeam && board[ii][i] > 0){
-                moves.append(QPoint(i,ii));
+                moves.append(Move(QPoint(x,y),QPoint(i,ii)));
             }
             break;
         }

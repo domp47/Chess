@@ -37,7 +37,7 @@ void Board::initBoard(){
         }
     }
 
-//    board[0][0] = -2;
+    board[0][0] = -2;
     board[0][1] = -3;
     board[0][2] = -4;
     board[0][3] = -5;
@@ -46,7 +46,7 @@ void Board::initBoard(){
     board[0][6] = -3;
     board[0][7] = -2;
 
-//    board[1][0] = -1;
+    board[1][0] = -1;
     board[1][1] = -1;
     board[1][2] = -1;
     board[1][3] = -1;
@@ -62,7 +62,7 @@ void Board::initBoard(){
     board[7][4] = 6;
     board[7][5] = 4;
     board[7][6] = 3;
-//    board[7][7] = 2;
+    board[7][7] = 2;
 
     board[6][0] = 1;
     board[6][1] = 1;
@@ -71,7 +71,7 @@ void Board::initBoard(){
     board[6][4] = 1;
     board[6][5] = 1;
     board[6][6] = 1;
-//    board[6][7] = 1;
+    board[6][7] = 1;
 
     whitePassant.clearElPassant();
     blackPassant.clearElPassant();
@@ -224,31 +224,6 @@ bool Board::isWhiteCastle() const {
 
 void Board::setWhiteCastle(bool whiteCastle) {
     Board::whiteCastle = whiteCastle;
-}
-
-void Board::moveCastling(int type) {
-
-    if(type == 1){//white long
-        board[7][2] = 6;
-        board[7][4] = 0;
-        board[7][3] = 2;
-        board[7][0] = 0;
-    }else if(type == 2){//white
-        board[7][6] = 6;
-        board[7][4] = 0;
-        board[7][5] = 2;
-        board[7][7] = 0;
-    }else if(type == 3){//black long
-        board[0][2] = -6;
-        board[0][4] =  0;
-        board[0][3] = -2;
-        board[0][0] =  0;
-    }else if(type == 4){//black
-        board[0][6] = -6;
-        board[0][4] =  0;
-        board[0][5] = -2;
-        board[0][7] =  0;
-    }
 }
 
 int **Board::getBoard() {

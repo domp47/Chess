@@ -1,8 +1,8 @@
 #include "pawn.h"
 #include "../board.h"
 
-QVector<QPoint> Pawn::getMoves(int x, int y, int** board) {
-    QVector<QPoint> moves;
+QVector<Move> Pawn::getMoves(int x, int y, int** board, Controller* controller) {
+    QVector<Move> moves;
 
     bool whiteTeam = true;
 
@@ -11,37 +11,52 @@ QVector<QPoint> Pawn::getMoves(int x, int y, int** board) {
 
     if(whiteTeam){//if its white pawn
         if(y==6){//at starting position
-            if(board[y-2][x]==0){//is something blocking it 2 spaces ahead
-                moves.append(QPoint(x,y-2));//add to list of spaces
+            if(board[y-2][x]==0 && board[y-1][x]==0){//is something blocking it 2 spaces ahead
+                moves.append(Move(QPoint(x,y),QPoint(x,y-2)));
             }
         }
         if(y-1 >= 0){//checking if it can move up without going off board
             if(board[y-1][x]==0){//check if the spot above is empty
-                moves.append(QPoint(x,y-1));//add to list of spaces to move
+                moves.append(Move(QPoint(x,y),QPoint(x,y-1)));
             }
             if(x-1 >= 0 && board[y-1][x-1]<0){//check if enemy on diagonal
-                moves.append(QPoint(x-1,y-1));
+                moves.append(Move(QPoint(x,y),QPoint(x-1,y-1)));
             }
             if(x+1 < 8 && board[y-1][x+1]<0){//check if enemy on diagonal
-                moves.append(QPoint(x+1,y-1));
+                moves.append(Move(QPoint(x,y),QPoint(x+1,y-1)));
             }
         }
+        if(controller->getBoard()->getWhitePassant().getPresent()){
+            if(controller->getBoard()->getWhitePassant().getAttacker1().x()==x && controller->getBoard()->getWhitePassant().getAttacker1().y()==y){
+                moves.append(Move(QPoint(x,y),QPoint(controller->getBoard()->getWhitePassant().getVictim().x(),controller->getBoard()->getWhitePassant().getVictim().y()-1),1));
+            }else if(controller->getBoard()->getWhitePassant().getAttacker2().x()==x && controller->getBoard()->getWhitePassant().getAttacker2().y()==y){
+                moves.append(Move(QPoint(x,y),QPoint(controller->getBoard()->getWhitePassant().getVictim().x(),controller->getBoard()->getWhitePassant().getVictim().y()-1),1));
+            }
+        }
+
     }
     else{//black pawn
         if(y==1){//at starting pos
-            if(board[y+2][x]==0){
-                moves.append(QPoint(x,y+2));
+            if(board[y+2][x]==0 && board[y+1][x] == 0){
+                moves.append(Move(QPoint(x,y),QPoint(x,y+2)));
             }
         }
         if(y+1 < 8){//can it move forward without going off board
             if(board[y+1][x]==0){
-                moves.append(QPoint(x,y+1));
+                moves.append(Move(QPoint(x,y),QPoint(x,y+1)));
             }
             if(x-1 >= 0 && board[y+1][x-1]>0){//check if enemy on diagonal
-                moves.append(QPoint(x-1,y+1));
+                moves.append(Move(QPoint(x,y),QPoint(x-1,y+1)));
             }
             if(x+1 < 8 && board[y+1][x+1]>0){//check if enemy on diagonal
-                moves.append(QPoint(x+1,y+1));
+                moves.append(Move(QPoint(x,y),QPoint(x+1,y+1)));
+            }
+        }
+        if(controller->getBoard()->getBlackPassant().getPresent()){
+            if(controller->getBoard()->getBlackPassant().getAttacker1().x()==x && controller->getBoard()->getBlackPassant().getAttacker1().y()==y){
+                moves.append(Move(QPoint(x,y),QPoint(controller->getBoard()->getBlackPassant().getVictim().x(),controller->getBoard()->getBlackPassant().getVictim().y()+1),1));
+            }else if(controller->getBoard()->getBlackPassant().getAttacker2().x()==x && controller->getBoard()->getBlackPassant().getAttacker2().y()==y){
+                moves.append(Move(QPoint(x,y),QPoint(controller->getBoard()->getBlackPassant().getVictim().x(),controller->getBoard()->getBlackPassant().getVictim().y()+1),1));
             }
         }
     }

@@ -7,7 +7,7 @@
 #include <Controller/controller.h>
 
 namespace King {
-    QVector<QPoint> getMoves(int x, int y, int** gameBoard);
+    QVector<Move> getMoves(int x, int y, int** gameBoard, Controller* controller);
 };
 
 

@@ -52,7 +52,6 @@ public:
     void setWKing(bool val);
     void setBKing(bool val);
     void upgradePawn(int x, int y, char upgrade);
-    void moveCastling(int type);
     void findKing(bool whiteTeam, int cords[2]);
 private:
     int** board;

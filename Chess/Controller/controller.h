@@ -17,24 +17,21 @@ public:
     Controller();
     Window* getWindow();
     Board* getBoard();
-    int getTurn();
     int checkMateStalemate(bool whiteTeam);
-    void movePassant(int srcX, int srcY, QPoint victim, bool whiteTeam);
     void movePiece(int srcX, int srcY, int desX, int desY);
-    QVector<QPoint> getMoves(int**, int x, int y);
+    QVector<Move> getMoves(int x, int y);
     bool checkCheck(bool whiteTeam);
-    bool checkForAttack(int x, int y, int**, bool whiteTeam);
+    bool checkForAttack(int x, int y, bool whiteTeam);
     void playGame();
-    QVector<QPoint> getPossibleMoves();
+    QVector<Move> getPossibleMoves();
     QPoint getHighlighted();
     void startGame();
 private:
-    QVector<QPoint> stripCheck(int**, int x, int y, QVector<QPoint> moves);
+    QVector<Move> stripCheck(int x, int y, QVector<QPoint> moves);
     int noPlayers();
     int onePlayer();
     int twoPlayers();
     bool isMovePossible(QPoint p);
-    void findKing(bool, int** gameBoard ,int cords[2]);
 private:
     Window* window;
     Board* board;
@@ -45,7 +42,7 @@ private:
     bool needInput;
     int turn;
     QPoint highlightedPiece;
-    QVector<QPoint> possibleMoves;
+    QVector<Move> possibleMoves;
     int gamemode;
 public slots:
     void recieveClick(int x, int y);

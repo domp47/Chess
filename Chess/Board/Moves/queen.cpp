@@ -2,13 +2,13 @@
 #include "rook.h"
 #include "bishop.h"
 
-QVector<QPoint> Queen::getMoves(int x, int y, int **board) {
-    QVector<QPoint> moves;
+QVector<Move> Queen::getMoves(int x, int y, int **board) {
+    QVector<Move> moves;
 
-    QVector<QPoint> rookMoves = Rook::getMoves(x,y,board);
+    QVector<Move> rookMoves = Rook::getMoves(x,y,board);
     moves.append(rookMoves);
 
-    QVector<QPoint> bishopMoves = Bishop::getMoves(x,y,board);
+    QVector<Move> bishopMoves = Bishop::getMoves(x,y,board);
     moves.append(bishopMoves);
 
     return moves;

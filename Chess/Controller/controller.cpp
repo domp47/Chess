@@ -3,9 +3,7 @@
 #include "AI/alphaBeta.h"
 
 //TODO change how castling and passant are detected and moved so AI can do it as well
-//TODO Pawn cannot jump over pieces
-//TODO it jumps on black check
-//TODO didn't print correct result
+//TODO AI pawn promotion
 
 Controller::Controller() {
     window = new Window(this);
@@ -72,7 +70,7 @@ int Controller::noPlayers() {
     while (whiteResult==0 && blackResult==0) {//keep taking turns until stalemate or checkmate
 
         if(turn%2==0){
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
             QVector<int> move = alphaBeta->findMove(true);
 
@@ -83,7 +81,7 @@ int Controller::noPlayers() {
                 std::cout << "Error finding piece for white team" << std::endl;
             }
         }else{
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
             QVector<int> move = alphaBeta->findMove(false);
 
@@ -97,11 +95,11 @@ int Controller::noPlayers() {
 
 
 
-        if(checkMateStalemate(true)==0 && checkCheck(true)){//checks if white team is in check
-            emit sendMessage("Check On White");
-        }else if(checkMateStalemate(false)==0 && checkCheck(false)){//checks if black team is in check
-            emit sendMessage("Check On Black");
-        }
+//        if(checkMateStalemate(true)==0 && checkCheck(true)){//checks if white team is in check
+//            emit sendMessage("Check On White");
+//        }else if(checkMateStalemate(false)==0 && checkCheck(false)){//checks if black team is in check
+//            emit sendMessage("Check On Black");
+//        }
 
         turn++;
 
@@ -141,7 +139,7 @@ int Controller::onePlayer() {
 
             needInput = false;
         }else{//black persons turn
-//            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
             QVector<int> move = alphaBeta->findMove(false);
 
@@ -232,7 +230,7 @@ void Controller::recieveClick(int x, int y) {
         if(prevY==-1 && prevX==-1){ //if nothing previously selected its on highlight piece state
             if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ) {
                 highlightedPiece = QPoint(x, y);
-                possibleMoves = getMoves(board->getBoard(), x, y);
+                possibleMoves = getMoves(x, y);
                 window->repaint();
             }
         }else if(prevY==y && prevX==x){ //if clicking same piece deselect piece
@@ -240,7 +238,7 @@ void Controller::recieveClick(int x, int y) {
             possibleMoves.clear();
             window->repaint();
         }else if(isMovePossible(QPoint(x,y))){ //checks possible regular moves and moves to that piece
-            //if its a pawn and moving to end of board
+            /**
             if((board->getPiece(highlightedPiece.x(),highlightedPiece.y())==1 && y==0) || (board->getPiece(highlightedPiece.x(),highlightedPiece.y())==-1 && y==7)) {
                 bool correctInput = false;
                 char upgrade = '0';
@@ -265,8 +263,8 @@ void Controller::recieveClick(int x, int y) {
                 }
 
 
-            board->upgradePawn(highlightedPiece.x(),highlightedPiece.y(),upgrade);
-            }
+                board->upgradePawn(highlightedPiece.x(),highlightedPiece.y(),upgrade);
+            }**/
 
             movePiece(highlightedPiece.x(),highlightedPiece.y(),x,y);
             highlightedPiece = QPoint(-1,-1);
@@ -276,7 +274,8 @@ void Controller::recieveClick(int x, int y) {
             inputGot = true;
 //            mutex.unlock();
 //            waitForInput.wakeAll();
-        }else if(turn%2==0 && board->getWhitePassant().getPresent()){ //if its white persons turn and there is a passant
+        }
+        /**else if(turn%2==0 && board->getWhitePassant().getPresent()){ //if its white persons turn and there is a passant
             //check if the passant spot was clicked
             if(board->getWhitePassant().getVictim().x()==x && board->getWhitePassant().getVictim().y()-1==y){
                 movePassant(highlightedPiece.x(),highlightedPiece.y(),board->getWhitePassant().getVictim(), true);
@@ -288,7 +287,8 @@ void Controller::recieveClick(int x, int y) {
 //                mutex.unlock();
 //                waitForInput.wakeAll();
             }
-        }else if(turn%2==1 && board->getBlackPassant().getPresent()){ //if its black persons turn and there is a passant
+        }**/
+        /**else if(turn%2==1 && board->getBlackPassant().getPresent()){ //if its black persons turn and there is a passant
             if(board->getBlackPassant().getVictim().x()==x && board->getBlackPassant().getVictim().y()+1==y){
                 movePassant(highlightedPiece.x(),highlightedPiece.y(),board->getBlackPassant().getVictim(), false);
                 highlightedPiece = QPoint(-1,-1);
@@ -299,8 +299,8 @@ void Controller::recieveClick(int x, int y) {
 //                mutex.unlock();
 //                waitForInput.wakeAll();
             }
-        }
-        //if white knight is highlighted and there is a white castle move possible
+        }**/
+        /**    //if white knight is highlighted and there is a white castle move possible
         else if(board->getPiece(highlightedPiece.x(),highlightedPiece.y())==6 && (board->isWhiteCastle() || board->isWhiteLongCastle())){
             if(board->isWhiteLongCastle() && y==7 && x==2){
                 board->moveCastling(1);
@@ -321,8 +321,8 @@ void Controller::recieveClick(int x, int y) {
 //                mutex.unlock();
 //                waitForInput.wakeAll();
             }
-        }
-        //if black knight is highlighted and there is a black castle move possible
+        }**/
+        /**    //if black knight is highlighted and there is a black castle move possible
         else if(board->getPiece(highlightedPiece.x(),highlightedPiece.y())==-6 && (board->isBlackCastle() || board->isBlackLongCastle())){
             if(board->isBlackLongCastle() && y==0 && x==2){
                 board->moveCastling(3);
@@ -343,11 +343,11 @@ void Controller::recieveClick(int x, int y) {
 //                mutex.unlock();
 //                waitForInput.wakeAll();
             }
-        }
-        //if it's another of the same piece highlight that one instead
+        }**/
+            //if it's another of the same piece highlight that one instead
         else if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ){
             highlightedPiece = QPoint(x,y);
-            possibleMoves = getMoves(board->getBoard(), x,y);
+            possibleMoves = getMoves(x,y);
             window->repaint();
         }
     }
@@ -362,40 +362,40 @@ Board *Controller::getBoard() {
     return board;
 }
 
-QVector<QPoint> Controller::getPossibleMoves() {
+QVector<Move> Controller::getPossibleMoves() {
     return possibleMoves;
 }
 
 bool Controller::isMovePossible(QPoint p) {
-    for(QPoint point: possibleMoves){
-        if(point.x()==p.x() && point.y()==p.y())
+    for(Move move: possibleMoves){
+        if(move.end.x()==p.x() && move.end.y()==p.y())
             return true;
     }
     return false;
 }
 
-QVector<QPoint> Controller::getMoves(int** gameBoard, int x, int y) {
-    if(gameBoard[y][x]==1 || gameBoard[y][x]==-1){
-        return stripCheck(gameBoard, x,y,Pawn::getMoves(x,y,gameBoard));
+QVector<Move> Controller::getMoves(int x, int y) {
+    if(board->getPiece(x,y)==1 || board->getPiece(x,y)==-1){
+        return stripCheck(x,y,Pawn::getMoves(x,y,board->getBoard(), this));
     }
-    if(gameBoard[y][x]==2 || gameBoard[y][x]==-2){
-        return stripCheck(gameBoard, x,y,Rook::getMoves(x,y,gameBoard));
+    if(board->getPiece(x,y)==2 || board->getPiece(x,y)==-2){
+        return stripCheck(x,y,Rook::getMoves(x,y,board->getBoard()));
     }
-    if(gameBoard[y][x]==3 || gameBoard[y][x]==-3){
-        return stripCheck(gameBoard, x,y,Knight::getMoves(x,y,gameBoard));
+    if(board->getPiece(x,y)==3 || board->getPiece(x,y)==-3){
+        return stripCheck(x,y,Knight::getMoves(x,y,board->getBoard()));
     }
-    if(gameBoard[y][x]==4 || gameBoard[y][x] ==-4){
-        return stripCheck(gameBoard, x,y,Bishop::getMoves(x,y,gameBoard));
+    if(board->getPiece(x,y)==4 || board->getPiece(x,y)==-4){
+        return stripCheck(x,y,Bishop::getMoves(x,y,board->getBoard()));
     }
-    if(gameBoard[y][x]==5 || gameBoard[y][x] ==-5){
-        return stripCheck(gameBoard, x,y,Queen::getMoves(x,y,gameBoard));
+    if(board->getPiece(x,y)==5 || board->getPiece(x,y)==-5){
+        return stripCheck(x,y,Queen::getMoves(x,y,board->getBoard()));
     }
-    if(gameBoard[y][x]==6 || gameBoard[y][x] ==-6){
-        QVector<QPoint> moves = King::getMoves(x,y,gameBoard);
-        return stripCheck(gameBoard, x,y,moves);
+    if(board->getPiece(x,y)==6 || board->getPiece(x,y)==-6){
+        QVector<QPoint> moves = King::getMoves(x,y,board->getBoard());
+        return stripCheck(x,y,moves);
     }
 
-    return QVector<QPoint>();
+    return QVector<Move>();
 }
 
 void Controller::movePiece(int srcX, int srcY, int desX, int desY) {
@@ -438,7 +438,7 @@ void Controller::movePiece(int srcX, int srcY, int desX, int desY) {
                 int kingCords[2];
                 board->findKing(true,kingCords);
 
-                if(!checkForAttack(kingCords[1],kingCords[0], board->getBoard(),true)){
+                if(!checkForAttack(kingCords[1],kingCords[0], true)){
                     board->setPassant(true,QPoint(desX-1,desY),QPoint(desX,desY));
                 }
 
@@ -456,7 +456,7 @@ void Controller::movePiece(int srcX, int srcY, int desX, int desY) {
                 int kingCords[2];
                 board->findKing(true,kingCords);
 
-                if(!checkForAttack(kingCords[1],kingCords[0], board->getBoard(), true)){
+                if(!checkForAttack(kingCords[1],kingCords[0], true)){
                     board->setPassant(true,QPoint(desX+1,desY),QPoint(desX,desY));
                 }
 
@@ -478,7 +478,7 @@ void Controller::movePiece(int srcX, int srcY, int desX, int desY) {
                 int kingCords[2];
                 board->findKing(false,kingCords);
 
-                if(!checkForAttack(kingCords[1],kingCords[0], board->getBoard(), false)){
+                if(!checkForAttack(kingCords[1],kingCords[0], false)){
                     board->setPassant(false,QPoint(desX-1,desY),QPoint(desX,desY));
                 }
 
@@ -495,7 +495,7 @@ void Controller::movePiece(int srcX, int srcY, int desX, int desY) {
 
                 int kingCords[2];
                 board->findKing(false,kingCords);
-                if(!checkForAttack(kingCords[1],kingCords[0], board->getBoard(),false)){
+                if(!checkForAttack(kingCords[1],kingCords[0], false)){
                     board->setPassant(false,QPoint(desX+1,desY),QPoint(desX,desY));
                 }
 
@@ -522,14 +522,14 @@ bool Controller::checkCheck(bool whiteTeam) {
     int kingCords[2];
     board->findKing(whiteTeam, kingCords);
 
-    return checkForAttack(kingCords[1],kingCords[0], board->getBoard(), whiteTeam);
+    return checkForAttack(kingCords[1],kingCords[0], whiteTeam);
 }
 
 /**
  *  Checks for ending condition of game,
  *  if team cannot make any legal moves and is in check its mate.
  *  if team cannot make any legal moves and is not in check its stalemate
- * @param whiteTeam - is whtie team the one being attacked on
+ * @param whiteTeam - is white team the one being attacked on
  * @return 0 = no mate or stalemate, 1 = mate, 2 = stalemate
  */
 int Controller::checkMateStalemate(bool whiteTeam) {
@@ -539,12 +539,12 @@ int Controller::checkMateStalemate(bool whiteTeam) {
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
             if(whiteTeam && board->getPiece(x,y) > 0){
-                if(!getMoves(board->getBoard(), x,y).empty()){
+                if(!getMoves(x,y).empty()){
                     return 0;
                 }
             }
             else if(!whiteTeam && board->getPiece(x,y) < 0){
-                if(!getMoves(board->getBoard(), x,y).empty()){
+                if(!getMoves(x,y).empty()){
                     return 0;
                 }
             }
@@ -558,13 +558,13 @@ int Controller::checkMateStalemate(bool whiteTeam) {
     }
 }
 
-bool Controller::checkForAttack(int srcX, int srcY,int** gameBoard, bool whiteTeam) {
+bool Controller::checkForAttack(int srcX, int srcY, bool whiteTeam) {
 
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
-            if(gameBoard[y][x] < 0 && whiteTeam){ // if spot is a black piece and we want to check for attack on white
-                if(gameBoard[y][x] == -1){
+            if(board->getPiece(x,y) < 0 && whiteTeam){ // if spot is a black piece and we want to check for attack on white
+                if(board->getPiece(x,y) == -1){
                     QVector<QPoint> moves;
                     moves.append(QPoint(x+1,y+1));
                     moves.append(QPoint(x-1,y+1));
@@ -572,31 +572,31 @@ bool Controller::checkForAttack(int srcX, int srcY,int** gameBoard, bool whiteTe
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == -2){
-                    QVector<QPoint> moves = Rook::getMoves(x,y,gameBoard);
+                }else if(board->getPiece(x,y) == -2){
+                    QVector<QPoint> moves = Rook::getMoves(x,y,board->getBoard());
 
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == -3){
-                    QVector<QPoint> moves = Knight::getMoves(x,y,gameBoard);
+                }else if(board->getPiece(x,y) == -3){
+                    QVector<QPoint> moves = Knight::getMoves(x,y,board->getBoard());
 
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == -4){
-                    QVector<QPoint> moves = Bishop::getMoves(x,y,gameBoard);
+                }else if(board->getPiece(x,y) == -4){
+                    QVector<QPoint> moves = Bishop::getMoves(x,y,board->getBoard());
 
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == -5){
-                    QVector<QPoint> moves = Queen::getMoves(x,y,gameBoard);
+                }else if(board->getPiece(x,y) == -5){
+                    QVector<QPoint> moves = Queen::getMoves(x,y,board->getBoard());
 
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == -6){
+                }else if(board->getPiece(x,y) == -6){
                     QVector<QPoint> moves;
 
                     moves.append(QPoint(x+1,y));
@@ -613,8 +613,8 @@ bool Controller::checkForAttack(int srcX, int srcY,int** gameBoard, bool whiteTe
                     }
                 }
             }
-            else if(gameBoard[y][x] > 0 && !whiteTeam){ // if spot is a white piece and we want to check for attack on black
-                if(gameBoard[y][x] == 1){
+            else if(board->getPiece(x,y) > 0 && !whiteTeam){ // if spot is a white piece and we want to check for attack on black
+                if(board->getPiece(x,y) == 1){
                     QVector<QPoint> moves;
                     moves.append(QPoint(x+1,y-1));
                     moves.append(QPoint(x-1,y-1));
@@ -622,31 +622,31 @@ bool Controller::checkForAttack(int srcX, int srcY,int** gameBoard, bool whiteTe
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == 2){
-                    QVector<QPoint> moves = Rook::getMoves(x,y,gameBoard);
+                }else if(board->getPiece(x,y) == 2){
+                    QVector<QPoint> moves = Rook::getMoves(x,y,board->getBoard());
 
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == 3){
-                    QVector<QPoint> moves = Knight::getMoves(x,y,gameBoard);
+                }else if(board->getPiece(x,y) == 3){
+                    QVector<QPoint> moves = Knight::getMoves(x,y,board->getBoard());
 
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == 4){
-                    QVector<QPoint> moves = Bishop::getMoves(x,y,gameBoard);
+                }else if(board->getPiece(x,y) == 4){
+                    QVector<QPoint> moves = Bishop::getMoves(x,y,board->getBoard());
 
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == 5){
-                    QVector<QPoint> moves = Queen::getMoves(x,y,gameBoard);
+                }else if(board->getPiece(x,y) == 5){
+                    QVector<QPoint> moves = Queen::getMoves(x,y,board->getBoard());
 
                     if(moves.contains(QPoint(srcX,srcY))){
                         return true;
                     }
-                }else if(gameBoard[y][x] == 6){
+                }else if(board->getPiece(x,y) == 6){
                     QVector<QPoint> moves;
 
                     moves.append(QPoint(x+1,y));
@@ -668,25 +668,25 @@ bool Controller::checkForAttack(int srcX, int srcY,int** gameBoard, bool whiteTe
 
     return false;
 }
-QVector<QPoint> Controller::stripCheck(int** gameBoard, int x, int y,QVector<QPoint> moves) {
+QVector<QPoint> Controller::stripCheck(int x, int y,QVector<Move> moves) {
     QVector<QPoint> strippedMoves;
     bool whiteTeam = true;
 
-    if(gameBoard[y][x] < 0){
+    if(board->getPiece(x,y) < 0){
         whiteTeam = false;
-    }else if(gameBoard[y][x] == 0){
+    }else if(board->getPiece(x,y) == 0){
         return strippedMoves;
     }
 
     int kingCords[2];
 
     for(QPoint move: moves){
-        int temp = gameBoard[move.y()][move.x()];
-        gameBoard[move.y()][move.x()] = gameBoard[y][x];
-        gameBoard[y][x] = 0;
+        int temp = board->getPiece(move.x(),move.y());
+        board->setPiece(move.x(),move.y(), board->getPiece(x,y));
+        board->setPiece(x,y,0);
 
-        findKing(whiteTeam, gameBoard, kingCords);
-        bool check = checkForAttack(kingCords[1],kingCords[0], gameBoard, whiteTeam);
+        board->findKing(whiteTeam, kingCords);
+        bool check = checkForAttack(kingCords[1],kingCords[0], whiteTeam);
 
         if(!check){
             strippedMoves.append(move);
@@ -699,26 +699,6 @@ QVector<QPoint> Controller::stripCheck(int** gameBoard, int x, int y,QVector<QPo
     return strippedMoves;
 }
 
-int Controller::getTurn() {
-    return turn;
-}
-
 QPoint Controller::getHighlighted() {
     return highlightedPiece;
-}
-
-void Controller::findKing(bool whiteTeam, int **gameBoard, int cords[2]) {
-    for (int y = 0; y < 8; ++y) {
-        for (int x = 0; x < 8; ++x) {
-            if(whiteTeam && gameBoard[y][x]==6){
-                cords[0] = y;
-                cords[1] = x;
-                return;
-            }else if(!whiteTeam && gameBoard[y][x]==-6){
-                cords[0] = y;
-                cords[1] = x;
-                return;
-            }
-        }
-    }
 }

@@ -4,9 +4,10 @@
 
 #include <QtCore/QPoint>
 #include <QVector>
+#include <Controller/move.h>
 
 namespace Bishop {
-    QVector<QPoint> getMoves(int x, int y, int** board);
+    QVector<Move> getMoves(int x, int y, int** board);
 };
 
 

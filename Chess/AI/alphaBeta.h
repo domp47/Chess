@@ -15,10 +15,10 @@ public:
 
 private:
     Random randomMove;
-    QVector<QVector<int>> getAllMoves(int**, bool whiteTeam);
-    int evaluateBoard(int** score);
-    int minimax(int depth,int alpha, int beta, int** board, bool whiteTeam);
-    QVector<int> minimaxRoot(int depth, int** board, bool whiteTeam);
+    QVector<QVector<int>> getAllMoves(bool whiteTeam);
+    int evaluateBoard(int** board);
+    int minimax(int depth,int alpha, int beta, bool whiteTeam);
+    QVector<int> minimaxRoot(int depth, bool whiteTeam);
 
 private:
     Controller* controller;

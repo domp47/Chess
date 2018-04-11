@@ -31,6 +31,7 @@ set( project_sources
         ./AI/evalMap.cpp
         ./Controller/controller.cpp
         ./Controller/chess.cpp
+        ./Controller/move.cpp
         )
 
 set(headers
@@ -50,6 +51,7 @@ set(headers
         ./AI/evalMap.h
         ./Controller/controller.h
         ./Controller/chess.h
+        ./Controller/move.h
         )
 
 add_executable(chess

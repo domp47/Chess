@@ -8,7 +8,7 @@ AlphaBeta::AlphaBeta(Controller* controller) {
 
 QVector<int> AlphaBeta::findMove(bool whiteTeam) {
 
-    QVector<int> move = minimaxRoot(3, controller->getBoard()->getBoard(), whiteTeam);
+    QVector<int> move = minimaxRoot(4, whiteTeam);
 
     return move;
 }
@@ -17,13 +17,13 @@ char AlphaBeta::findUpgrade() {
     return randomMove.getRandomUpgrade();
 }
 
-QVector<QVector<int>> AlphaBeta::getAllMoves(int** board, bool whiteTeam) {
+QVector<QVector<int>> AlphaBeta::getAllMoves(bool whiteTeam) {
     QVector<QVector<int>> allPossibleMoves;
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
-            if(board[y][x] < 0 && !whiteTeam){
-                QVector<QPoint> moves = controller->getMoves(board, x,y);
+            if(controller->getBoard()->getPiece(x,y) < 0 && !whiteTeam){
+                QVector<QPoint> moves = controller->getMoves(x,y);
 
                 for(QPoint point: moves){
                     QVector<int> move;
@@ -36,7 +36,7 @@ QVector<QVector<int>> AlphaBeta::getAllMoves(int** board, bool whiteTeam) {
                     allPossibleMoves.append(move);
                 }
             }else if(controller->getBoard()->getPiece(x,y) > 0 && whiteTeam){
-                QVector<QPoint> moves = controller->getMoves(board, x,y);
+                QVector<QPoint> moves = controller->getMoves(x,y);
 
                 for(QPoint point: moves) {
                     QVector<int> move;
@@ -67,25 +67,26 @@ int AlphaBeta::evaluateBoard(int** board) {
 
 }
 
-int AlphaBeta::minimax(int depth,int alpha, int beta,  int** board, bool whiteTeam) {
+int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
     if(depth == 0){
-        return evaluateBoard(board);
+        return evaluateBoard(controller->getBoard()->getBoard());
     }
 
-    QVector<QVector<int>> allMoves = getAllMoves(board,whiteTeam);
+    QVector<QVector<int>> allMoves = getAllMoves(whiteTeam);
 
     if(whiteTeam){
         int bestScore = INT_MIN;
 
         for(QVector<int> move: allMoves){
-            int temp = board[move[3]][move[2]];
-            board[move[3]][move[2]] = board[move[1]][move[0]];
-            board[move[1]][move[0]] = 0;
 
-            bestScore = std::max(bestScore, minimax(depth-1,alpha, beta, board,!whiteTeam));
+            int temp = controller->getBoard()->getPiece(move[2], move[3]);
+            controller->getBoard()->setPiece(move[2],move[3], controller->getBoard()->getPiece(move[0], move[1]));
+            controller->getBoard()->setPiece(move[0],move[1], 0);
 
-            board[move[1]][move[0]] = board[move[3]][move[2]];
-            board[move[3]][move[2]] = temp;
+            bestScore = std::max(bestScore, minimax(depth-1,alpha, beta, !whiteTeam));
+
+            controller->getBoard()->setPiece(move[0],move[1], controller->getBoard()->getPiece(move[2], move[3]));
+            controller->getBoard()->setPiece(move[2],move[3], temp);
 
             alpha = std::max(alpha, bestScore);
             if(beta <= alpha){
@@ -97,14 +98,14 @@ int AlphaBeta::minimax(int depth,int alpha, int beta,  int** board, bool whiteTe
         int bestScore = INT_MAX;
 
         for(QVector<int> move: allMoves){
-            int temp = board[move[3]][move[2]];
-            board[move[3]][move[2]] = board[move[1]][move[0]];
-            board[move[1]][move[0]] = 0;
+            int temp = controller->getBoard()->getPiece(move[2], move[3]);
+            controller->getBoard()->setPiece(move[2],move[3], controller->getBoard()->getPiece(move[0], move[1]));
+            controller->getBoard()->setPiece(move[0],move[1], 0);
 
-            bestScore = std::min(bestScore, minimax(depth-1,alpha, beta, board,!whiteTeam));
+            bestScore = std::min(bestScore, minimax(depth-1,alpha, beta, !whiteTeam));
 
-            board[move[1]][move[0]] = board[move[3]][move[2]];
-            board[move[3]][move[2]] = temp;
+            controller->getBoard()->setPiece(move[0],move[1], controller->getBoard()->getPiece(move[2], move[3]));
+            controller->getBoard()->setPiece(move[2],move[3], temp);
 
             beta = std::min(beta, bestScore);
             if(beta <= alpha){
@@ -116,8 +117,8 @@ int AlphaBeta::minimax(int depth,int alpha, int beta,  int** board, bool whiteTe
 
 }
 
-QVector<int> AlphaBeta::minimaxRoot(int depth, int **board, bool whiteTeam) {
-    QVector<QVector<int>> allMoves = getAllMoves(board,whiteTeam);
+QVector<int> AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
+    QVector<QVector<int>> allMoves = getAllMoves(whiteTeam);
     int bestScore;
     QVector<int> bestMove;
 
@@ -129,14 +130,14 @@ QVector<int> AlphaBeta::minimaxRoot(int depth, int **board, bool whiteTeam) {
     }
 
     for(QVector<int> move: allMoves){
-        int temp = board[move[3]][move[2]];
-        board[move[3]][move[2]] = board[move[1]][move[0]];
-        board[move[1]][move[0]] = 0;
+        int temp = controller->getBoard()->getPiece(move[2], move[3]);
+        controller->getBoard()->setPiece(move[2],move[3], controller->getBoard()->getPiece(move[0], move[1]));
+        controller->getBoard()->setPiece(move[0],move[1], 0);
 
-        int score = minimax(depth, INT_MIN, INT_MAX, board, whiteTeam);
+        int score = minimax(depth, INT_MIN, INT_MAX,  whiteTeam);
 
-        board[move[1]][move[0]] = board[move[3]][move[2]];
-        board[move[3]][move[2]] = temp;
+        controller->getBoard()->setPiece(move[0],move[1], controller->getBoard()->getPiece(move[2], move[3]));
+        controller->getBoard()->setPiece(move[2],move[3], temp);
 
         if(whiteTeam){
             if(score > bestScore){
