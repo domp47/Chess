@@ -1,6 +1,6 @@
 #include "king.h"
 
-QVector<QPoint> King::getMoves(int x, int y, Board* board) {
+QVector<QPoint> King::getMoves(int x, int y, Board* board, Controller* controller) {
     QVector<QPoint> moves;
 
     bool whiteTeam = true;
@@ -35,36 +35,36 @@ QVector<QPoint> King::getMoves(int x, int y, Board* board) {
     }
 
     if(whiteTeam){
-        if(!board->checkCheck(true)){// white kings not in check
+        if(!controller->checkCheck(true)){// white kings not in check
             if(!board->getWLR()&&!board->getWKing()){//white long check if rook nd king havent been moved
                 if(board->getPiece(1,7)==0 && board->getPiece(2,7)==0 && board->getPiece(3,7)==0){ //check if empty between the rook and king
                     //check if any of the two places the king is moving over or is moving to can be attacked
-                    if(!board->checkForAttack(2,7, true) && !board->checkForAttack(3,7, true)){
+                    if(!controller->checkForAttack(2,7, true) && !controller->checkForAttack(3,7, true)){
                         board->setWhiteLongCastle(true);
                     }
                 }
             }
             if(!board->getWRR() && !board->getWKing()){
                 if(board->getPiece(5,7)==0 && board->getPiece(6,7)==0){
-                    if(!board->checkForAttack(5,7,true) && !board->checkForAttack(6,7,true)){
+                    if(!controller->checkForAttack(5,7,true) && !controller->checkForAttack(6,7,true)){
                         board->setWhiteCastle(true);
                     }
                 }
             }
         }
     }else{
-        if(!board->checkCheck(false)){
+        if(!controller->checkCheck(false)){
             if(!board->getBLR()&&!board->getBKing()){//white long check if rook nd king havent been moved
                 if(board->getPiece(1,0)==0 && board->getPiece(2,0)==0 && board->getPiece(3,0)==0){ //check if empty between the rook and king
                     //check if any of the two places the king is moving over or is moving to can be attacked
-                    if(!board->checkForAttack(2,0, false) && !board->checkForAttack(3,0, false)){
+                    if(!controller->checkForAttack(2,0, false) && !controller->checkForAttack(3,0, false)){
                         board->setBlackLongCastle(true);
                     }
                 }
             }
             if(!board->getBRR() && !board->getBKing()){
                 if(board->getPiece(5,0)==0 && board->getPiece(6,0)==0){
-                    if(!board->checkForAttack(5,0,false) && !board->checkForAttack(6,0,false)){
+                    if(!controller->checkForAttack(5,0,false) && !controller->checkForAttack(6,0,false)){
                         board->setBlackCastle(true);
                     }
                 }

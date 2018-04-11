@@ -29,7 +29,8 @@ set( project_sources
         ./AI/alphaBeta.cpp
         ./AI/random.cpp
         ./Controller/controller.cpp
-    )
+        ./Controller/chess.cpp
+        )
 
 set(headers
         ./GUI/window.h
@@ -46,6 +47,7 @@ set(headers
         ./AI/alphaBeta.h
         ./AI/random.h
         ./Controller/controller.h
+        ./Controller/chess.h
         )
 
 add_executable(chess

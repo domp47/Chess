@@ -25,23 +25,17 @@ public:
     Board(Controller* controller);
     void initBoard();
     int getPiece(int x, int y);
-    QVector<QPoint> getMoves(int x, int y);
-    void movePiece(int srcX, int srcY, int desX, int desY);
-    void movePassant(int srcX, int srcY, QPoint victim, bool whiteTeam);
-    void moveCastling(int type);
-    int getTurn();
+    void setPiece(int x, int y, int val);
     ElPassant getWhitePassant();
     ElPassant getBlackPassant();
-    void upgradePawn(int x, int y, char upgrade);
+    void setPassant(bool white, QPoint attacker, QPoint victim);
+    void clearPassant(bool white);
     bool getWLR();
     bool getWRR();
     bool getBLR();
     bool getBRR();
     bool getWKing();
     bool getBKing();
-    bool checkCheck(bool whiteTeam);
-    int checkMateStalemate(bool whiteTeam);
-    bool checkForAttack(int x, int y, bool whiteTeam);
     bool isBlackLongCastle() const;
     void setBlackLongCastle(bool blackLongCastle);
     bool isBlackCastle() const;
@@ -50,12 +44,18 @@ public:
     void setWhiteLongCastle(bool whiteLongCastle);
     bool isWhiteCastle() const;
     void setWhiteCastle(bool whiteCastle);
+    int** getBoard();
+    void setWLR(bool val);
+    void setWRR(bool val);
+    void setBLR(bool val);
+    void setBRR(bool val);
+    void setWKing(bool val);
+    void setBKing(bool val);
+    void upgradePawn(int x, int y, char upgrade);
+    void moveCastling(int type);
     void findKing(bool whiteTeam, int cords[2]);
-    QVector<QPoint> stripCheck(int x, int y, QVector<QPoint> moves);
-    void nextMove();
 private:
     int** board;
-    int turn;
     ElPassant whitePassant;
     ElPassant blackPassant;
     bool whiteLeftRookMoved;
@@ -65,14 +65,10 @@ private:
     bool whiteKingMoved;
     bool blackKingMoved;
     bool blackLongCastle;
-
-private:
     bool blackCastle;
     bool whiteLongCastle;
     bool whiteCastle;
-    int gameMode;
     Controller* controller;
-
 };
 
 #endif //BOARD_H

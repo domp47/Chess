@@ -1,12 +1,14 @@
 
 
-#include "Controller/controller.h"
+#include "Controller/chess.h"
 #include <QtWidgets/QApplication>
+#include <thread>
 
 int main(int argc, char* argv[]){
     QApplication app(argc, argv);
 
-    Controller* controller = new Controller();
+    Chess chess;
+    chess.playChess();
 
     return app.exec();
 }

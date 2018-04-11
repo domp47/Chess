@@ -8,12 +8,7 @@ Window::Window(Controller* controller) {
     this->controller = controller;
     map = new Map();
 
-    highlightedCords[0] = -1;
-    highlightedCords[1] = -1;
-    possibleMoves.clear();
-    lastKey = 0;
-
-//    connect(controller->getBoard(), SIGNAL(controller->getBoard()->sendRefresh()),this,SLOT(refresh()));
+    connect(controller, SIGNAL(sendMessage(QString)), this, SLOT(showMessage(QString)));
 }
 
 void Window::paintEvent(QPaintEvent *)
@@ -22,6 +17,9 @@ void Window::paintEvent(QPaintEvent *)
 
     painter.fillRect(0,0,850,850,Colors::background());
 
+    int highlightedX = controller->getHighlighted().x();
+    int highlightedY = controller->getHighlighted().y();
+
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
             int xLoc = (x * 100) + STARTING_X;
@@ -29,7 +27,7 @@ void Window::paintEvent(QPaintEvent *)
             int size = 100;
             bool highlighted = false;
 
-            if(y==highlightedCords[0]&&x==highlightedCords[1]){
+            if(y==highlightedY&&x==highlightedX){
                 painter.fillRect(xLoc, yLoc,100,100,Colors::highlight());
                 size -=20;
                 yLoc +=10;
@@ -59,7 +57,7 @@ void Window::paintEvent(QPaintEvent *)
         }
     }
 
-    for(QPoint p: possibleMoves){
+    for(QPoint p: controller->getPossibleMoves()){
         int xLoc = (p.x() * 100) + STARTING_X;
         int yLoc = (p.y() * 100) + STARTING_Y;
 
@@ -89,12 +87,12 @@ void Window::paintEvent(QPaintEvent *)
         }
     }
 
-    if(highlightedCords[0] != -1 || highlightedCords[1] != -1){//if a piece is highlighted
-        if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==-1){//black pawn
+    if(highlightedY != -1 || highlightedX != -1){//if a piece is highlighted
+        if(controller->getBoard()->getPiece(highlightedX,highlightedY)==-1){//black pawn
             if(controller->getBoard()->getBlackPassant().getPresent()){//passant possible
 
                 //selected piece is one of the possible passant attacks
-                if(controller->getBoard()->getBlackPassant().getAttacker1().x()==highlightedCords[0] && controller->getBoard()->getBlackPassant().getAttacker1().y()==highlightedCords[0]){
+                if(controller->getBoard()->getBlackPassant().getAttacker1().x()==highlightedX && controller->getBoard()->getBlackPassant().getAttacker1().y()==highlightedY){
                     int x = (controller->getBoard()->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
                     int y = ((controller->getBoard()->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
 
@@ -107,7 +105,7 @@ void Window::paintEvent(QPaintEvent *)
                     }
 
                 }
-                if(controller->getBoard()->getBlackPassant().getAttacker2().x()==highlightedCords[0] && controller->getBoard()->getBlackPassant().getAttacker2().y()==highlightedCords[0]){
+                if(controller->getBoard()->getBlackPassant().getAttacker2().x()==highlightedX && controller->getBoard()->getBlackPassant().getAttacker2().y()==highlightedY){
                     int x = (controller->getBoard()->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
                     int y = ((controller->getBoard()->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
 
@@ -122,7 +120,7 @@ void Window::paintEvent(QPaintEvent *)
                 }
             }
         }
-        else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==1){//white pawn
+        else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==1){//white pawn
             if(controller->getBoard()->getWhitePassant().getPresent()){//passant possible
 
                 //selected piece is one of the possible passant attacks
@@ -133,7 +131,7 @@ void Window::paintEvent(QPaintEvent *)
                 int attack2x = controller->getBoard()->getWhitePassant().getAttacker2().x();
                 int attack2y = controller->getBoard()->getWhitePassant().getAttacker2().y();
 
-                if(attack1x==highlightedCords[1] && attack1y==highlightedCords[0]){
+                if(attack1x==highlightedX && attack1y==highlightedY){
                     int x = (controller->getBoard()->getWhitePassant().getVictim().x() * 100) + STARTING_X;
                     int y = ((controller->getBoard()->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
 
@@ -145,7 +143,7 @@ void Window::paintEvent(QPaintEvent *)
                         painter.fillRect(x+10,y+10,80,80,Colors::dark());
                     }
 
-                } else if(attack2x==highlightedCords[1] && attack2y==highlightedCords[0]){
+                } else if(attack2x==highlightedX && attack2y==highlightedY){
                     int x = (controller->getBoard()->getWhitePassant().getVictim().x() * 100) + STARTING_X;
                     int y = ((controller->getBoard()->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
 
@@ -160,7 +158,7 @@ void Window::paintEvent(QPaintEvent *)
                 }
             }
         }
-        else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==6){//white knight
+        else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==6){//white knight
             if(controller->getBoard()->isWhiteLongCastle()){
                 int x = 200 + STARTING_X;
                 int y = 700 + STARTING_Y;
@@ -176,7 +174,7 @@ void Window::paintEvent(QPaintEvent *)
                 painter.fillRect(x+10,y+10,80,80,Colors::dark());
             }
         }
-        else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==-6){//black knight
+        else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==-6){//black knight
             if(controller->getBoard()->isBlackLongCastle()){
                 int x = 200 + STARTING_X;
                 int y = 000 + STARTING_Y;
@@ -216,59 +214,6 @@ void Window::paintEvent(QPaintEvent *)
     painter.drawText(575,840,"F");
     painter.drawText(675,840,"G");
     painter.drawText(775,840,"H");
-
-
-    //Put all this stuff in new thread to finish gui
-    int kingCords[2] = {-1,-1};
-    controller->getBoard()->findKing(true,kingCords);
-
-    int white = controller->getBoard()->checkMateStalemate(true);
-    int black = controller->getBoard()->checkMateStalemate(false);
-
-    if(white == 1){//white king check mate
-        QMessageBox msg;
-        msg.setText("Black Team wins");
-        QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
-        QPushButton *end = msg.addButton("Exit", QMessageBox::NoRole);
-
-        msg.exec();
-
-        if(msg.clickedButton() == ng){
-            controller->getBoard()->initBoard();
-//            repaint();
-        }else if(msg.clickedButton() == end){
-            this->close();
-        }
-    }
-    else if(black == 1){
-        QMessageBox msg;
-        msg.setText("White Team wins");
-        QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
-        QPushButton *end = msg.addButton("Exit", QMessageBox::NoRole);
-
-        msg.exec();
-
-        if(msg.clickedButton() == ng){
-            controller->getBoard()->initBoard();
-//            repaint();
-        }else if(msg.clickedButton() == end){
-            this->close();
-        }
-    }else if((controller->getBoard()->getTurn()%2==0 && white==2) || (controller->getBoard()->getTurn()%2==1 && black==2)){
-        QMessageBox msg;
-        msg.setText("It's a Draw");
-        QPushButton *ng = msg.addButton("New Game", QMessageBox::ActionRole);
-        QPushButton *end = msg.addButton("Exit", QMessageBox::NoRole);
-
-        msg.exec();
-
-        if(msg.clickedButton() == ng){
-            controller->getBoard()->initBoard();
-//            repaint();
-        }else if(msg.clickedButton() == end){
-            this->close();
-        }
-    }
 }
 
 void Window::mousePressEvent(QMouseEvent *event) {
@@ -278,139 +223,15 @@ void Window::mousePressEvent(QMouseEvent *event) {
             int y = (event->y() - STARTING_Y)/100; //get y quadrant
             std::cout << "Mouse Pressed at quadrant:" << x << ", " << y << std::endl;
 
-            int prevY = highlightedCords[0]; //gets previous selected box
-            int prevX = highlightedCords[1];
-
-            if(prevY==-1 && prevX==-1){ //if nothing previously selected its on highlight piece state
-                if( (controller->getBoard()->getPiece(x,y)>0 && controller->getBoard()->getTurn()%2==0) || (controller->getBoard()->getPiece(x,y)<0 && controller->getBoard()->getTurn()%2==1) ){
-                    highlightedCords[0] = y;
-                    highlightedCords[1] = x;
-                    possibleMoves = controller->getBoard()->getMoves(x,y);
-                    repaint();
-                }
-            }else if(prevY==y && prevX==x){ //if clicking same piece deselect piece
-                highlightedCords[0] = -1;
-                highlightedCords[1] = -1;
-                possibleMoves.clear();
-                repaint();
-            }else if(isMovePossible(QPoint(x,y))){ //checks possible regular moves and moves to that piece
-                //if its a pawn and moving to end of board
-                if((controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==1 && y==0) || (controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==-1 && y==7)){
-                    bool correctInput = false;
-                    char upgrade = '0';
-
-                    while(!correctInput){
-                        QString response = QInputDialog::getText(this, "Pawn Promotion", "Enter: Q for queen, B for bishop, K for knight, R for rook.");
-
-                        if(response == "q" || response == "Q"){
-                            upgrade = 'q';
-                            correctInput = true;
-                        }else if(response == "b" || response == "B"){
-                            upgrade = 'b';
-                            correctInput = true;
-                        }else if(response == "k" || response == "K"){
-                            upgrade = 'k';
-                            correctInput = true;
-                        }else if(response == "r" || response == "R"){
-                            upgrade = 'r';
-                            correctInput = true;
-                        }
-                    }
-
-                    controller->getBoard()->upgradePawn(highlightedCords[1],highlightedCords[0],upgrade);
-                }
-
-
-                controller->getBoard()->movePiece(highlightedCords[1],highlightedCords[0],x,y);
-                highlightedCords[0] = -1;
-                highlightedCords[1] = -1;
-                possibleMoves.clear();
-                repaint();
-
-                /**if(board->checkCheck(board->getTurn() % 2 == 0)){//checks if white team is in check
-
-                }else if(board->checkCheck(board->getTurn() % 2 == 1)){//checks if black team is in check
-
-                }**/
-            }
-            else if(controller->getBoard()->getTurn()%2==0 && controller->getBoard()->getWhitePassant().getPresent()){ //if its white persons turn and there is a passant
-                //check if the passant spot was clicked
-                if(controller->getBoard()->getWhitePassant().getVictim().x()==x && controller->getBoard()->getWhitePassant().getVictim().y()-1==y){
-                    controller->getBoard()->movePassant(highlightedCords[1],highlightedCords[0],controller->getBoard()->getWhitePassant().getVictim(), true);
-                    highlightedCords[0] = -1;
-                    highlightedCords[1] = -1;
-                    possibleMoves.clear();
-                    repaint();
-                }
-            }
-            else if(controller->getBoard()->getTurn()%2==1 && controller->getBoard()->getBlackPassant().getPresent()){ //if its black persons turn and there is a passant
-                if(controller->getBoard()->getBlackPassant().getVictim().x()==x && controller->getBoard()->getBlackPassant().getVictim().y()+1==y){
-                    controller->getBoard()->movePassant(highlightedCords[1],highlightedCords[0],controller->getBoard()->getBlackPassant().getVictim(), false);
-                    highlightedCords[0] = -1;
-                    highlightedCords[1] = -1;
-                    possibleMoves.clear();
-                    repaint();
-                }
-            }
-            //if white knight is highlighted and there is a white castle move possible
-            else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==6 && (controller->getBoard()->isWhiteCastle() || controller->getBoard()->isWhiteLongCastle())){
-                if(controller->getBoard()->isWhiteLongCastle() && y==7 && x==2){
-                    controller->getBoard()->moveCastling(1);
-                    highlightedCords[0] = -1;
-                    highlightedCords[1] = -1;
-                    possibleMoves.clear();
-                    repaint();
-                }else if(controller->getBoard()->isWhiteCastle() && y==7 && x==6){
-                    controller->getBoard()->moveCastling(2);
-                    highlightedCords[0] = -1;
-                    highlightedCords[1] = -1;
-                    possibleMoves.clear();
-                    repaint();
-                }
-            }
-            //if black knight is highlighted and there is a black castle move possible
-            else if(controller->getBoard()->getPiece(highlightedCords[1],highlightedCords[0])==-6 && (controller->getBoard()->isBlackCastle() || controller->getBoard()->isBlackLongCastle())){
-                if(controller->getBoard()->isBlackLongCastle() && y==0 && x==2){
-                    controller->getBoard()->moveCastling(3);
-                    highlightedCords[0] = -1;
-                    highlightedCords[1] = -1;
-                    possibleMoves.clear();
-                    repaint();
-                }else if(controller->getBoard()->isBlackCastle() && y==0 && x==6){
-                    controller->getBoard()->moveCastling(4);
-                    highlightedCords[0] = -1;
-                    highlightedCords[1] = -1;
-                    possibleMoves.clear();
-                    repaint();
-                }
-            }
-            //if it's another of the same piece highlight that one instead
-            else if( (controller->getBoard()->getPiece(x,y)>0 && controller->getBoard()->getTurn()%2==0) || (controller->getBoard()->getPiece(x,y)<0 && controller->getBoard()->getTurn()%2==1) ){
-                highlightedCords[0] = y;
-                highlightedCords[1] = x;
-                possibleMoves = controller->getBoard()->getMoves(x,y);
-                repaint();
-            }
+            emit sendClick(x,y);
         }
     }
 
 //    std::cout << "Mouse Pressed at pixels:" << event->x() << ", " << event->y() << std::endl << std::endl;
 }
 
-void Window::keyPressEvent(QKeyEvent *event) {
-//    std::cout << "Key pressed: " <<  event->key() << std::endl;
-
-    if(lastKey == Qt::Key_Control && event->key() == Qt::Key_N){
-        controller->getBoard()->initBoard();
-        repaint();
-    }
-    lastKey = event->key();
-}
-
-bool Window::isMovePossible(QPoint p) {
-    for(QPoint point: possibleMoves){
-        if(point.x()==p.x() && point.y()==p.y())
-            return true;
-    }
-    return false;
+void Window::showMessage(QString message) {
+    QMessageBox msg;
+    msg.setText(message);
+    msg.exec();
 }

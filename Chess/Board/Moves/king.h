@@ -4,9 +4,10 @@
 #include <QtCore/QPoint>
 #include <QVector>
 #include <Board/board.h>
+#include <Controller/controller.h>
 
 namespace King {
-    QVector<QPoint> getMoves(int x, int y, Board* board);
+    QVector<QPoint> getMoves(int x, int y, Board* board, Controller* controller);
 };
 
 

@@ -57,7 +57,7 @@ int Random::getRandomMove(Controller* controller, bool whiteTeam, int move[4]) {
             move[1] = row;
         }
 
-        posMoves = controller->getBoard()->getMoves(move[0], move[1]);
+        posMoves = controller->getMoves(move[0], move[1]);
 
     }while (posMoves.length() == 0 || failedLocations.length() == 64);
 
