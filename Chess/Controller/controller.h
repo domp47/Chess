@@ -17,24 +17,24 @@ public:
     Controller();
     Window* getWindow();
     Board* getBoard();
-    int findMove(bool whiteTeam, int move[4]);
     int getTurn();
     int checkMateStalemate(bool whiteTeam);
     void movePassant(int srcX, int srcY, QPoint victim, bool whiteTeam);
     void movePiece(int srcX, int srcY, int desX, int desY);
-    QVector<QPoint> getMoves(int x, int y);
+    QVector<QPoint> getMoves(int**, int x, int y);
     bool checkCheck(bool whiteTeam);
-    bool checkForAttack(int x, int y, bool whiteTeam);
+    bool checkForAttack(int x, int y, int**, bool whiteTeam);
     void playGame();
     QVector<QPoint> getPossibleMoves();
     QPoint getHighlighted();
     void startGame();
 private:
-    QVector<QPoint> stripCheck(int x, int y, QVector<QPoint> moves);
+    QVector<QPoint> stripCheck(int**, int x, int y, QVector<QPoint> moves);
     int noPlayers();
     int onePlayer();
     int twoPlayers();
     bool isMovePossible(QPoint p);
+    void findKing(bool, int** gameBoard ,int cords[2]);
 private:
     Window* window;
     Board* board;

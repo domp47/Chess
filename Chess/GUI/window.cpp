@@ -6,7 +6,7 @@ Window::Window(Controller* controller) {
     this->setFixedHeight(850);
 
     this->controller = controller;
-    map = new Map();
+    map = new ImageMap();
 
     connect(controller, SIGNAL(sendMessage(QString)), this, SLOT(showMessage(QString)));
 }
@@ -221,7 +221,7 @@ void Window::mousePressEvent(QMouseEvent *event) {
         if(event->y()>=STARTING_Y&&event->y()<=STARTING_Y+800){//if inside the playing area y
             int x = (event->x() - STARTING_X)/100; //get x quadrant
             int y = (event->y() - STARTING_Y)/100; //get y quadrant
-            std::cout << "Mouse Pressed at quadrant:" << x << ", " << y << std::endl;
+//            std::cout << "Mouse Pressed at quadrant:" << x << ", " << y << std::endl;
 
             emit sendClick(x,y);
         }

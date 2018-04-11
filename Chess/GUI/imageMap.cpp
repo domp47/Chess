@@ -1,4 +1,4 @@
-#include "map.h"
+#include "imageMap.h"
 
 /**
  *  -6 = BLK KING
@@ -20,7 +20,7 @@
 
 
 
-Map::Map() {
+ImageMap::ImageMap() {
 
     map[-1] = "./Chess/Pieces/pd.png";
     map[-2] = "./Chess/Pieces/rd.png";
@@ -37,6 +37,6 @@ Map::Map() {
     map[6] = "./Chess/Pieces/kl.png";
 }
 
-std::string Map::getItem(int key) {
+std::string ImageMap::getItem(int key) {
     return map[key];
 }

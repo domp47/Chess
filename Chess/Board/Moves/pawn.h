@@ -7,7 +7,7 @@
 class Board;
 
 namespace Pawn {
-    QVector<QPoint> getMoves(int x, int y, Board* board);
+    QVector<QPoint> getMoves(int x, int y, int** board);
 };
 
 #endif //PAWN_H

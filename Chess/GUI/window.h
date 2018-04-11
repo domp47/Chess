@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QtGui/QPainter>
 #include <QMouseEvent>
-#include "map.h"
+#include "imageMap.h"
 #include <iostream>
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QPushButton>
@@ -27,7 +27,7 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
 private:
     Controller* controller;
-    Map* map;
+    ImageMap* map;
 
 public slots:
     void showMessage(QString message);

@@ -4,9 +4,9 @@
 #include <string>
 #include <unordered_map>
 
-class Map {
+class ImageMap {
 public:
-    Map();
+    ImageMap();
     std::string getItem(int key);
 
 private:

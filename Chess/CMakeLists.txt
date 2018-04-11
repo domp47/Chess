@@ -17,7 +17,7 @@ set( project_sources
         ./main.cpp
         ./GUI/window.cpp
         ./GUI/colors.cpp
-        ./GUI/map.cpp
+        ./GUI/imageMap.cpp
         ./Board/board.cpp
         ./Board/Moves/pawn.cpp
         ./Board/Moves/rook.cpp
@@ -28,6 +28,7 @@ set( project_sources
         ./Board/elPassant.cpp
         ./AI/alphaBeta.cpp
         ./AI/random.cpp
+        ./AI/evalMap.cpp
         ./Controller/controller.cpp
         ./Controller/chess.cpp
         )
@@ -35,7 +36,7 @@ set( project_sources
 set(headers
         ./GUI/window.h
         ./GUI/colors.h
-        ./GUI/map.h
+        ./GUI/imageMap.h
         ./Board/board.h
         ./Board/Moves/pawn.h
         ./Board/Moves/rook.h
@@ -46,6 +47,7 @@ set(headers
         ./Board/elPassant.h
         ./AI/alphaBeta.h
         ./AI/random.h
+        ./AI/evalMap.h
         ./Controller/controller.h
         ./Controller/chess.h
         )

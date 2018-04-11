@@ -10,14 +10,11 @@ class Random{
 
 public:
     Random();
-    int getRandomMove(Controller* controller, bool whiteTeam, int move[4]);
+    char getRandomUpgrade();
 
-private:
-    int piecesInRow(Controller* controller, bool whiteTeam, int row);
 private:
     std::random_device rd;
     std::mt19937 mt;
-    std::uniform_int_distribution<int> dist;
 };
 
 #endif // RANDOM_H
