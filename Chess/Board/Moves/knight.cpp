@@ -13,34 +13,34 @@ QVector<Move> Knight::getMoves(int x, int y, int **board) {
             addToVector(&moves, board, x-1, y-2, whiteTeam,x ,y);
         }
         if(y-2 >= 0 && x+1 < 8){//up - up - right
-            addToVector(&moves, board, x-1, y-2, whiteTeam,x ,y);
+            addToVector(&moves, board, x+1, y-2, whiteTeam,x ,y);
         }
     }
 
     if(x+1 < 8){//right
         if(x+2 < 8 && y-1 >= 0){
-            addToVector(&moves, board, x-1, y-2, whiteTeam,x ,y);
+            addToVector(&moves, board, x+2, y-1, whiteTeam,x ,y);
         }
         if(x+2 < 8 && y+1 < 8){
-            addToVector(&moves, board, x-1, y-2, whiteTeam,x ,y);
+            addToVector(&moves, board, x+2, y+1, whiteTeam,x ,y);
         }
     }
 
     if(y+1 < 8){//down
         if(y+2 < 8 && x-1 >= 0){
-            addToVector(&moves, board, x-1, y-2, whiteTeam,x ,y);
+            addToVector(&moves, board, x-1, y+2, whiteTeam,x ,y);
         }
         if(y+2 < 8 && x+1 < 8){
-            addToVector(&moves, board, x-1, y-2, whiteTeam,x ,y);
+            addToVector(&moves, board, x+1, y+2, whiteTeam,x ,y);
         }
     }
 
     if(x-1 >= 0){//left
         if(x-2 >= 0 && y-1 >= 0){
-            addToVector(&moves, board, x-1, y-2, whiteTeam,x ,y);
+            addToVector(&moves, board, x-2, y-1, whiteTeam,x ,y);
         }
         if(x-2 >= 0 && y+1 < 8){
-            addToVector(&moves, board, x-1, y-2, whiteTeam,x ,y);
+            addToVector(&moves, board, x-2, y+1, whiteTeam,x ,y);
         }
     }
 
