@@ -5,6 +5,7 @@
 #include <thread>
 #include "controller.h"
 #include <QString>
+#include <QMessageBox>
 
 class Chess : public QObject{
 

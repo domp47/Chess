@@ -1,6 +1,7 @@
 #include <thread>
 #include "controller.h"
 #include "AI/alphaBeta.h"
+#include "Board/board.h"
 
 //TODO change how castling and passant are detected and moved so AI can do it as well
 //TODO AI pawn promotion
@@ -72,10 +73,10 @@ int Controller::noPlayers() {
         if(turn%2==0){
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-            QVector<int> move = alphaBeta->findMove(true);
+            Move move = alphaBeta->findMove(true);
 
-            if(move.length() == 4){
-                movePiece(move[0],move[1],move[2],move[3]);
+            if(move.end.x() != -1){
+                movePiece(move);
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for white team" << std::endl;
@@ -83,10 +84,10 @@ int Controller::noPlayers() {
         }else{
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-            QVector<int> move = alphaBeta->findMove(false);
+            Move move = alphaBeta->findMove(false);
 
-            if(move.length() == 4){
-                movePiece(move[0],move[1],move[2],move[3]);
+            if(move.end.x() != -1){
+                movePiece(move);
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
@@ -141,12 +142,10 @@ int Controller::onePlayer() {
         }else{//black persons turn
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-            QVector<int> move = alphaBeta->findMove(false);
+            Move move = alphaBeta->findMove(false);
 
-            if(move.length() == 4){
-                movePiece(move[0],move[1],move[2],move[3]);
-
-
+            if(move.end.x() != -1){
+                movePiece(move);
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
@@ -266,7 +265,16 @@ void Controller::recieveClick(int x, int y) {
                 board->upgradePawn(highlightedPiece.x(),highlightedPiece.y(),upgrade);
             }**/
 
-            movePiece(highlightedPiece.x(),highlightedPiece.y(),x,y);
+            Move move(QPoint(-1,-1),QPoint(-1,-1));
+
+            for(Move m: possibleMoves){
+                if(m.end.x()==x && m.end.y()==y){
+                    move = m;
+                    break;
+                }
+            }
+
+            movePiece(move);
             highlightedPiece = QPoint(-1,-1);
             possibleMoves.clear();
             window->repaint();
@@ -391,14 +399,14 @@ QVector<Move> Controller::getMoves(int x, int y) {
         return stripCheck(x,y,Queen::getMoves(x,y,board->getBoard()));
     }
     if(board->getPiece(x,y)==6 || board->getPiece(x,y)==-6){
-        QVector<QPoint> moves = King::getMoves(x,y,board->getBoard());
+        QVector<Move> moves = King::getMoves(x,y,board->getBoard(), this);
         return stripCheck(x,y,moves);
     }
 
     return QVector<Move>();
 }
 
-void Controller::movePiece(int srcX, int srcY, int desX, int desY) {
+void Controller::movePiece(Move move) {
     board->clearPassant(true);
     board->clearPassant(false);
 
@@ -407,115 +415,131 @@ void Controller::movePiece(int srcX, int srcY, int desX, int desY) {
     board->setBlackLongCastle(false);
     board->setBlackCastle(false);
 
-    if(srcY==7 && srcX==0 && board->getPiece(srcX,srcY)==2){
+    if(move.init.y()==7 && move.init.x()==0 && board->getPiece(move.init.x(),move.init.y())==2){
         board->setWLR(true);
     }
-    if(srcY==7 && srcX==7 && board->getPiece(srcX,srcY)==2){
+    if(move.init.y()==7 && move.init.x()==7 && board->getPiece(move.init.x(),move.init.y())==2){
         board->setWRR(true);
     }
-    if(srcY==0 && srcX==0 && board->getPiece(srcX,srcY)==-2){
+    if(move.init.y()==0 && move.init.x()==0 && board->getPiece(move.init.x(),move.init.y())==-2){
         board->setBLR(true);
     }
-    if(srcY==0 && srcX==7 && board->getPiece(srcX,srcY)==-2){
+    if(move.init.y()==0 && move.init.x()==7 && board->getPiece(move.init.x(),move.init.y())==-2){
         board->setBRR(true);
     }
-    if(srcY==7 && srcX==4 && board->getPiece(srcX,srcY)==6){
+    if(move.init.y()==7 && move.init.x()==4 && board->getPiece(move.init.x(),move.init.y())==6){
         board->setWKing(true);
     }
-    if(srcY==0 && srcX==4 && board->getPiece(srcX,srcY)==-6){
+    if(move.init.y()==0 && move.init.x()==4 && board->getPiece(move.init.x(),move.init.y())==-6){
         board->setBKing(true);
     }
 
-    if(board->getPiece(srcX,srcY)==-1){//is black pawn being moved
-        if(srcY-desY==-2 || srcY-desY==2){//is a first double move
-            if(desX-1 >= 0 && board->getPiece(desX-1,desY)==1){//check left for white pawn
-                int temp = board->getPiece(desX,desY-1);
+    if(board->getPiece(move.init.x(),move.init.y())==-1){//is black pawn being moved
+        if(move.init.y()-move.end.y()==-2 || move.init.y()-move.end.y()==2){//is a first double move
+            if(move.end.x()-1 >= 0 && board->getPiece(move.end.x()-1,move.end.y())==1){//check left for white pawn
+                int temp = board->getPiece(move.end.x(),move.end.y()-1);
 
-                board->setPiece(desX,desY-1, 1);
-                board->setPiece(desX-1,desY, 0);
-                board->setPiece(desX,desY, 0);
-
-                int kingCords[2];
-                board->findKing(true,kingCords);
-
-                if(!checkForAttack(kingCords[1],kingCords[0], true)){
-                    board->setPassant(true,QPoint(desX-1,desY),QPoint(desX,desY));
-                }
-
-                board->setPiece(desX,desY-1, temp);
-                board->setPiece(desX-1,desY, 1);
-                board->setPiece(desX,desY, -1);
-            }
-            if(desX+1 < 8 && board->getPiece(desX+1,desY)==1){//check right for white pawn
-                int temp = board->getPiece(desX,desY-1);;
-
-                board->setPiece(desX,desY-1, 1);
-                board->setPiece(desX+1,desY, 0);
-                board->setPiece(desX,desY, 0);
+                board->setPiece(move.end.x(),move.end.y()-1, 1);
+                board->setPiece(move.end.x()-1,move.end.y(), 0);
+                board->setPiece(move.end.x(),move.end.y(), 0);
 
                 int kingCords[2];
                 board->findKing(true,kingCords);
 
                 if(!checkForAttack(kingCords[1],kingCords[0], true)){
-                    board->setPassant(true,QPoint(desX+1,desY),QPoint(desX,desY));
+                    board->setPassant(true,QPoint(move.end.x()-1,move.end.y()),QPoint(move.end.x(),move.end.y()));
                 }
 
-                board->setPiece(desX,desY-1, temp);
-                board->setPiece(desX+1,desY, 1);
-                board->setPiece(desX,desY, -1);
+                board->setPiece(move.end.x(),move.end.y()-1, temp);
+                board->setPiece(move.end.x()-1,move.end.y(), 1);
+                board->setPiece(move.end.x(),move.end.y(), -1);
+            }
+            if(move.end.x()+1 < 8 && board->getPiece(move.end.x()+1,move.end.y())==1){//check right for white pawn
+                int temp = board->getPiece(move.end.x(),move.end.y()-1);;
+
+                board->setPiece(move.end.x(),move.end.y()-1, 1);
+                board->setPiece(move.end.x()+1,move.end.y(), 0);
+                board->setPiece(move.end.x(),move.end.y(), 0);
+
+                int kingCords[2];
+                board->findKing(true,kingCords);
+
+                if(!checkForAttack(kingCords[1],kingCords[0], true)){
+                    board->setPassant(true,QPoint(move.end.x()+1,move.end.y()),QPoint(move.end.x(),move.end.y()));
+                }
+
+                board->setPiece(move.end.x(),move.end.y()-1, temp);
+                board->setPiece(move.end.x()+1,move.end.y(), 1);
+                board->setPiece(move.end.x(),move.end.y(), -1);
             }
         }
     }
-    else if(board->getPiece(srcX,srcY)==1){//is white pawn being moved
-        if(srcY-desY==-2 || srcY-desY==2){//is a first double move
-            if(desX-1 >= 0 && board->getPiece(desX-1,desY)==-1){//check left for black pawn
-                int temp = board->getPiece(desX,desY-1);
+    else if(board->getPiece(move.init.x(),move.init.y())==1){//is white pawn being moved
+        if(move.init.y()-move.end.y()==-2 || move.init.y()-move.end.y()==2){//is a first double move
+            if(move.end.x()-1 >= 0 && board->getPiece(move.end.x()-1,move.end.y())==-1){//check left for black pawn
+                int temp = board->getPiece(move.end.x(),move.end.y()-1);
 
-                board->setPiece(desX,desY+1, -1);
-                board->setPiece(desX-1,desY, 0);
-                board->setPiece(desX,desY, 0);
+                board->setPiece(move.end.x(),move.end.y()+1, -1);
+                board->setPiece(move.end.x()-1,move.end.y(), 0);
+                board->setPiece(move.end.x(),move.end.y(), 0);
 
                 int kingCords[2];
                 board->findKing(false,kingCords);
 
                 if(!checkForAttack(kingCords[1],kingCords[0], false)){
-                    board->setPassant(false,QPoint(desX-1,desY),QPoint(desX,desY));
+                    board->setPassant(false,QPoint(move.end.x()-1,move.end.y()),QPoint(move.end.x(),move.end.y()));
                 }
 
-                board->setPiece(desX,desY+1, temp);
-                board->setPiece(desX-1,desY, -1);
-                board->setPiece(desX,desY, 1);
+                board->setPiece(move.end.x(),move.end.y()+1, temp);
+                board->setPiece(move.end.x()-1,move.end.y(), -1);
+                board->setPiece(move.end.x(),move.end.y(), 1);
             }
-            if(desX+1 < 8 && board->getPiece(desX+1,desY)==-1){//check right for black pawn
-                int temp = board->getPiece(desX,desY+1);
+            if(move.end.x()+1 < 8 && board->getPiece(move.end.x()+1,move.end.y())==-1){//check right for black pawn
+                int temp = board->getPiece(move.end.x(),move.end.y()+1);
 
-                board->setPiece(desX,desY+1, -1);
-                board->setPiece(desX+1,desY, 0);
-                board->setPiece(desX,desY, 0);
+                board->setPiece(move.end.x(),move.end.y()+1, -1);
+                board->setPiece(move.end.x()+1,move.end.y(), 0);
+                board->setPiece(move.end.x(),move.end.y(), 0);
 
                 int kingCords[2];
                 board->findKing(false,kingCords);
                 if(!checkForAttack(kingCords[1],kingCords[0], false)){
-                    board->setPassant(false,QPoint(desX+1,desY),QPoint(desX,desY));
+                    board->setPassant(false,QPoint(move.end.x()+1,move.end.y()),QPoint(move.end.x(),move.end.y()));
                 }
 
-                board->setPiece(desX,desY+1, temp);
-                board->setPiece(desX+1,desY, -1);
-                board->setPiece(desX,desY, 1);
+                board->setPiece(move.end.x(),move.end.y()+1, temp);
+                board->setPiece(move.end.x()+1,move.end.y(), -1);
+                board->setPiece(move.end.x(),move.end.y(), 1);
             }
         }
     }
-    board->setPiece(desX,desY, board->getPiece(srcX,srcY));
-    board->setPiece(srcX,srcY,0);
-}
 
-void Controller::movePassant(int srcX, int srcY, QPoint victim, bool whiteTeam) {
-    board->setPiece(victim.x(),victim.y(),0);
-    if(whiteTeam){
-        movePiece(srcX,srcY,victim.x(),victim.y()-1);
-    }else{
-        movePiece(srcX,srcY,victim.x(),victim.y()+1);
+    if(move.special==0){
+        board->setPiece(move.end.x(),move.end.y(), board->getPiece(move.init.x(),move.init.y()));
+        board->setPiece(move.init.x(),move.init.y(),0);
+    }else if(move.special==1){
+        board->setPiece(move.end.x(),move.init.y(),0);
+        board->setPiece(move.end.x(),move.end.y(), board->getPiece(move.init.x(),move.init.y()));
+        board->setPiece(move.init.x(),move.init.y(),0);
+    }else if(move.special==2){// castling left
+        board->setPiece(2,move.init.y(),board->getPiece(4,move.init.y()));
+        board->setPiece(3,move.init.y(),board->getPiece(0,move.init.y()));
+        board->setPiece(0,move.init.y(),0);
+        board->setPiece(4,move.init.y(),0);
+    }else if(move.special==3){//castling right
+        board->setPiece(6,move.init.y(),board->getPiece(4,move.init.y()));
+        board->setPiece(5,move.init.y(),board->getPiece(7,move.init.y()));
+        board->setPiece(7,move.init.y(),0);
+        board->setPiece(4,move.init.y(),0);
+    }else if(move.special==4){//pawn promotion
+        if(gamemode==2 || (gamemode==1 && turn%2==0)){
+            //TODO get input from user
+        }else{
+            //TODO use alpha beta to find best promotion
+        }
     }
+
+
 }
 
 bool Controller::checkCheck(bool whiteTeam) {
@@ -573,42 +597,42 @@ bool Controller::checkForAttack(int srcX, int srcY, bool whiteTeam) {
                         return true;
                     }
                 }else if(board->getPiece(x,y) == -2){
-                    QVector<QPoint> moves = Rook::getMoves(x,y,board->getBoard());
+                    QVector<Move> moves = Rook::getMoves(x,y,board->getBoard());
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }else if(board->getPiece(x,y) == -3){
-                    QVector<QPoint> moves = Knight::getMoves(x,y,board->getBoard());
+                    QVector<Move> moves = Knight::getMoves(x,y,board->getBoard());
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }else if(board->getPiece(x,y) == -4){
-                    QVector<QPoint> moves = Bishop::getMoves(x,y,board->getBoard());
+                    QVector<Move> moves = Bishop::getMoves(x,y,board->getBoard());
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }else if(board->getPiece(x,y) == -5){
-                    QVector<QPoint> moves = Queen::getMoves(x,y,board->getBoard());
+                    QVector<Move> moves = Queen::getMoves(x,y,board->getBoard());
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }else if(board->getPiece(x,y) == -6){
-                    QVector<QPoint> moves;
+                    QVector<Move> moves;
 
-                    moves.append(QPoint(x+1,y));
-                    moves.append(QPoint(x-1,y));
-                    moves.append(QPoint(x,y+1));
-                    moves.append(QPoint(x,y-1));
-                    moves.append(QPoint(x+1,y+1));
-                    moves.append(QPoint(x-1,y+1));
-                    moves.append(QPoint(x+1,y-1));
-                    moves.append(QPoint(x-1,y-1));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x+1,y)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x-1,y)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x,y+1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x,y-1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x+1,y+1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x-1,y+1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x+1,y-1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x-1,y-1)));
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }
@@ -623,42 +647,42 @@ bool Controller::checkForAttack(int srcX, int srcY, bool whiteTeam) {
                         return true;
                     }
                 }else if(board->getPiece(x,y) == 2){
-                    QVector<QPoint> moves = Rook::getMoves(x,y,board->getBoard());
+                    QVector<Move> moves = Rook::getMoves(x,y,board->getBoard());
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }else if(board->getPiece(x,y) == 3){
-                    QVector<QPoint> moves = Knight::getMoves(x,y,board->getBoard());
+                    QVector<Move> moves = Knight::getMoves(x,y,board->getBoard());
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }else if(board->getPiece(x,y) == 4){
-                    QVector<QPoint> moves = Bishop::getMoves(x,y,board->getBoard());
+                    QVector<Move> moves = Bishop::getMoves(x,y,board->getBoard());
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }else if(board->getPiece(x,y) == 5){
-                    QVector<QPoint> moves = Queen::getMoves(x,y,board->getBoard());
+                    QVector<Move> moves = Queen::getMoves(x,y,board->getBoard());
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }else if(board->getPiece(x,y) == 6){
-                    QVector<QPoint> moves;
+                    QVector<Move> moves;
 
-                    moves.append(QPoint(x+1,y));
-                    moves.append(QPoint(x-1,y));
-                    moves.append(QPoint(x,y+1));
-                    moves.append(QPoint(x,y-1));
-                    moves.append(QPoint(x+1,y+1));
-                    moves.append(QPoint(x-1,y+1));
-                    moves.append(QPoint(x+1,y-1));
-                    moves.append(QPoint(x-1,y-1));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x+1,y)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x-1,y)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x,y+1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x,y-1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x+1,y+1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x-1,y+1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x+1,y-1)));
+                    moves.append(Move(QPoint(srcX,srcY),QPoint(x-1,y-1)));
 
-                    if(moves.contains(QPoint(srcX,srcY))){
+                    if(checkVectorOfMoves(moves,srcX,srcY)){
                         return true;
                     }
                 }
@@ -668,8 +692,8 @@ bool Controller::checkForAttack(int srcX, int srcY, bool whiteTeam) {
 
     return false;
 }
-QVector<QPoint> Controller::stripCheck(int x, int y,QVector<Move> moves) {
-    QVector<QPoint> strippedMoves;
+QVector<Move> Controller::stripCheck(int x, int y,QVector<Move> moves) {
+    QVector<Move> strippedMoves;
     bool whiteTeam = true;
 
     if(board->getPiece(x,y) < 0){
@@ -680,10 +704,36 @@ QVector<QPoint> Controller::stripCheck(int x, int y,QVector<Move> moves) {
 
     int kingCords[2];
 
-    for(QPoint move: moves){
-        int temp = board->getPiece(move.x(),move.y());
-        board->setPiece(move.x(),move.y(), board->getPiece(x,y));
-        board->setPiece(x,y,0);
+    for(Move move: moves){
+
+        int temp, king, rook;
+
+        if(move.special==0){// normal move
+            temp = board->getPiece(move.end.x(),move.end.y());
+            board->setPiece(move.end.x(),move.end.y(), board->getPiece(x,y));
+            board->setPiece(x,y,0);
+        }else if(move.special==1){//passant move
+            temp = board->getPiece(move.end.x(),move.init.y());
+            board->setPiece(move.end.x(),move.init.y(),0);
+            board->setPiece(move.end.x(),move.end.y(), board->getPiece(x,y));
+            board->setPiece(x,y,0);
+        }else if(move.special==2){// castling left
+            rook = board->getPiece(0,y);
+            king = board->getPiece(4,y);
+
+            board->setPiece(0,y,0);
+            board->setPiece(4,y,0);
+            board->setPiece(2,y,king);
+            board->setPiece(3,y,rook);
+        }else if(move.special==3){//castling right
+            rook = board->getPiece(7,y);
+            king = board->getPiece(4,y);
+
+            board->setPiece(7,y,0);
+            board->setPiece(4,y,0);
+            board->setPiece(6,y,king);
+            board->setPiece(5,y,rook);
+        }
 
         board->findKing(whiteTeam, kingCords);
         bool check = checkForAttack(kingCords[1],kingCords[0], whiteTeam);
@@ -692,8 +742,24 @@ QVector<QPoint> Controller::stripCheck(int x, int y,QVector<Move> moves) {
             strippedMoves.append(move);
         }
 
-        board->setPiece(x,y,board->getPiece(move.x(),move.y()));
-        board->setPiece(move.x(),move.y(),temp);
+        if(move.special==0){// normal move
+            board->setPiece(x,y,board->getPiece(move.end.x(),move.end.y()));
+            board->setPiece(move.end.x(),move.end.y(), temp);
+        }else if(move.special==1){//passant move
+            board->setPiece(x,y,board->getPiece(move.end.x(),move.end.y()));
+            board->setPiece(move.end.x(),move.end.y(),0);
+            board->setPiece(move.end.x(),move.init.y(),temp);
+        }else if(move.special==2){// castling left
+            board->setPiece(2,y,0);
+            board->setPiece(3,y,0);
+            board->setPiece(0,y,rook);
+            board->setPiece(4,y,king);
+        }else if(move.special==3){//castling right
+            board->setPiece(6,y,0);
+            board->setPiece(5,y,0);
+            board->setPiece(0,y,rook);
+            board->setPiece(4,y,king);
+        }
     }
 
     return strippedMoves;
@@ -701,4 +767,13 @@ QVector<QPoint> Controller::stripCheck(int x, int y,QVector<Move> moves) {
 
 QPoint Controller::getHighlighted() {
     return highlightedPiece;
+}
+
+bool Controller::checkVectorOfMoves(QVector<Move> moves, int x, int y) {
+    for(Move move: moves){
+        if(move.end.y()==y && move.end.x()==x){
+            return true;
+        }
+    }
+    return false;
 }

@@ -10,15 +10,15 @@ class AlphaBeta{
 
 public:
     AlphaBeta(Controller* controller);
-    QVector<int> findMove(bool whiteTeam);
+    Move findMove(bool whiteTeam);
     char findUpgrade();
 
 private:
     Random randomMove;
-    QVector<QVector<int>> getAllMoves(bool whiteTeam);
+    QVector<Move> getAllMoves(bool whiteTeam);
     int evaluateBoard(int** board);
     int minimax(int depth,int alpha, int beta, bool whiteTeam);
-    QVector<int> minimaxRoot(int depth, bool whiteTeam);
+    Move minimaxRoot(int depth, bool whiteTeam);
 
 private:
     Controller* controller;

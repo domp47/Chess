@@ -1,5 +1,6 @@
 #include "window.h"
 #include "Controller/controller.h"
+#include "Board/board.h"
 
 Window::Window(Controller* controller) {
     this->setFixedWidth(850);
@@ -57,11 +58,11 @@ void Window::paintEvent(QPaintEvent *)
         }
     }
 
-    for(QPoint p: controller->getPossibleMoves()){
-        int xLoc = (p.x() * 100) + STARTING_X;
-        int yLoc = (p.y() * 100) + STARTING_Y;
+    for(Move m: controller->getPossibleMoves()){
+        int xLoc = (m.end.x() * 100) + STARTING_X;
+        int yLoc = (m.end.y() * 100) + STARTING_Y;
 
-        if(controller->getBoard()->getPiece(p.x(),p.y())==0)
+        if(controller->getBoard()->getPiece(m.end.x(),m.end.y())==0)
             painter.fillRect(xLoc,yLoc,100,100,Colors::move());
         else
             painter.fillRect(xLoc,yLoc,100,100,Colors::special());
@@ -69,12 +70,12 @@ void Window::paintEvent(QPaintEvent *)
         yLoc +=10;
         xLoc +=10;
 
-        if((p.x()+p.y())%2==0)
+        if((m.end.x()+m.end.y())%2==0)
             painter.fillRect(xLoc, yLoc,80,80,Colors::light());
         else
             painter.fillRect(xLoc, yLoc,80,80,Colors::dark());
 
-        int piece = controller->getBoard()->getPiece(p.x(), p.y());
+        int piece = controller->getBoard()->getPiece(m.end.x(), m.end.y());
 
         xLoc -= 10;
         yLoc -= 10;
@@ -158,7 +159,7 @@ void Window::paintEvent(QPaintEvent *)
                 }
             }
         }
-        else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==6){//white knight
+        /**else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==6){//white knight
             if(controller->getBoard()->isWhiteLongCastle()){
                 int x = 200 + STARTING_X;
                 int y = 700 + STARTING_Y;
@@ -189,7 +190,7 @@ void Window::paintEvent(QPaintEvent *)
                 painter.fillRect(x,y,100,100,Colors::move());
                 painter.fillRect(x+10,y+10,80,80,Colors::light());
             }
-        }
+        }**/
     }
 
 

@@ -1,14 +1,14 @@
 #include "alphaBeta.h"
-#include "Controller/controller.h"
+#include "Board/board.h"
 
 AlphaBeta::AlphaBeta(Controller* controller) {
     this->controller = controller;
 
 }
 
-QVector<int> AlphaBeta::findMove(bool whiteTeam) {
+Move AlphaBeta::findMove(bool whiteTeam) {
 
-    QVector<int> move = minimaxRoot(4, whiteTeam);
+    Move move = minimaxRoot(4, whiteTeam);
 
     return move;
 }
@@ -17,37 +17,19 @@ char AlphaBeta::findUpgrade() {
     return randomMove.getRandomUpgrade();
 }
 
-QVector<QVector<int>> AlphaBeta::getAllMoves(bool whiteTeam) {
-    QVector<QVector<int>> allPossibleMoves;
+QVector<Move> AlphaBeta::getAllMoves(bool whiteTeam) {
+    QVector<Move> allPossibleMoves;
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
             if(controller->getBoard()->getPiece(x,y) < 0 && !whiteTeam){
-                QVector<QPoint> moves = controller->getMoves(x,y);
+                QVector<Move> moves = controller->getMoves(x,y);
 
-                for(QPoint point: moves){
-                    QVector<int> move;
-                    move.append(x);
-                    move.append(y);
-
-                    move.append(point.x());
-                    move.append(point.y());
-
-                    allPossibleMoves.append(move);
-                }
+                allPossibleMoves.append(moves);
             }else if(controller->getBoard()->getPiece(x,y) > 0 && whiteTeam){
-                QVector<QPoint> moves = controller->getMoves(x,y);
+                QVector<Move> moves = controller->getMoves(x,y);
 
-                for(QPoint point: moves) {
-                    QVector<int> move;
-                    move.append(x);
-                    move.append(y);
-
-                    move.append(point.x());
-                    move.append(point.y());
-
-                    allPossibleMoves.append(move);
-                }
+                allPossibleMoves.append(moves);
             }
         }
     }
@@ -72,21 +54,86 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
         return evaluateBoard(controller->getBoard()->getBoard());
     }
 
-    QVector<QVector<int>> allMoves = getAllMoves(whiteTeam);
+    QVector<Move> allMoves = getAllMoves(whiteTeam);
 
     if(whiteTeam){
         int bestScore = INT_MIN;
 
-        for(QVector<int> move: allMoves){
+        for(Move move: allMoves){
 
-            int temp = controller->getBoard()->getPiece(move[2], move[3]);
-            controller->getBoard()->setPiece(move[2],move[3], controller->getBoard()->getPiece(move[0], move[1]));
-            controller->getBoard()->setPiece(move[0],move[1], 0);
+            int temp, king, rook;
+
+            if(move.special==0){// normal move
+                temp = controller->getBoard()->getPiece(move.end.x(),move.end.y());
+                controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
+                controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
+            }else if(move.special==1){//passant move
+                temp = controller->getBoard()->getPiece(move.end.x(),move.init.y());
+                controller->getBoard()->setPiece(move.end.x(),move.init.y(),0);
+                controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
+                controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
+            }else if(move.special==2){// castling left
+                rook = controller->getBoard()->getPiece(0,move.init.y());
+                king = controller->getBoard()->getPiece(4,move.init.y());
+
+                controller->getBoard()->setPiece(0,move.init.y(),0);
+                controller->getBoard()->setPiece(4,move.init.y(),0);
+                controller->getBoard()->setPiece(2,move.init.y(),king);
+                controller->getBoard()->setPiece(3,move.init.y(),rook);
+
+                if(move.init.y()==0){
+                    controller->getBoard()->setBLR(true);
+                    controller->getBoard()->setBKing(true);
+                }else{
+                    controller->getBoard()->setWLR(true);
+                    controller->getBoard()->setWKing(true);
+                }
+            }else if(move.special==3){//castling right
+                rook = controller->getBoard()->getPiece(7,move.init.y());
+                king = controller->getBoard()->getPiece(4,move.init.y());
+
+                controller->getBoard()->setPiece(7,move.init.y(),0);
+                controller->getBoard()->setPiece(4,move.init.y(),0);
+                controller->getBoard()->setPiece(6,move.init.y(),king);
+                controller->getBoard()->setPiece(5,move.init.y(),rook);
+
+                if(move.init.y()==0){
+                    controller->getBoard()->setBRR(true);
+                    controller->getBoard()->setBKing(true);
+                }else{
+                    controller->getBoard()->setWRR(true);
+                    controller->getBoard()->setWKing(true);
+                }
+            }
 
             bestScore = std::max(bestScore, minimax(depth-1,alpha, beta, !whiteTeam));
 
-            controller->getBoard()->setPiece(move[0],move[1], controller->getBoard()->getPiece(move[2], move[3]));
-            controller->getBoard()->setPiece(move[2],move[3], temp);
+            if(move.special==0){// normal move
+                controller->getBoard()->setPiece(move.init.x(),move.init.y(),controller->getBoard()->getPiece(move.end.x(),move.end.y()));
+                controller->getBoard()->setPiece(move.end.x(),move.end.y(), temp);
+            }else if(move.special==1){//passant move
+                controller->getBoard()->setPiece(move.init.x(),move.init.y(),controller->getBoard()->getPiece(move.end.x(),move.end.y()));
+                controller->getBoard()->setPiece(move.end.x(),move.end.y(),0);
+                controller->getBoard()->setPiece(move.end.x(),move.init.y(),temp);
+            }else if(move.special==2){// castling left
+                controller->getBoard()->setPiece(2,move.init.y(),0);
+                controller->getBoard()->setPiece(3,move.init.y(),0);
+                controller->getBoard()->setPiece(0,move.init.y(),rook);
+                controller->getBoard()->setPiece(4,move.init.y(),king);
+            }else if(move.special==3){//castling right
+                controller->getBoard()->setPiece(6,move.init.y(),0);
+                controller->getBoard()->setPiece(5,move.init.y(),0);
+                controller->getBoard()->setPiece(0,move.init.y(),rook);
+                controller->getBoard()->setPiece(4,move.init.y(),king);
+
+                if(move.init.y()==0){
+                    controller->getBoard()->setBRR(false);
+                    controller->getBoard()->setBKing(false);
+                }else{
+                    controller->getBoard()->setWRR(false);
+                    controller->getBoard()->setWKing(false);
+                }
+            }
 
             alpha = std::max(alpha, bestScore);
             if(beta <= alpha){
@@ -97,15 +144,80 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
     } else{
         int bestScore = INT_MAX;
 
-        for(QVector<int> move: allMoves){
-            int temp = controller->getBoard()->getPiece(move[2], move[3]);
-            controller->getBoard()->setPiece(move[2],move[3], controller->getBoard()->getPiece(move[0], move[1]));
-            controller->getBoard()->setPiece(move[0],move[1], 0);
+        for(Move move: allMoves){
+            int temp, king, rook;
+
+            if(move.special==0){// normal move
+                temp = controller->getBoard()->getPiece(move.end.x(),move.end.y());
+                controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
+                controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
+            }else if(move.special==1){//passant move
+                temp = controller->getBoard()->getPiece(move.end.x(),move.init.y());
+                controller->getBoard()->setPiece(move.end.x(),move.init.y(),0);
+                controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
+                controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
+            }else if(move.special==2){// castling left
+                rook = controller->getBoard()->getPiece(0,move.init.y());
+                king = controller->getBoard()->getPiece(4,move.init.y());
+
+                controller->getBoard()->setPiece(0,move.init.y(),0);
+                controller->getBoard()->setPiece(4,move.init.y(),0);
+                controller->getBoard()->setPiece(2,move.init.y(),king);
+                controller->getBoard()->setPiece(3,move.init.y(),rook);
+
+                if(move.init.y()==0){
+                    controller->getBoard()->setBLR(true);
+                    controller->getBoard()->setBKing(true);
+                }else{
+                    controller->getBoard()->setWLR(true);
+                    controller->getBoard()->setWKing(true);
+                }
+            }else if(move.special==3){//castling right
+                rook = controller->getBoard()->getPiece(7,move.init.y());
+                king = controller->getBoard()->getPiece(4,move.init.y());
+
+                controller->getBoard()->setPiece(7,move.init.y(),0);
+                controller->getBoard()->setPiece(4,move.init.y(),0);
+                controller->getBoard()->setPiece(6,move.init.y(),king);
+                controller->getBoard()->setPiece(5,move.init.y(),rook);
+
+                if(move.init.y()==0){
+                    controller->getBoard()->setBRR(true);
+                    controller->getBoard()->setBKing(true);
+                }else{
+                    controller->getBoard()->setWRR(true);
+                    controller->getBoard()->setWKing(true);
+                }
+            }
 
             bestScore = std::min(bestScore, minimax(depth-1,alpha, beta, !whiteTeam));
 
-            controller->getBoard()->setPiece(move[0],move[1], controller->getBoard()->getPiece(move[2], move[3]));
-            controller->getBoard()->setPiece(move[2],move[3], temp);
+            if(move.special==0){// normal move
+                controller->getBoard()->setPiece(move.init.x(),move.init.y(),controller->getBoard()->getPiece(move.end.x(),move.end.y()));
+                controller->getBoard()->setPiece(move.end.x(),move.end.y(), temp);
+            }else if(move.special==1){//passant move
+                controller->getBoard()->setPiece(move.init.x(),move.init.y(),controller->getBoard()->getPiece(move.end.x(),move.end.y()));
+                controller->getBoard()->setPiece(move.end.x(),move.end.y(),0);
+                controller->getBoard()->setPiece(move.end.x(),move.init.y(),temp);
+            }else if(move.special==2){// castling left
+                controller->getBoard()->setPiece(2,move.init.y(),0);
+                controller->getBoard()->setPiece(3,move.init.y(),0);
+                controller->getBoard()->setPiece(0,move.init.y(),rook);
+                controller->getBoard()->setPiece(4,move.init.y(),king);
+            }else if(move.special==3){//castling right
+                controller->getBoard()->setPiece(6,move.init.y(),0);
+                controller->getBoard()->setPiece(5,move.init.y(),0);
+                controller->getBoard()->setPiece(0,move.init.y(),rook);
+                controller->getBoard()->setPiece(4,move.init.y(),king);
+
+                if(move.init.y()==0){
+                    controller->getBoard()->setBRR(false);
+                    controller->getBoard()->setBKing(false);
+                }else{
+                    controller->getBoard()->setWRR(false);
+                    controller->getBoard()->setWKing(false);
+                }
+            }
 
             beta = std::min(beta, bestScore);
             if(beta <= alpha){
@@ -117,10 +229,10 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
 
 }
 
-QVector<int> AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
-    QVector<QVector<int>> allMoves = getAllMoves(whiteTeam);
+Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
+    QVector<Move> allMoves = getAllMoves(whiteTeam);
     int bestScore;
-    QVector<int> bestMove;
+    Move bestMove(QPoint(-1,-1),QPoint(-1,-1));
 
 
     if(whiteTeam){
@@ -129,15 +241,80 @@ QVector<int> AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
         bestScore = INT_MAX;
     }
 
-    for(QVector<int> move: allMoves){
-        int temp = controller->getBoard()->getPiece(move[2], move[3]);
-        controller->getBoard()->setPiece(move[2],move[3], controller->getBoard()->getPiece(move[0], move[1]));
-        controller->getBoard()->setPiece(move[0],move[1], 0);
+    for(Move move: allMoves){
+        int temp, king, rook;
+
+        if(move.special==0){// normal move
+            temp = controller->getBoard()->getPiece(move.end.x(),move.end.y());
+            controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
+            controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
+        }else if(move.special==1){//passant move
+            temp = controller->getBoard()->getPiece(move.end.x(),move.init.y());
+            controller->getBoard()->setPiece(move.end.x(),move.init.y(),0);
+            controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
+            controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
+        }else if(move.special==2){// castling left
+            rook = controller->getBoard()->getPiece(0,move.init.y());
+            king = controller->getBoard()->getPiece(4,move.init.y());
+
+            controller->getBoard()->setPiece(0,move.init.y(),0);
+            controller->getBoard()->setPiece(4,move.init.y(),0);
+            controller->getBoard()->setPiece(2,move.init.y(),king);
+            controller->getBoard()->setPiece(3,move.init.y(),rook);
+
+            if(move.init.y()==0){
+                controller->getBoard()->setBLR(true);
+                controller->getBoard()->setBKing(true);
+            }else{
+                controller->getBoard()->setWLR(true);
+                controller->getBoard()->setWKing(true);
+            }
+        }else if(move.special==3){//castling right
+            rook = controller->getBoard()->getPiece(7,move.init.y());
+            king = controller->getBoard()->getPiece(4,move.init.y());
+
+            controller->getBoard()->setPiece(7,move.init.y(),0);
+            controller->getBoard()->setPiece(4,move.init.y(),0);
+            controller->getBoard()->setPiece(6,move.init.y(),king);
+            controller->getBoard()->setPiece(5,move.init.y(),rook);
+
+            if(move.init.y()==0){
+                controller->getBoard()->setBRR(true);
+                controller->getBoard()->setBKing(true);
+            }else{
+                controller->getBoard()->setWRR(true);
+                controller->getBoard()->setWKing(true);
+            }
+        }
 
         int score = minimax(depth, INT_MIN, INT_MAX,  whiteTeam);
 
-        controller->getBoard()->setPiece(move[0],move[1], controller->getBoard()->getPiece(move[2], move[3]));
-        controller->getBoard()->setPiece(move[2],move[3], temp);
+        if(move.special==0){// normal move
+            controller->getBoard()->setPiece(move.init.x(),move.init.y(),controller->getBoard()->getPiece(move.end.x(),move.end.y()));
+            controller->getBoard()->setPiece(move.end.x(),move.end.y(), temp);
+        }else if(move.special==1){//passant move
+            controller->getBoard()->setPiece(move.init.x(),move.init.y(),controller->getBoard()->getPiece(move.end.x(),move.end.y()));
+            controller->getBoard()->setPiece(move.end.x(),move.end.y(),0);
+            controller->getBoard()->setPiece(move.end.x(),move.init.y(),temp);
+        }else if(move.special==2){// castling left
+            controller->getBoard()->setPiece(2,move.init.y(),0);
+            controller->getBoard()->setPiece(3,move.init.y(),0);
+            controller->getBoard()->setPiece(0,move.init.y(),rook);
+            controller->getBoard()->setPiece(4,move.init.y(),king);
+        }else if(move.special==3){//castling right
+            controller->getBoard()->setPiece(6,move.init.y(),0);
+            controller->getBoard()->setPiece(5,move.init.y(),0);
+            controller->getBoard()->setPiece(0,move.init.y(),rook);
+            controller->getBoard()->setPiece(4,move.init.y(),king);
+
+            if(move.init.y()==0){
+                controller->getBoard()->setBRR(false);
+                controller->getBoard()->setBKing(false);
+            }else{
+                controller->getBoard()->setWRR(false);
+                controller->getBoard()->setWKing(false);
+            }
+        }
 
         if(whiteTeam){
             if(score > bestScore){

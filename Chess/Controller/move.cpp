@@ -11,3 +11,9 @@ Move::Move(QPoint init, QPoint end, int special) {
     this->end = end;
     this->special = special;
 }
+
+Move::Move() {
+    this->init = QPoint(-1,-1);
+    this->end = QPoint(-1,-1);
+    this->special = -1;
+}

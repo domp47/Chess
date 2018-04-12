@@ -2,12 +2,15 @@
 #define Controller_H
 
 #include <GUI/window.h>
-#include <Board/board.h>
+//#include <Board/board.h>
 #include <QtCore/QWaitCondition>
 #include <QtCore/QMutex>
+#include "move.h"
+//#include "Board/board.h"
 //#include "AI/alphaBeta.h"
 
 class AlphaBeta;
+class Board;
 
 class Controller : public QObject{
 
@@ -18,7 +21,7 @@ public:
     Window* getWindow();
     Board* getBoard();
     int checkMateStalemate(bool whiteTeam);
-    void movePiece(int srcX, int srcY, int desX, int desY);
+    void movePiece(Move move);
     QVector<Move> getMoves(int x, int y);
     bool checkCheck(bool whiteTeam);
     bool checkForAttack(int x, int y, bool whiteTeam);
@@ -27,11 +30,12 @@ public:
     QPoint getHighlighted();
     void startGame();
 private:
-    QVector<Move> stripCheck(int x, int y, QVector<QPoint> moves);
+    QVector<Move> stripCheck(int x, int y, QVector<Move> moves);
     int noPlayers();
     int onePlayer();
     int twoPlayers();
     bool isMovePossible(QPoint p);
+    bool checkVectorOfMoves(QVector<Move> moves, int x, int y);
 private:
     Window* window;
     Board* board;

@@ -5,6 +5,7 @@
 
 class Move {
 public:
+    Move();
     Move(QPoint init, QPoint end, int special=0);
 
 public:
