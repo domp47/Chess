@@ -23,10 +23,10 @@
 Board::Board(Controller* controller) {
     this->controller = controller;
 
-    board = new int*[8];
-    for (int i = 0; i < 8; ++i) {
-        board[i] = new int[8];
-    }
+//    board = new int*[8];
+//    for (int i = 0; i < 8; ++i) {
+//        board[i] = new int[8];
+//    }
 }
 
 void Board::initBoard(){
@@ -226,7 +226,7 @@ void Board::setWhiteCastle(bool whiteCastle) {
     Board::whiteCastle = whiteCastle;
 }
 
-int **Board::getBoard() {
+std::array<std::array<int,8>,8> Board::getBoard() {
     return board;
 }
 
@@ -259,5 +259,20 @@ void Board::clearPassant(bool white) {
         whitePassant.clearElPassant();
     }else{
         blackPassant.clearElPassant();
+    }
+}
+
+void Board::printBoard() {
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            int piece = board[y][x];
+
+            if(piece < 0){
+                std::cout << piece << " ";
+            }else{
+                std::cout << " " << piece << " ";
+            }
+        }
+        std::cout << std::endl;
     }
 }

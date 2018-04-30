@@ -1,6 +1,6 @@
 #include "rook.h"
 
-QVector <Move> Rook::getMoves(int x, int y, int **board) {
+QVector <Move> Rook::getMoves(int x, int y, std::array<std::array<int,8>,8> board) {
     QVector <Move> moves;
 
     bool whiteTeam = true;

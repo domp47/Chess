@@ -1,6 +1,6 @@
 #include "bishop.h"
 
-QVector<Move> Bishop::getMoves(int x, int y, int **board) {
+QVector<Move> Bishop::getMoves(int x, int y, std::array<std::array<int,8>,8> board) {
     QVector<Move> moves;
 
     bool whiteTeam = true;

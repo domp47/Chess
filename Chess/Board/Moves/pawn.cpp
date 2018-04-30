@@ -1,7 +1,7 @@
 #include "pawn.h"
 #include "../board.h"
 
-QVector<Move> Pawn::getMoves(int x, int y, int** board, Controller* controller) {
+QVector<Move> Pawn::getMoves(int x, int y, std::array<std::array<int,8>,8> board, Controller* controller) {
     QVector<Move> moves;
 
     bool whiteTeam = true;

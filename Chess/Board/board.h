@@ -44,7 +44,7 @@ public:
     void setWhiteLongCastle(bool whiteLongCastle);
     bool isWhiteCastle() const;
     void setWhiteCastle(bool whiteCastle);
-    int** getBoard();
+    std::array<std::array<int,8>,8> getBoard();
     void setWLR(bool val);
     void setWRR(bool val);
     void setBLR(bool val);
@@ -53,8 +53,9 @@ public:
     void setBKing(bool val);
     void upgradePawn(int x, int y, char upgrade);
     void findKing(bool whiteTeam, int cords[2]);
+    void printBoard();
 private:
-    int** board;
+    std::array<std::array<int,8>,8> board;
     ElPassant whitePassant;
     ElPassant blackPassant;
     bool whiteLeftRookMoved;

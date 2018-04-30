@@ -16,9 +16,11 @@ public:
 private:
     Random randomMove;
     QVector<Move> getAllMoves(bool whiteTeam);
-    int evaluateBoard(int** board);
+    int evaluateBoard(std::array<std::array<int,8>,8> board);
     int minimax(int depth,int alpha, int beta, bool whiteTeam);
     Move minimaxRoot(int depth, bool whiteTeam);
+    void doMove(Move move, int* temp, int* rook, int* king);
+    void undoMove(Move move, int temp, int rook, int king);
 
 private:
     Controller* controller;

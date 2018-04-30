@@ -1,6 +1,6 @@
 #include "king.h"
 
-QVector<Move> King::getMoves(int x, int y, int** gameBoard, Controller* controller) {
+QVector<Move> King::getMoves(int x, int y, std::array<std::array<int,8>,8> gameBoard, Controller* controller) {
     QVector<Move> moves;
 
     bool whiteTeam = true;

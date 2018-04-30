@@ -1,6 +1,6 @@
 #include "knight.h"
 
-QVector<Move> Knight::getMoves(int x, int y, int **board) {
+QVector<Move> Knight::getMoves(int x, int y, std::array<std::array<int,8>,8> board) {
     QVector<Move> moves;
 
     bool whiteTeam = true;
@@ -47,7 +47,7 @@ QVector<Move> Knight::getMoves(int x, int y, int **board) {
     return moves;
 }
 
-void Knight::addToVector(QVector<Move>* vector, int** board, int x, int y, bool whiteTeam, int initX, int initY) {
+void Knight::addToVector(QVector<Move>* vector, std::array<std::array<int,8>,8> board, int x, int y, bool whiteTeam, int initX, int initY) {
     if (board[y][x] == 0) {
         vector->append(Move(QPoint(initX,initY),QPoint(x, y)));
     } else {

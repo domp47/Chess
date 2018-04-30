@@ -9,7 +9,7 @@
 class Board;
 
 namespace Pawn {
-    QVector<Move> getMoves(int x, int y, int** board, Controller* controller);
+    QVector<Move> getMoves(int x, int y, std::array<std::array<int,8>,8> board, Controller* controller);
 };
 
 #endif //PAWN_H

@@ -2,7 +2,7 @@
 #include "rook.h"
 #include "bishop.h"
 
-QVector<Move> Queen::getMoves(int x, int y, int **board) {
+QVector<Move> Queen::getMoves(int x, int y, std::array<std::array<int,8>,8> board) {
     QVector<Move> moves;
 
     QVector<Move> rookMoves = Rook::getMoves(x,y,board);
