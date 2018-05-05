@@ -56,7 +56,7 @@ QVector<Move> King::getMoves(int x, int y, Controller* controller) {
         }
     }else{
         if(!controller->checkCheck(false)){
-            if(!controller->getBoard()->getBLR()&&!controller->getBoard()->getBKing()){//white long check if rook nd king havent been moved
+            if(!controller->getBoard()->getBLR()&&!controller->getBoard()->getBKing()){//black long check if rook nd king havent been moved
                 if(controller->getBoard()->getPiece(1,0)==0 && controller->getBoard()->getPiece(2,0)==0 && controller->getBoard()->getPiece(3,0)==0){ //check if empty between the rook and king
                     //check if any of the two places the king is moving over or is moving to can be attacked
                     if(!controller->checkForAttack(2,0, false) && !controller->checkForAttack(3,0, false)){
@@ -74,6 +74,8 @@ QVector<Move> King::getMoves(int x, int y, Controller* controller) {
         }
     }
 
+//    controller->getBoard()->printBoard();
+//    std::cout << std::endl;
 
     return moves;
 }

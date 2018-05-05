@@ -3,7 +3,7 @@
 #include "AI/alphaBeta.h"
 #include "Board/board.h"
 
-//TODO change how castling and passant are detected and moved so AI can do it as well
+//TODO change how passant is detected and moved so AI can do it as well
 //TODO AI pawn promotion
 
 Controller::Controller() {
@@ -399,8 +399,9 @@ QVector<Move> Controller::getMoves(int x, int y) {
         return stripCheck(x,y,Queen::getMoves(x,y,board->getBoard()));
     }
     if(board->getPiece(x,y)==6 || board->getPiece(x,y)==-6){
-        QVector<Move> moves = King::getMoves(x,y,board->getBoard(), this);
-        return stripCheck(x,y,moves);
+        QVector<Move> moves = King::getMoves(x,y, this);
+        moves = stripCheck(x,y,moves);
+        return moves;
     }
 
     return QVector<Move>();
@@ -410,27 +411,33 @@ void Controller::movePiece(Move move) {
     board->clearPassant(true);
     board->clearPassant(false);
 
-    board->setWhiteLongCastle(false);
+    board->setWhiteLongCastle(false);//TODO investigate if I still need this
     board->setWhiteCastle(false);
     board->setBlackLongCastle(false);
     board->setBlackCastle(false);
 
+    if(std::abs(board->getPiece(move.init.x(),move.init.y()))==6){
+        std::cout << "Moving King" << std::endl;
+        std::cout << "x: " << move.init.x() << ", y: " << move.init.y() << std::endl;
+        std::cout << "piece " << board->getPiece(move.init.x(),move.init.y()) << std::endl;
+    }
+
     if(move.init.y()==7 && move.init.x()==0 && board->getPiece(move.init.x(),move.init.y())==2){
         board->setWLR(true);
     }
-    if(move.init.y()==7 && move.init.x()==7 && board->getPiece(move.init.x(),move.init.y())==2){
+    else if(move.init.y()==7 && move.init.x()==7 && board->getPiece(move.init.x(),move.init.y())==2){
         board->setWRR(true);
     }
-    if(move.init.y()==0 && move.init.x()==0 && board->getPiece(move.init.x(),move.init.y())==-2){
+    else if(move.init.y()==0 && move.init.x()==0 && board->getPiece(move.init.x(),move.init.y())==-2){
         board->setBLR(true);
     }
-    if(move.init.y()==0 && move.init.x()==7 && board->getPiece(move.init.x(),move.init.y())==-2){
+    else if(move.init.y()==0 && move.init.x()==7 && board->getPiece(move.init.x(),move.init.y())==-2){
         board->setBRR(true);
     }
-    if(move.init.y()==7 && move.init.x()==4 && board->getPiece(move.init.x(),move.init.y())==6){
+    else if(move.init.y()==7 && move.init.x()==4 && board->getPiece(move.init.x(),move.init.y())==6){
         board->setWKing(true);
     }
-    if(move.init.y()==0 && move.init.x()==4 && board->getPiece(move.init.x(),move.init.y())==-6){
+    else if(move.init.y()==0 && move.init.x()==4 && board->getPiece(move.init.x(),move.init.y())==-6){
         board->setBKing(true);
     }
 
@@ -757,9 +764,10 @@ QVector<Move> Controller::stripCheck(int x, int y,QVector<Move> moves) {
         }else if(move.special==3){//castling right
             board->setPiece(6,y,0);
             board->setPiece(5,y,0);
-            board->setPiece(0,y,rook);
+            board->setPiece(7,y,rook);
             board->setPiece(4,y,king);
         }
+
     }
 
     return strippedMoves;
