@@ -26,6 +26,8 @@ void Chess::gameFinished(QString endResult) {
         controller->playGame();
 
         gameThread = std::thread(&Controller::startGame, controller);
+
+
     }else if(annoucement.clickedButton() == end){
         gameThread.join();
 

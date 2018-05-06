@@ -159,28 +159,52 @@ void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType
     if(move.special==0){// normal move
 
         if(move.init.y()==7 && move.init.x()==0 && controller->getBoard()->getPiece(move.init.x(),move.init.y())==2){
-            controller->getBoard()->setWLR(true);
-            *undoType = 1;
+            if(!controller->getBoard()->getWLR()){
+                *undoType = 1;
+                controller->getBoard()->setWLR(true);
+            }else{
+                *undoType = 0;
+            }
         }
         else if(move.init.y()==7 && move.init.x()==7 && controller->getBoard()->getPiece(move.init.x(),move.init.y())==2){
-            controller->getBoard()->setWRR(true);
-            *undoType = 2;
+            if(!controller->getBoard()->getWRR()){
+                *undoType = 2;
+                controller->getBoard()->setWRR(true);
+            }else{
+                *undoType = 0;
+            }
         }
         else if(move.init.y()==0 && move.init.x()==0 && controller->getBoard()->getPiece(move.init.x(),move.init.y())==-2){
-            controller->getBoard()->setBLR(true);
-            *undoType = 3;
+            if(!controller->getBoard()->getBLR()){
+                *undoType = 3;
+                controller->getBoard()->setBLR(true);
+            }else{
+                *undoType = 0;
+            }
         }
         else if(move.init.y()==0 && move.init.x()==7 && controller->getBoard()->getPiece(move.init.x(),move.init.y())==-2){
-            controller->getBoard()->setBRR(true);
-            *undoType = 4;
+            if(!controller->getBoard()->getBRR()){
+                *undoType = 4;
+                controller->getBoard()->setBRR(true);
+            }else{
+                *undoType = 0;
+            }
         }
         else if(move.init.y()==7 && move.init.x()==4 && controller->getBoard()->getPiece(move.init.x(),move.init.y())==6){
-            controller->getBoard()->setWKing(true);
-            *undoType = 5;
+            if(!controller->getBoard()->getWKing()){
+                *undoType = 5;
+                controller->getBoard()->setWKing(true);
+            }else{
+                *undoType = 0;
+            }
         }
         else if(move.init.y()==0 && move.init.x()==4 && controller->getBoard()->getPiece(move.init.x(),move.init.y())==-6){
-            controller->getBoard()->setBKing(true);
-            *undoType = 6;
+            if(!controller->getBoard()->getBKing()){
+                *undoType = 6;
+                controller->getBoard()->setBKing(true);
+            }else{
+                *undoType = 0;
+            }
         }else{
             *undoType = 0;
         }

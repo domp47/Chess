@@ -3,7 +3,6 @@
 #include "AI/alphaBeta.h"
 #include "Board/board.h"
 
-//TODO change how passant is detected and moved so AI can do it as well
 //TODO AI pawn promotion
 
 Controller::Controller() {
@@ -43,6 +42,8 @@ void Controller::playGame() {
     turn = 0;
     board->initBoard();
 
+    window->updateCahce(board->getBoard());
+
     QMessageBox msg;
     msg.setText("Choose a game mode");
     QPushButton *np = msg.addButton("No Players", QMessageBox::ActionRole);
@@ -60,6 +61,7 @@ void Controller::playGame() {
     }
 
     window->show();
+    window->repaint();
 }
 
 int Controller::noPlayers() {
@@ -77,6 +79,7 @@ int Controller::noPlayers() {
 
             if(move.end.x() != -1){
                 movePiece(move);
+                window->updateCahce(board->getBoard());
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for white team" << std::endl;
@@ -88,6 +91,7 @@ int Controller::noPlayers() {
 
             if(move.end.x() != -1){
                 movePiece(move);
+                window->updateCahce(board->getBoard());
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
@@ -140,12 +144,13 @@ int Controller::onePlayer() {
 
             needInput = false;
         }else{//black persons turn
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+//            std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
             Move move = alphaBeta->findMove(false);
 
             if(move.end.x() != -1){
                 movePiece(move);
+                window->updateCahce(board->getBoard());
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
@@ -230,41 +235,15 @@ void Controller::recieveClick(int x, int y) {
             if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ) {
                 highlightedPiece = QPoint(x, y);
                 possibleMoves = getMoves(x, y);
+                window->updateCahce(board->getBoard(), highlightedPiece, possibleMoves);
                 window->repaint();
             }
         }else if(prevY==y && prevX==x){ //if clicking same piece deselect piece
             highlightedPiece = QPoint(-1,-1);
             possibleMoves.clear();
+            window->updateCahce(board->getBoard(), highlightedPiece, possibleMoves);
             window->repaint();
         }else if(isMovePossible(QPoint(x,y))){ //checks possible regular moves and moves to that piece
-            /**
-            if((board->getPiece(highlightedPiece.x(),highlightedPiece.y())==1 && y==0) || (board->getPiece(highlightedPiece.x(),highlightedPiece.y())==-1 && y==7)) {
-                bool correctInput = false;
-                char upgrade = '0';
-
-                while (!correctInput) {
-                    QString response = QInputDialog::getText(window, "Pawn Promotion",
-                                                             "Enter: Q for queen, B for bishop, K for knight, R for rook.");
-
-                    if (response == "q" || response == "Q") {
-                        upgrade = 'q';
-                        correctInput = true;
-                    } else if (response == "b" || response == "B") {
-                        upgrade = 'b';
-                        correctInput = true;
-                    } else if (response == "k" || response == "K") {
-                        upgrade = 'k';
-                        correctInput = true;
-                    } else if (response == "r" || response == "R") {
-                        upgrade = 'r';
-                        correctInput = true;
-                    }
-                }
-
-
-                board->upgradePawn(highlightedPiece.x(),highlightedPiece.y(),upgrade);
-            }**/
-
             Move move(QPoint(-1,-1),QPoint(-1,-1));
 
             for(Move m: possibleMoves){
@@ -277,85 +256,18 @@ void Controller::recieveClick(int x, int y) {
             movePiece(move);
             highlightedPiece = QPoint(-1,-1);
             possibleMoves.clear();
+            window->updateCahce(board->getBoard(), highlightedPiece, possibleMoves);
             window->repaint();
 
             inputGot = true;
 //            mutex.unlock();
 //            waitForInput.wakeAll();
         }
-        /**else if(turn%2==0 && board->getWhitePassant().getPresent()){ //if its white persons turn and there is a passant
-            //check if the passant spot was clicked
-            if(board->getWhitePassant().getVictim().x()==x && board->getWhitePassant().getVictim().y()-1==y){
-                movePassant(highlightedPiece.x(),highlightedPiece.y(),board->getWhitePassant().getVictim(), true);
-                highlightedPiece = QPoint(-1,-1);
-                possibleMoves.clear();
-                window->repaint();
-
-                inputGot = true;
-//                mutex.unlock();
-//                waitForInput.wakeAll();
-            }
-        }**/
-        /**else if(turn%2==1 && board->getBlackPassant().getPresent()){ //if its black persons turn and there is a passant
-            if(board->getBlackPassant().getVictim().x()==x && board->getBlackPassant().getVictim().y()+1==y){
-                movePassant(highlightedPiece.x(),highlightedPiece.y(),board->getBlackPassant().getVictim(), false);
-                highlightedPiece = QPoint(-1,-1);
-                possibleMoves.clear();
-                window->repaint();
-
-                inputGot = true;
-//                mutex.unlock();
-//                waitForInput.wakeAll();
-            }
-        }**/
-        /**    //if white knight is highlighted and there is a white castle move possible
-        else if(board->getPiece(highlightedPiece.x(),highlightedPiece.y())==6 && (board->isWhiteCastle() || board->isWhiteLongCastle())){
-            if(board->isWhiteLongCastle() && y==7 && x==2){
-                board->moveCastling(1);
-                highlightedPiece = QPoint(-1,-1);
-                possibleMoves.clear();
-                window->repaint();
-
-                inputGot = true;
-//                mutex.unlock();
-//                waitForInput.wakeAll();
-            }else if(board->isWhiteCastle() && y==7 && x==6){
-                board->moveCastling(2);
-                highlightedPiece = QPoint(-1,-1);
-                possibleMoves.clear();
-                window->repaint();
-
-                inputGot = true;
-//                mutex.unlock();
-//                waitForInput.wakeAll();
-            }
-        }**/
-        /**    //if black knight is highlighted and there is a black castle move possible
-        else if(board->getPiece(highlightedPiece.x(),highlightedPiece.y())==-6 && (board->isBlackCastle() || board->isBlackLongCastle())){
-            if(board->isBlackLongCastle() && y==0 && x==2){
-                board->moveCastling(3);
-                highlightedPiece = QPoint(-1,-1);
-                possibleMoves.clear();
-                window->repaint();
-
-                inputGot = true;
-//                mutex.unlock();
-//                waitForInput.wakeAll();
-            }else if(board->isBlackCastle() && y==0 && x==6){
-                board->moveCastling(4);
-                highlightedPiece = QPoint(-1,-1);
-                possibleMoves.clear();
-                window->repaint();
-
-                inputGot = true;
-//                mutex.unlock();
-//                waitForInput.wakeAll();
-            }
-        }**/
-            //if it's another of the same piece highlight that one instead
+        //if it's another of the same piece highlight that one instead
         else if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ){
             highlightedPiece = QPoint(x,y);
             possibleMoves = getMoves(x,y);
+            window->updateCahce(board->getBoard(), highlightedPiece, possibleMoves);
             window->repaint();
         }
     }

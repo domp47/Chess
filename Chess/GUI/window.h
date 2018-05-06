@@ -8,6 +8,7 @@
 #include <iostream>
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QPushButton>
+#include <Controller/move.h>
 #include "colors.h"
 
 class Controller;
@@ -20,14 +21,17 @@ class Window : public QWidget
 
 public:
     Window(Controller *);
+    void updateCahce(std::array<std::array<int,8>,8> board, QPoint highlight = QPoint(-1,-1), QVector<Move> possibleMoves= QVector<Move>());
 
 
 private:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;
 private:
-    Controller* controller;
     ImageMap* map;
+    std::array<std::array<int,8>,8> boardCache;
+    QPoint highlightedCache;
+    QVector<Move> movesCache;
 
 public slots:
     void showMessage(QString message);

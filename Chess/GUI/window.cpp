@@ -6,8 +6,9 @@ Window::Window(Controller* controller) {
     this->setFixedWidth(850);
     this->setFixedHeight(850);
 
-    this->controller = controller;
     map = new ImageMap();
+
+
 
     connect(controller, SIGNAL(sendMessage(QString)), this, SLOT(showMessage(QString)));
 }
@@ -18,8 +19,11 @@ void Window::paintEvent(QPaintEvent *)
 
     painter.fillRect(0,0,850,850,Colors::background());
 
-    int highlightedX = controller->getHighlighted().x();
-    int highlightedY = controller->getHighlighted().y();
+//    int highlightedX = controller->getHighlighted().x();
+//    int highlightedY = controller->getHighlighted().y();
+
+    int highlightedX = highlightedCache.x();
+    int highlightedY = highlightedCache.y();
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
@@ -47,7 +51,7 @@ void Window::paintEvent(QPaintEvent *)
 
             painter.drawRect(xLoc,yLoc,100,100);
 
-            int piece = controller->getBoard()->getPiece(x, y);
+            int piece = boardCache[y][x];
 
             if(piece!=0){
                 std::string imgLoc = map->getItem(piece);
@@ -58,14 +62,22 @@ void Window::paintEvent(QPaintEvent *)
         }
     }
 
-    for(Move m: controller->getPossibleMoves()){
+    for(Move m: movesCache){
         int xLoc = (m.end.x() * 100) + STARTING_X;
         int yLoc = (m.end.y() * 100) + STARTING_Y;
 
-        if(controller->getBoard()->getPiece(m.end.x(),m.end.y())==0)
+//        if(controller->getBoard()->getPiece(m.end.x(),m.end.y())==0)
+        if(boardCache[m.end.y()][m.end.x()]==0)
             painter.fillRect(xLoc,yLoc,100,100,Colors::move());
         else
             painter.fillRect(xLoc,yLoc,100,100,Colors::special());
+
+        if(m.special==1){
+            int xAttack = (m.end.x() * 100) + STARTING_X;
+            int yAttack = (m.init.y() * 100) + STARTING_Y;
+
+            painter.fillRect(xAttack,yAttack,100,100,Colors::special());
+        }
 
         yLoc +=10;
         xLoc +=10;
@@ -75,7 +87,8 @@ void Window::paintEvent(QPaintEvent *)
         else
             painter.fillRect(xLoc, yLoc,80,80,Colors::dark());
 
-        int piece = controller->getBoard()->getPiece(m.end.x(), m.end.y());
+//        int piece = controller->getBoard()->getPiece(m.end.x(), m.end.y());
+        int piece = boardCache[m.end.y()][m.end.x()];
 
         xLoc -= 10;
         yLoc -= 10;
@@ -86,9 +99,11 @@ void Window::paintEvent(QPaintEvent *)
             QPoint pt(xLoc+20,yLoc+20);
             painter.drawImage(pt,image);
         }
+
+
     }
 
-    if(highlightedY != -1 || highlightedX != -1){//if a piece is highlighted
+    /*if(highlightedY != -1 || highlightedX != -1){//if a piece is highlighted
         if(controller->getBoard()->getPiece(highlightedX,highlightedY)==-1){//black pawn
             if(controller->getBoard()->getBlackPassant().getPresent()){//passant possible
 
@@ -159,7 +174,7 @@ void Window::paintEvent(QPaintEvent *)
                 }
             }
         }
-        /**else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==6){//white knight
+        else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==6){//white knight
             if(controller->getBoard()->isWhiteLongCastle()){
                 int x = 200 + STARTING_X;
                 int y = 700 + STARTING_Y;
@@ -190,8 +205,8 @@ void Window::paintEvent(QPaintEvent *)
                 painter.fillRect(x,y,100,100,Colors::move());
                 painter.fillRect(x+10,y+10,80,80,Colors::light());
             }
-        }**/
-    }
+        }
+    }*/
 
 
     QFont font = painter.font();
@@ -235,4 +250,20 @@ void Window::showMessage(QString message) {
     QMessageBox msg;
     msg.setText(message);
     msg.exec();
+}
+
+void Window::updateCahce(std::array<std::array<int, 8>, 8> board, QPoint highlight, QVector<Move> possibleMoves) {
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            boardCache[y][x] = board[y][x];
+        }
+    }
+
+    movesCache.clear();
+    for (Move m: possibleMoves){
+        movesCache.append(m);
+    }
+
+    highlightedCache.setX(highlight.x());
+    highlightedCache.setY(highlight.y());
 }
