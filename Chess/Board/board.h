@@ -22,6 +22,7 @@ class Board : public QObject{
     Q_OBJECT
 
 public:
+
     Board(Controller* controller);
     void initBoard();
     int getPiece(int x, int y);
@@ -29,6 +30,7 @@ public:
     ElPassant getWhitePassant();
     ElPassant getBlackPassant();
     void setPassant(bool white, QPoint attacker, QPoint victim);
+    void setPassant(bool white, ElPassant passant);
     void clearPassant(bool white);
     bool getWLR();
     bool getWRR();

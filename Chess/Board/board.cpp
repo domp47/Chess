@@ -53,7 +53,7 @@ void Board::initBoard(){
     board[1][4] = -1;
     board[1][5] = -1;
     board[1][6] = -1;
-    board[1][7] = -1;
+//    board[1][7] = -1;
 
     board[7][0] = 2;
     board[7][1] = 3;
@@ -72,6 +72,8 @@ void Board::initBoard(){
     board[6][5] = 1;
     board[6][6] = 1;
     board[6][7] = 1;
+
+    board[4][7] = -1;
 
     whitePassant.clearElPassant();
     blackPassant.clearElPassant();
@@ -274,5 +276,13 @@ void Board::printBoard() {
             }
         }
         std::cout << std::endl;
+    }
+}
+
+void Board::setPassant(bool white, ElPassant passant) {
+    if(white){
+        this->whitePassant = passant;
+    }else{
+        this->blackPassant = passant;
     }
 }

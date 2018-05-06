@@ -62,8 +62,9 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
         for(Move move: allMoves){
 
             int temp, king, rook, undoType;
+            ElPassant whitePassant, blackPassant;
 
-            doMove(move, &temp, &rook, &king, &undoType);
+            doMove(move, &temp, &rook, &king, &undoType, &whitePassant, &blackPassant);
 
             controller->getBoard()->printBoard();
             std::cout << "-------------------------" << std::endl;
@@ -72,7 +73,7 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
 
             bestScore = std::max(bestScore, minimax(depth-1,alpha, beta, !whiteTeam));
 
-            undoMove(move, temp, rook, king, undoType);
+            undoMove(move, temp, rook, king, undoType, whitePassant, blackPassant);
 
             alpha = std::max(alpha, bestScore);
             if(beta <= alpha){
@@ -85,8 +86,9 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
 
         for(Move move: allMoves){
             int temp, king, rook, undoType;
+            ElPassant whitePassant, blackPassant;
 
-            doMove(move, &temp, &rook, &king, &undoType);
+            doMove(move, &temp, &rook, &king, &undoType, &whitePassant, &blackPassant);
 
             controller->getBoard()->printBoard();
             std::cout << "-------------------------" << std::endl;
@@ -95,7 +97,7 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
 
             bestScore = std::min(bestScore, minimax(depth-1,alpha, beta, !whiteTeam));
 
-            undoMove(move, temp, rook, king, undoType);
+            undoMove(move, temp, rook, king, undoType, whitePassant, blackPassant);
 
             beta = std::min(beta, bestScore);
             if(beta <= alpha){
@@ -124,8 +126,9 @@ Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
 
     for(Move move: allMoves){
         int temp, king, rook, undoType;
+        ElPassant whitePassant, blackPassant;
 
-        doMove(move, &temp, &rook, &king, &undoType);
+        doMove(move, &temp, &rook, &king, &undoType, &whitePassant, &blackPassant);
 
         controller->getBoard()->printBoard();
         std::cout << "-------------------------" << std::endl;
@@ -134,7 +137,7 @@ Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
 
         int score = minimax(depth, INT_MIN, INT_MAX,  !whiteTeam);
 
-        undoMove(move, temp, rook, king, undoType);
+        undoMove(move, temp, rook, king, undoType, whitePassant, blackPassant);
 
         if(whiteTeam){
             if(score > bestScore){
@@ -152,7 +155,7 @@ Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
     return bestMove;
 }
 
-void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType) {
+void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType, ElPassant* whitePassant, ElPassant* blackPassant) {
     if(move.special==0){// normal move
 
         if(move.init.y()==7 && move.init.x()==0 && controller->getBoard()->getPiece(move.init.x(),move.init.y())==2){
@@ -186,10 +189,17 @@ void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType
         controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
         controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
     }else if(move.special==1){//passant move
+
+        controller->getBoard()->printBoard();
+        std::cout << std::endl;
+
         *temp = controller->getBoard()->getPiece(move.end.x(),move.init.y());
         controller->getBoard()->setPiece(move.end.x(),move.init.y(),0);
         controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
         controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
+
+        controller->getBoard()->printBoard();
+        std::cout << std::endl;
     }else if(move.special==2){// castling left
         *rook = controller->getBoard()->getPiece(0,move.init.y());
         *king = controller->getBoard()->getPiece(4,move.init.y());
@@ -223,9 +233,15 @@ void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType
             controller->getBoard()->setWKing(true);
         }
     }
+
+    *whitePassant = controller->getBoard()->getWhitePassant();
+    *blackPassant = controller->getBoard()->getBlackPassant();
+
+    controller->getBoard()->clearPassant(true);
+    controller->getBoard()->clearPassant(false);
 }
 
-void AlphaBeta::undoMove(Move move, int temp, int rook, int king, int undoType) {
+void AlphaBeta::undoMove(Move move, int temp, int rook, int king, int undoType, ElPassant whitePassant, ElPassant blackPassant) {
     if(move.special==0){// normal move
 
         switch (undoType){
@@ -284,4 +300,7 @@ void AlphaBeta::undoMove(Move move, int temp, int rook, int king, int undoType) 
             controller->getBoard()->setWKing(false);
         }
     }
+
+    controller->getBoard()->setPassant(true,whitePassant);
+    controller->getBoard()->setPassant(false,blackPassant);
 }
