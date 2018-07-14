@@ -10,7 +10,7 @@ Controller::Controller() {
     board = new Board(this);
     alphaBeta = new AlphaBeta(this);
 
-    connect(window, SIGNAL(sendClick(int, int)), this, SLOT(recieveClick(int,int)));
+    connect(window, SIGNAL(sendClick(int, int)), this, SLOT(receiveClick(int, int)));
 }
 
 void Controller::startGame(){
@@ -226,7 +226,7 @@ int Controller::twoPlayers() {
     return -1;
 }
 
-void Controller::recieveClick(int x, int y) {
+void Controller::receiveClick(int x, int y) {
     if(needInput){
         int prevX = highlightedPiece.x();
         int prevY = highlightedPiece.y();
@@ -451,8 +451,10 @@ void Controller::movePiece(Move move) {
         board->setPiece(7,move.init.y(),0);
         board->setPiece(4,move.init.y(),0);
     }else if(move.special==4){//pawn promotion
-        if(gamemode==2 || (gamemode==1 && turn%2==0)){
+        std::cout << "Doing Pawn Promotion" << std::endl;
+        if(gamemode==1 || (gamemode==0 && turn%2==0)){
             //TODO get input from user
+            std::cout << "Get input" << std::endl;
         }else{
             //TODO use alpha beta to find best promotion
         }

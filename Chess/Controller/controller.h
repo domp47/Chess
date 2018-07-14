@@ -49,7 +49,7 @@ private:
     QVector<Move> possibleMoves;
     int gamemode;
 public slots:
-    void recieveClick(int x, int y);
+    void receiveClick(int x, int y);
 signals:
     void sendMessage(QString message);
     void sendEOG(QString result);

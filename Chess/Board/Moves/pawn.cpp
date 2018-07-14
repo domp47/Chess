@@ -17,13 +17,13 @@ QVector<Move> Pawn::getMoves(int x, int y, std::array<std::array<int,8>,8> board
         }
         if(y-1 >= 0){//checking if it can move up without going off board
             if(board[y-1][x]==0){//check if the spot above is empty
-                moves.append(Move(QPoint(x,y),QPoint(x,y-1)));
+                moves.append(Move(QPoint(x,y),QPoint(x,y-1),(y-1==0)? 4 : 0));
             }
             if(x-1 >= 0 && board[y-1][x-1]<0){//check if enemy on diagonal
-                moves.append(Move(QPoint(x,y),QPoint(x-1,y-1)));
+                moves.append(Move(QPoint(x,y),QPoint(x-1,y-1), (y-1==0)? 4: 0));
             }
             if(x+1 < 8 && board[y-1][x+1]<0){//check if enemy on diagonal
-                moves.append(Move(QPoint(x,y),QPoint(x+1,y-1)));
+                moves.append(Move(QPoint(x,y),QPoint(x+1,y-1), (y-1==0)? 4: 0));
             }
         }
         if(controller->getBoard()->getWhitePassant().getPresent()){
@@ -37,19 +37,19 @@ QVector<Move> Pawn::getMoves(int x, int y, std::array<std::array<int,8>,8> board
     }
     else{//black pawn
         if(y==1){//at starting pos
-            if(board[y+2][x]==0 && board[y+1][x] == 0){
+            if(board[y+2][x]==0 && board[y+1][x] == 0){// is something clocking is 2 spaces ahead
                 moves.append(Move(QPoint(x,y),QPoint(x,y+2)));
             }
         }
         if(y+1 < 8){//can it move forward without going off board
             if(board[y+1][x]==0){
-                moves.append(Move(QPoint(x,y),QPoint(x,y+1)));
+                moves.append(Move(QPoint(x,y),QPoint(x,y+1), (y+1==7)? 4: 0));
             }
             if(x-1 >= 0 && board[y+1][x-1]>0){//check if enemy on diagonal
-                moves.append(Move(QPoint(x,y),QPoint(x-1,y+1)));
+                moves.append(Move(QPoint(x,y),QPoint(x-1,y+1), (y+1==7)? 4: 0));
             }
             if(x+1 < 8 && board[y+1][x+1]>0){//check if enemy on diagonal
-                moves.append(Move(QPoint(x,y),QPoint(x+1,y+1)));
+                moves.append(Move(QPoint(x,y),QPoint(x+1,y+1), (y+1==7)? 4: 0));
             }
         }
         if(controller->getBoard()->getBlackPassant().getPresent()){
