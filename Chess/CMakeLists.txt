@@ -60,7 +60,7 @@ add_executable(chess
 
 link_directories(/lib/x86_64-linux-gnu/)
 
-target_link_libraries(chess dl-2.23 -lpthread)
+target_link_libraries(chess -lpthread)
 
 qt5_use_modules( chess Core )
 qt5_use_modules( chess Gui )
