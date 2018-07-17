@@ -21,7 +21,8 @@ class Window : public QWidget
 
 public:
     Window(Controller *);
-    void updateCahce(std::array<std::array<int,8>,8> board, QPoint highlight = QPoint(-1,-1), QVector<Move> possibleMoves= QVector<Move>());
+    void updateCache(std::array<std::array<int, 8>, 8> board, QPoint highlight = QPoint(-1, -1),
+                     QVector<Move> possibleMoves = QVector<Move>());
 
 
 private:
@@ -35,9 +36,11 @@ private:
 
 public slots:
     void showMessage(QString message);
+    void receivePawnPromotion(int x, int y);
 
 signals:
     void sendClick(int x, int y);
+    void sendPawnPromotion(char choice, int x, int y);
 };
 
 #endif // WINDOW_H

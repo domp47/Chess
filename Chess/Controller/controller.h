@@ -50,9 +50,11 @@ private:
     int gamemode;
 public slots:
     void receiveClick(int x, int y);
+    void receivePawnPromotion(char choice, int x, int y);
 signals:
     void sendMessage(QString message);
     void sendEOG(QString result);
+    void sendPawnPromotion(int x, int y);
 };
 
 #endif

@@ -10,6 +10,7 @@ Controller::Controller() {
     board = new Board(this);
     alphaBeta = new AlphaBeta(this);
 
+    connect(window, SIGNAL(sendPawnPromotion(char, int, int)), this, SLOT(receivePawnPromotion(char, int, int)));
     connect(window, SIGNAL(sendClick(int, int)), this, SLOT(receiveClick(int, int)));
 }
 
@@ -42,7 +43,7 @@ void Controller::playGame() {
     turn = 0;
     board->initBoard();
 
-    window->updateCahce(board->getBoard());
+    window->updateCache(board->getBoard());
 
     QMessageBox msg;
     msg.setText("Choose a game mode");
@@ -79,7 +80,7 @@ int Controller::noPlayers() {
 
             if(move.end.x() != -1){
                 movePiece(move);
-                window->updateCahce(board->getBoard());
+                window->updateCache(board->getBoard());
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for white team" << std::endl;
@@ -91,7 +92,7 @@ int Controller::noPlayers() {
 
             if(move.end.x() != -1){
                 movePiece(move);
-                window->updateCahce(board->getBoard());
+                window->updateCache(board->getBoard());
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
@@ -150,7 +151,7 @@ int Controller::onePlayer() {
 
             if(move.end.x() != -1){
                 movePiece(move);
-                window->updateCahce(board->getBoard());
+                window->updateCache(board->getBoard());
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
@@ -235,13 +236,13 @@ void Controller::receiveClick(int x, int y) {
             if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ) {
                 highlightedPiece = QPoint(x, y);
                 possibleMoves = getMoves(x, y);
-                window->updateCahce(board->getBoard(), highlightedPiece, possibleMoves);
+                window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
                 window->repaint();
             }
         }else if(prevY==y && prevX==x){ //if clicking same piece deselect piece
             highlightedPiece = QPoint(-1,-1);
             possibleMoves.clear();
-            window->updateCahce(board->getBoard(), highlightedPiece, possibleMoves);
+            window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
             window->repaint();
         }else if(isMovePossible(QPoint(x,y))){ //checks possible regular moves and moves to that piece
             Move move(QPoint(-1,-1),QPoint(-1,-1));
@@ -256,7 +257,7 @@ void Controller::receiveClick(int x, int y) {
             movePiece(move);
             highlightedPiece = QPoint(-1,-1);
             possibleMoves.clear();
-            window->updateCahce(board->getBoard(), highlightedPiece, possibleMoves);
+            window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
             window->repaint();
 
             inputGot = true;
@@ -267,7 +268,7 @@ void Controller::receiveClick(int x, int y) {
         else if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ){
             highlightedPiece = QPoint(x,y);
             possibleMoves = getMoves(x,y);
-            window->updateCahce(board->getBoard(), highlightedPiece, possibleMoves);
+            window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
             window->repaint();
         }
     }
@@ -316,7 +317,7 @@ QVector<Move> Controller::getMoves(int x, int y) {
         return moves;
     }
 
-    return QVector<Move>();
+    return {};
 }
 
 void Controller::movePiece(Move move) {
@@ -451,10 +452,11 @@ void Controller::movePiece(Move move) {
         board->setPiece(7,move.init.y(),0);
         board->setPiece(4,move.init.y(),0);
     }else if(move.special==4){//pawn promotion
-        std::cout << "Doing Pawn Promotion" << std::endl;
         if(gamemode==1 || (gamemode==0 && turn%2==0)){
-            //TODO get input from user
-            std::cout << "Get input" << std::endl;
+            emit sendPawnPromotion(move.init.x(), move.init.y());
+
+            board->setPiece(move.end.x(), move.end.y(), board->getPiece(move.init.x(), move.init.y()));
+            board->setPiece(move.init.x(), move.init.y(), 0);
         }else{
             //TODO use alpha beta to find best promotion
         }
@@ -698,4 +700,8 @@ bool Controller::checkVectorOfMoves(QVector<Move> moves, int x, int y) {
         }
     }
     return false;
+}
+
+void Controller::receivePawnPromotion(char choice, int x, int y) {
+    board->upgradePawn(x, y, choice);
 }

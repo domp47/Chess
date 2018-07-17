@@ -9,7 +9,7 @@ Window::Window(Controller* controller) {
     map = new ImageMap();
 
 
-
+    connect(controller, SIGNAL(sendPawnPromotion(int, int)), this, SLOT(receivePawnPromotion(int, int)));
     connect(controller, SIGNAL(sendMessage(QString)), this, SLOT(showMessage(QString)));
 }
 
@@ -252,7 +252,7 @@ void Window::showMessage(QString message) {
     msg.exec();
 }
 
-void Window::updateCahce(std::array<std::array<int, 8>, 8> board, QPoint highlight, QVector<Move> possibleMoves) {
+void Window::updateCache(std::array<std::array<int, 8>, 8> board, QPoint highlight, QVector<Move> possibleMoves) {
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
             boardCache[y][x] = board[y][x];
@@ -266,4 +266,26 @@ void Window::updateCahce(std::array<std::array<int, 8>, 8> board, QPoint highlig
 
     highlightedCache.setX(highlight.x());
     highlightedCache.setY(highlight.y());
+}
+
+void Window::receivePawnPromotion(int x, int y) {
+    QStringList items;
+    items << tr("Queen") << tr("Bishop") << tr("Knight") << tr("Rook");
+
+    bool ok = false;
+    QString item;
+
+    while (!ok) {
+        item = QInputDialog::getItem(this, tr("Pawn Promotion"), tr("Choose Upgrade: "), items, 0, false, &ok);
+    }
+
+    if(item == "Queen"){
+        emit sendPawnPromotion('q', x, y);
+    }else if (item == "Bishop"){
+        emit sendPawnPromotion('b', x, y);
+    }else if (item == "Knight"){
+        emit sendPawnPromotion('k', x, y);
+    }else if (item == "Rook"){
+        emit sendPawnPromotion('r', x, y);
+    }
 }
