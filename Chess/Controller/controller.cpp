@@ -458,7 +458,12 @@ void Controller::movePiece(Move move) {
             board->setPiece(move.end.x(), move.end.y(), board->getPiece(move.init.x(), move.init.y()));
             board->setPiece(move.init.x(), move.init.y(), 0);
         }else{
-            //TODO use alpha beta to find best promotion
+            char upgrade = alphaBeta->findUpgrade(move);
+
+            board->upgradePawn(move.init.x(), move.init.y(), upgrade);
+
+            board->setPiece(move.end.x(), move.end.y(), board->getPiece(move.init.x(), move.init.y()));
+            board->setPiece(move.init.x(), move.init.y(), 0);
         }
     }
 

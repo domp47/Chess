@@ -13,8 +13,73 @@ Move AlphaBeta::findMove(bool whiteTeam) {
     return move;
 }
 
-char AlphaBeta::findUpgrade() {
-    return randomMove.getRandomUpgrade();
+char AlphaBeta::findUpgrade(Move move) {
+
+    return 'q';
+
+    //TODO maybe change after neural network, too slow without it.
+    /**int bestChoice = promotionRoot(move, 1);
+
+    if(bestChoice < 0){
+        bestChoice *= -1;
+    }
+
+    char choice = 0;
+
+    if(bestChoice == 3){
+        choice = 'k';
+    }else if(bestChoice == 5){
+        choice = 'q';
+    }
+
+    return choice;**/
+}
+
+int AlphaBeta::promotionRoot(Move move, int depth){
+    int bestScore;
+    int bestChoice = 0;
+    int choices[] = {3, 5}; //possible upgrades: knight, queen
+
+    bool whiteTeam = controller->getBoard()->getPiece(move.init.x(), move.init.y()) > 0;
+
+    if( whiteTeam ){
+        bestScore = INT_MIN;
+    }else{
+        bestScore = INT_MAX;
+    }
+
+    int tempEndPiece = controller->getBoard()->getPiece(move.end.x(), move.end.y());
+    int tempStartPiece = controller->getBoard()->getPiece(move.init.x(), move.init.y());
+
+    controller->getBoard()->setPiece(move.init.x(), move.init.y(), 0);
+
+    for (int upgradePiece : choices) {
+        if(!whiteTeam){
+            upgradePiece *= -1;
+        }
+
+        controller->getBoard()->setPiece(move.end.x(), move.end.y(), upgradePiece);
+
+        int score = minimax(depth, INT_MIN, INT_MAX,  !whiteTeam);
+
+        if(whiteTeam){
+            if(score > bestScore){
+                bestScore = score;
+                bestChoice = upgradePiece;
+            }
+        }else{
+            if(score < bestScore){
+                bestScore = score;
+                bestChoice = upgradePiece;
+            }
+        }
+    }
+
+    controller->getBoard()->setPiece(move.init.x(), move.init.y(), tempStartPiece);
+    controller->getBoard()->setPiece(move.end.x(), move.end.y(), tempEndPiece);
+
+
+    return bestChoice;
 }
 
 QVector<Move> AlphaBeta::getAllMoves(bool whiteTeam) {
@@ -66,10 +131,10 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
 
             doMove(move, &temp, &rook, &king, &undoType, &whitePassant, &blackPassant);
 
-            controller->getBoard()->printBoard();
-            std::cout << "-------------------------" << std::endl;
-            std::cout << "Move: " << move.init.x() << "," << move.init.y() << " to " << move.end.x() << "," << move.end.y() << ". Type: " << move.special << std::endl;
-            std::cout << std::endl;
+//            controller->getBoard()->printBoard();
+//            std::cout << "-------------------------" << std::endl;
+//            std::cout << "Move: " << move.init.x() << "," << move.init.y() << " to " << move.end.x() << "," << move.end.y() << ". Type: " << move.special << std::endl;
+//            std::cout << std::endl;
 
             bestScore = std::max(bestScore, minimax(depth-1,alpha, beta, !whiteTeam));
 
@@ -90,10 +155,10 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
 
             doMove(move, &temp, &rook, &king, &undoType, &whitePassant, &blackPassant);
 
-            controller->getBoard()->printBoard();
-            std::cout << "-------------------------" << std::endl;
-            std::cout << "Move: " << move.init.x() << "," << move.init.y() << " to " << move.end.x() << "," << move.end.y() << ". Type: " << move.special << std::endl;
-            std::cout << std::endl;
+//            controller->getBoard()->printBoard();
+//            std::cout << "-------------------------" << std::endl;
+//            std::cout << "Move: " << move.init.x() << "," << move.init.y() << " to " << move.end.x() << "," << move.end.y() << ". Type: " << move.special << std::endl;
+//            std::cout << std::endl;
 
             bestScore = std::min(bestScore, minimax(depth-1,alpha, beta, !whiteTeam));
 
@@ -114,9 +179,9 @@ Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
     int bestScore;
     Move bestMove(QPoint(-1,-1),QPoint(-1,-1));
 
-    std::cout << "Starting board:" << std::endl;
-    controller->getBoard()->printBoard();
-    std::cout << std::endl;
+//    std::cout << "Starting board:" << std::endl;
+//    controller->getBoard()->printBoard();
+//    std::cout << std::endl;
 
     if(whiteTeam){
         bestScore = INT_MIN;
@@ -128,14 +193,17 @@ Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
         int temp, king, rook, undoType;
         ElPassant whitePassant, blackPassant;
 
+
         doMove(move, &temp, &rook, &king, &undoType, &whitePassant, &blackPassant);
 
-        controller->getBoard()->printBoard();
-        std::cout << "-------------------------" << std::endl;
-        std::cout << "Root Move: " << move.init.x() << "," << move.init.y() << " to " << move.end.x() << "," << move.end.y() << ". Type: " << move.special << std::endl;
-        std::cout << std::endl;
+//        controller->getBoard()->printBoard();
+//        std::cout << "-------------------------" << std::endl;
+//        std::cout << "Root Move: " << move.init.x() << "," << move.init.y() << " to " << move.end.x() << "," << move.end.y() << ". Type: " << move.special << std::endl;
+//        std::cout << std::endl;
 
         int score = minimax(depth, INT_MIN, INT_MAX,  !whiteTeam);
+
+//        std::cout << "Score: " << score << std::endl;
 
         undoMove(move, temp, rook, king, undoType, whitePassant, blackPassant);
 
@@ -214,16 +282,16 @@ void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType
         controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
     }else if(move.special==1){//passant move
 
-        controller->getBoard()->printBoard();
-        std::cout << std::endl;
+//        controller->getBoard()->printBoard();
+//        std::cout << std::endl;
 
         *temp = controller->getBoard()->getPiece(move.end.x(),move.init.y());
         controller->getBoard()->setPiece(move.end.x(),move.init.y(),0);
         controller->getBoard()->setPiece(move.end.x(),move.end.y(), controller->getBoard()->getPiece(move.init.x(),move.init.y()));
         controller->getBoard()->setPiece(move.init.x(),move.init.y(),0);
 
-        controller->getBoard()->printBoard();
-        std::cout << std::endl;
+//        controller->getBoard()->printBoard();
+//        std::cout << std::endl;
     }else if(move.special==2){// castling left
         *rook = controller->getBoard()->getPiece(0,move.init.y());
         *king = controller->getBoard()->getPiece(4,move.init.y());
@@ -256,6 +324,42 @@ void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType
             controller->getBoard()->setWRR(true);
             controller->getBoard()->setWKing(true);
         }
+    }else if(move.special==4){ //pawn promotion
+        *temp = controller->getBoard()->getPiece(move.end.x(),move.end.y());
+
+        char choice = findUpgrade(move);
+//        char choice = 'q';
+
+        int piece = 0;
+
+        if(choice == 'r'){
+            if(controller->getBoard()->getPiece(move.init.x(), move.init.y()) > 0){
+                piece = 2;
+            }else {
+                piece = -2;
+            }
+        }else if(choice == 'k'){
+            if(controller->getBoard()->getPiece(move.init.x(), move.init.y()) > 0){
+                piece = 3;
+            }else {
+                piece = -3;
+            }
+        }else if(choice == 'b'){
+            if(controller->getBoard()->getPiece(move.init.x(), move.init.y()) > 0){
+                piece = 4;
+            }else {
+                piece = -4;
+            }
+        }else if(choice == 'q'){
+            if(controller->getBoard()->getPiece(move.init.x(), move.init.y()) > 0){
+                piece = 5;
+            }else {
+                piece = -5;
+            }
+        }
+
+        controller->getBoard()->setPiece(move.init.x(), move.init.y(), 0);
+        controller->getBoard()->setPiece(move.end.x(), move.end.y(), piece);
     }
 
     *whitePassant = controller->getBoard()->getWhitePassant();
@@ -323,6 +427,14 @@ void AlphaBeta::undoMove(Move move, int temp, int rook, int king, int undoType, 
             controller->getBoard()->setWRR(false);
             controller->getBoard()->setWKing(false);
         }
+    }else if(move.special == 4){
+        if(controller->getBoard()->getPiece(move.end.x(), move.end.y()) > 0){
+            controller->getBoard()->setPiece(move.init.x(),move.init.y(), 1);
+        }else{
+            controller->getBoard()->setPiece(move.init.x(),move.init.y(), -1);
+        }
+
+        controller->getBoard()->setPiece(move.end.x(),move.end.y(), temp);
     }
 
     controller->getBoard()->setPassant(true,whitePassant);
