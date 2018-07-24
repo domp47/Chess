@@ -74,43 +74,36 @@ void Board::initBoard(){
     board[6][7] = 1;**/
 
 
-//    board[0][0] = -6;
-//    board[0][1] = -1;
-//    board[0][2] = -4;
-//    board[0][3] = -5;
-//    board[0][4] = -6;
-//    board[0][5] = -4;
-//    board[0][6] = -3;
-//    board[0][7] = -2;
+    board[0][4] = -6;
+    board[0][6] = -3;
+    board[0][7] = -2;
 
-//    board[1][0] = -1;
-//    board[1][1] = -1;
-//    board[1][2] = -1;
-//    board[1][3] = -1;
-//    board[1][4] = -1;
-//    board[1][5] = -1;
-//    board[1][6] = 1;
-//    board[1][7] = 1;
+    board[1][0] = -1;
+    board[1][3] = -1;
+    board[1][5] = -1;
+    board[1][6] = 2;
+    board[1][7] = -1;
 
-//    board[6][0] = -1;
-//    board[6][1] = -1;
-//    board[6][2] = -1;
-//    board[6][3] = -1;
-//    board[7][2] = 4;
-//    board[7][3] = 5;
-//    board[7][4] = 6;
-//    board[7][5] = 4;
-//    board[7][6] = 1;
-//    board[7][7] = 6;
+    board[2][0] = 1;
+    board[2][1] = -1;
 
-//    board[6][0] = 1;
-//    board[6][1] = 1;
-//    board[6][2] = 1;
-//    board[6][3] = 1;
-//    board[6][4] = 1;
-//    board[6][5] = 1;
-//    board[6][6] = 1;
-//    board[6][7] = 1;
+    board[3][4] = -1;
+
+    board[4][1] = -4;
+
+    board[6][4] = 1;
+    board[6][5] = 1;
+    board[6][6] = 4;
+    board[6][7] = 1;
+
+    board[7][1] = 3;
+    board[7][2] = -5;
+    board[7][3] = 5;
+    board[7][4] = 6;
+    board[7][6] = 3;
+    board[7][7] = 2;
+
+
 
     whitePassant.clearElPassant();
     blackPassant.clearElPassant();

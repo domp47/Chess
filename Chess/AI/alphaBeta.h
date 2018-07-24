@@ -26,7 +26,8 @@ private:
 private:
     Controller* controller;
     EvalMap map;
-    Random randomMove;
+    std::random_device rd;
+    std::mt19937 mt;
 
 };
 

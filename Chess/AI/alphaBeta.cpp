@@ -3,7 +3,7 @@
 
 AlphaBeta::AlphaBeta(Controller* controller) {
     this->controller = controller;
-
+    mt = std::mt19937(rd());
 }
 
 Move AlphaBeta::findMove(bool whiteTeam) {
@@ -103,6 +103,7 @@ QVector<Move> AlphaBeta::getAllMoves(bool whiteTeam) {
 }
 
 int AlphaBeta::evaluateBoard(std::array<std::array<int,8>,8> board) {
+    std::uniform_int_distribution<int> evalRandomness(-6,6);
 
     int score = 0;
     for (int y = 0; y < 8; ++y) {
@@ -110,6 +111,8 @@ int AlphaBeta::evaluateBoard(std::array<std::array<int,8>,8> board) {
             score += map.getItem(board[y][x]);
         }
     }
+
+    score += evalRandomness(mt);
     return score;
 
 }
@@ -208,12 +211,12 @@ Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
         undoMove(move, temp, rook, king, undoType, whitePassant, blackPassant);
 
         if(whiteTeam){
-            if(score > bestScore){
+            if(score >= bestScore){
                 bestScore = score;
                 bestMove = move;
             }
         }else{
-            if(score < bestScore){
+            if(score <= bestScore){
                 bestScore = score;
                 bestMove = move;
             }

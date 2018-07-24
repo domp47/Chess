@@ -87,9 +87,6 @@ int Controller::noPlayers() {
                 std::cout << "White Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
             }else{
                 std::cout << "Error finding piece for white team" << std::endl;
-
-                move = alphaBeta->findMove(true);
-
             }
         }else{
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -106,14 +103,6 @@ int Controller::noPlayers() {
                 std::cout << "Error finding piece for black team" << std::endl;
             }
         }
-
-
-
-//        if(checkMateStalemate(true)==0 && checkCheck(true)){//checks if white team is in check
-//            emit sendMessage("Check On White");
-//        }else if(checkMateStalemate(false)==0 && checkCheck(false)){//checks if black team is in check
-//            emit sendMessage("Check On Black");
-//        }
 
         turn++;
 
