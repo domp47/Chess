@@ -7,15 +7,16 @@ Chess::Chess() {
 }
 
 Chess::~Chess() {
-    // controller->getWindow()->close();
-
-    // gameThread.destroy();
+    controller->getWindow()->close();
+    gameThread.detach();
+    pthread_cancel(pThread);
 }
 
 void Chess::playChess() {
     controller->playGame();
 
     gameThread = std::thread(&Controller::startGame, controller);
+    pThread = gameThread.native_handle();
 }
 
 void Chess::gameFinished(QString endResult) {
@@ -32,7 +33,7 @@ void Chess::gameFinished(QString endResult) {
         controller->playGame();
 
         gameThread = std::thread(&Controller::startGame, controller);
-
+        pThread = gameThread.native_handle();
 
     }else if(annoucement.clickedButton() == end){
         gameThread.join();
