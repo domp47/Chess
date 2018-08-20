@@ -6,6 +6,12 @@ Chess::Chess() {
     connect(controller, SIGNAL(sendEOG(QString)), this, SLOT(gameFinished(QString)));
 }
 
+Chess::~Chess() {
+    // controller->getWindow()->close();
+
+    // gameThread.destroy();
+}
+
 void Chess::playChess() {
     controller->playGame();
 

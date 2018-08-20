@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd Build
+
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/home/dom/Qt5.10.1/5.10.1/gcc_64/lib/cmake ../Chess/
+cmake --build ./ --target all -- -j4
+
+cd ../
+
+echo "Done"

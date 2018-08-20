@@ -37,7 +37,7 @@ void Board::initBoard(){
         }
     }
 
-    /**board[0][0] = -2;
+    board[0][0] = -2;
     board[0][1] = -3;
     board[0][2] = -4;
     board[0][3] = -5;
@@ -71,10 +71,10 @@ void Board::initBoard(){
     board[6][4] = 1;
     board[6][5] = 1;
     board[6][6] = 1;
-    board[6][7] = 1;**/
+    board[6][7] = 1;
 
 
-    board[0][4] = -6;
+    /**board[0][4] = -6;
     board[0][6] = -3;
     board[0][7] = -2;
 
@@ -101,7 +101,7 @@ void Board::initBoard(){
     board[7][3] = 5;
     board[7][4] = 6;
     board[7][6] = 3;
-    board[7][7] = 2;
+    board[7][7] = 2;**/
 
 
 

@@ -13,6 +13,7 @@ class Chess : public QObject{
 
 public:
     Chess();
+    ~Chess();
     void playChess();
 
 private:
