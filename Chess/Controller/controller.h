@@ -17,7 +17,7 @@ class Controller : public QObject{
     Q_OBJECT
 
 public:
-    Controller();
+    Controller(int searchDepth);
     Window* getWindow();
     Board* getBoard();
     int checkMateStalemate(bool whiteTeam);

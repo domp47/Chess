@@ -5,10 +5,10 @@
 
 //TODO AI pawn promotion
 
-Controller::Controller() {
+Controller::Controller(int searchDepth) {
     window = new Window(this);
     board = new Board(this);
-    alphaBeta = new AlphaBeta(this);
+    alphaBeta = new AlphaBeta(this, searchDepth);
 
     connect(window, SIGNAL(sendPawnPromotion(char, int, int)), this, SLOT(receivePawnPromotion(char, int, int)));
     connect(window, SIGNAL(sendClick(int, int)), this, SLOT(receiveClick(int, int)));
@@ -72,6 +72,8 @@ int Controller::noPlayers() {
     int blackResult = 0;
 
     while (whiteResult==0 && blackResult==0) {//keep taking turns until stalemate or checkmate
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         if(turn%2==0){
             Move move = alphaBeta->findMove(true);

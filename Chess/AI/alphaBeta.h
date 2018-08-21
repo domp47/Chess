@@ -10,7 +10,7 @@ class Controller;
 class AlphaBeta{
 
 public:
-    AlphaBeta(Controller* controller);
+    AlphaBeta(Controller* controller, int searchDepth);
     Move findMove(bool whiteTeam);
     char findUpgrade(Move move);
 
@@ -28,7 +28,7 @@ private:
     EvalMap map;
     std::random_device rd;
     std::mt19937 mt;
-
+    int searchDepth;
 };
 
 #endif // ALPHABETA_H

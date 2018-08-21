@@ -1,14 +1,15 @@
 #include "alphaBeta.h"
 #include "Board/board.h"
 
-AlphaBeta::AlphaBeta(Controller* controller) {
+AlphaBeta::AlphaBeta(Controller* controller, int searchDepth) {
     this->controller = controller;
-    mt = std::mt19937(rd());
+    this->mt = std::mt19937(rd());
+    this->searchDepth = searchDepth;
 }
 
 Move AlphaBeta::findMove(bool whiteTeam) {
 
-    Move move = minimaxRoot(4, whiteTeam);
+    Move move = minimaxRoot(this->searchDepth, whiteTeam);
 
     return move;
 }

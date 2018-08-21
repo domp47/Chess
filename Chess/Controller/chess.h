@@ -12,7 +12,7 @@ class Chess : public QObject{
     Q_OBJECT
 
 public:
-    Chess();
+    Chess(int searchDepth);
     ~Chess();
     void playChess();
 

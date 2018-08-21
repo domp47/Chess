@@ -1,7 +1,7 @@
 #include "chess.h"
 
-Chess::Chess() {
-    controller = new Controller();
+Chess::Chess(int searchDepth) {
+    controller = new Controller(searchDepth);
 
     connect(controller, SIGNAL(sendEOG(QString)), this, SLOT(gameFinished(QString)));
 }
