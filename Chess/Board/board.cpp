@@ -20,10 +20,18 @@
  *   6 = WHT KING
  */
 
+ /**
+  * Creates an instance of the game board
+  *
+  * @param controller game controller
+  */
 Board::Board(Controller* controller) {
     this->controller = controller;
 }
 
+/**
+ * Initiliazes the board for a new game
+ */
 void Board::initBoard(){
 
     for (int y = 0; y < 8; ++y) {
@@ -80,23 +88,53 @@ void Board::initBoard(){
     blackRightRookMoved= false;
 }
 
+/**
+ * Gets the piece at x,y on the board
+ * 
+ * @param x X location of piece
+ * @param y Y location of piece
+ * @return piece
+ */
 int Board::getPiece(int x, int y) {
     return board[y][x];
 }
 
+/**
+ *  Sets the piece given at the given location on the board
+ * 
+ * @param x X location
+ * @param y Y location
+ * @param val Value to set
+ */
 void Board::setPiece(int x, int y, int val){
     board[y][x] = val;
 }
 
+/**
+ *  Get the white passant for the board
+ * 
+ * @return Passant
+ */
 ElPassant Board::getWhitePassant() {
     return whitePassant;
 }
 
+/**
+ * Get the black passant for the board
+ * 
+ * @return Passant
+ */
 ElPassant Board::getBlackPassant() {
     return blackPassant;
 }
 
-
+/**
+ *  Upgrades the pawn on position x,y to the given piece
+ * 
+ * @param x X location
+ * @param y Y location
+ * @param upgrade Piece to upgrade to
+ */
 void Board::upgradePawn(int x, int y, char upgrade) {
     if(board[y][x]==1){
         switch (upgrade){
@@ -136,58 +174,129 @@ void Board::upgradePawn(int x, int y, char upgrade) {
     }
 }
 
+/**
+ * Gets whether the white left rook has moved
+ * 
+ * @return bool 
+ */
 bool Board::getWLR() {
     return whiteLeftRookMoved;
 }
 
+/**
+ * Gets whether the white right rook has moved
+ * 
+ * @return bool 
+ */
 bool Board::getWRR() {
     return whiteRightRookMoved;
 }
 
+/**
+ * Gets whether the black left rook has moved
+ * 
+ * @return bool 
+ */
 bool Board::getBLR() {
     return blackLeftRookMoved;
 }
 
+/**
+ * Gets whether the black right rook has moved
+ * 
+ * @return bool 
+ */
 bool Board::getBRR() {
     return blackRightRookMoved;
 }
 
+/**
+ * Gets whether the white king has moved
+ * 
+ * @return bool 
+ */
 bool Board::getWKing() {
     return whiteKingMoved;
 }
 
+/**
+ * Gets whether the black king has moved
+ * 
+ * @return bool 
+ */
 bool Board::getBKing() {
     return blackKingMoved;
 }
 
+/**
+ *  Sets whether the white left rook has moved
+ * 
+ * @param val bool
+ */
 void Board::setWLR(bool val) {
     whiteLeftRookMoved = val;
 }
 
+/**
+ *  Sets whether the white right rook has moved
+ * 
+ * @param val bool
+ */
 void Board::setWRR(bool val) {
     whiteRightRookMoved = val;
 }
 
+/**
+ *  Sets whether the black left rook has moved
+ * 
+ * @param val bool
+ */
 void Board::setBLR(bool val) {
     blackLeftRookMoved = val;
 }
 
+/**
+ *  Sets whether the black right rook has moved
+ * 
+ * @param val bool
+ */
 void Board::setBRR(bool val) {
     blackRightRookMoved = val;
 }
 
+/**
+ *  Sets whether the white king has moved
+ * 
+ * @param val bool
+ */
 void Board::setWKing(bool val) {
     whiteKingMoved = val;
 }
 
+/**
+ *  Sets whether the black king has moved
+ * 
+ * @param val bool
+ */
 void Board::setBKing(bool val) {
     blackKingMoved = val;
 }
 
+/**
+ *  Returns the board as a 2D array
+ * 
+ * @return board
+ */
 std::array<std::array<int,8>,8> Board::getBoard() {
     return board;
 }
 
+/**
+ *  finds the king of the specified team
+ * 
+ * @param whiteTeam white team or black teams king
+ * @param cords cords of the king
+ */
 void Board::findKing(bool whiteTeam, int cords[2]) {
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
@@ -204,6 +313,13 @@ void Board::findKing(bool whiteTeam, int cords[2]) {
     }
 }
 
+/**
+ *  Sets the passant for the board
+ * 
+ * @param white white team or black team
+ * @param attacker attackers position
+ * @param victim victims position
+ */
 void Board::setPassant(bool white, QPoint attacker, QPoint victim) {
     if(white){
         whitePassant.setElPassant(attacker, victim);
@@ -212,6 +328,11 @@ void Board::setPassant(bool white, QPoint attacker, QPoint victim) {
     }
 }
 
+/**
+ *  Clears the passant on the board
+ * 
+ * @param white whether white passant or black passant
+ */
 void Board::clearPassant(bool white) {
     if(white){
         whitePassant.clearElPassant();
@@ -220,6 +341,9 @@ void Board::clearPassant(bool white) {
     }
 }
 
+/**
+ * Prints the board to standard output
+ */
 void Board::printBoard() {
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
@@ -235,6 +359,12 @@ void Board::printBoard() {
     }
 }
 
+/**
+ *  Sets the boards passant
+ * 
+ * @param white white team or black team
+ * @param passant passant to set
+ */
 void Board::setPassant(bool white, ElPassant passant) {
     if(white){
         this->whitePassant = passant;

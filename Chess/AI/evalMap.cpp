@@ -19,7 +19,9 @@
  */
 
 
-
+/**
+ * Map with Piece Weights
+ */
 EvalMap::EvalMap() {
 
     map[-1] = -10;
@@ -37,6 +39,12 @@ EvalMap::EvalMap() {
     map[6] = 900;
 }
 
+/**
+ *  Returns the weight of the specified piece
+ * 
+ * @param key piece
+ * @return weight of piece
+ */
 int EvalMap::getItem(int key) {
     return map[key];
 }

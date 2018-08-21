@@ -1,12 +1,24 @@
 #include "alphaBeta.h"
 #include "Board/board.h"
 
+/**
+ *  Creates an instance of Alpha Beta for determining chess moves with a specified search depth
+ * 
+ * @param controller game controller
+ * @param searchDepth depth of alpha beta to search for
+ */
 AlphaBeta::AlphaBeta(Controller* controller, int searchDepth) {
     this->controller = controller;
     this->mt = std::mt19937(rd());
     this->searchDepth = searchDepth;
 }
 
+/**
+ *  Uses Alpha Beta pruning to determine the "best" move to make.
+ * 
+ * @param whiteTeam whether or not we're searching for a white move or black move
+ * @return "best" move to make
+ */
 Move AlphaBeta::findMove(bool whiteTeam) {
 
     Move move = minimaxRoot(this->searchDepth, whiteTeam);
@@ -14,6 +26,12 @@ Move AlphaBeta::findMove(bool whiteTeam) {
     return move;
 }
 
+/**
+ * Chooses which piece to upgrade the pawn to
+ * 
+ * @param move the move that is being upgraded
+ * @return choice of "best" upgrade
+ */
 char AlphaBeta::findUpgrade(Move move) {
 
     return 'q';
@@ -36,6 +54,13 @@ char AlphaBeta::findUpgrade(Move move) {
     return choice;**/
 }
 
+/**
+ * Minimax Root for finding a pawn promotion
+ * 
+ * @param move Move that is being promoted
+ * @param depth Depth to search
+ * @return best choice to upgrade, either a knight or a queen
+ */
 int AlphaBeta::promotionRoot(Move move, int depth){
     int bestScore;
     int bestChoice = 0;
@@ -83,6 +108,12 @@ int AlphaBeta::promotionRoot(Move move, int depth){
     return bestChoice;
 }
 
+/**
+ *  Gets all the possible moves for a specified team
+ * 
+ * @param whiteTeam whether we're searching for white moves or black moves
+ * @return Vector of all possible moves
+ */
 QVector<Move> AlphaBeta::getAllMoves(bool whiteTeam) {
     QVector<Move> allPossibleMoves;
 
@@ -103,6 +134,12 @@ QVector<Move> AlphaBeta::getAllMoves(bool whiteTeam) {
     return allPossibleMoves;
 }
 
+/**
+ *  Evaluates the score of the current board
+ * 
+ * @param board 2D array representing the current board state
+ * @return score of the board
+ */
 int AlphaBeta::evaluateBoard(std::array<std::array<int,8>,8> board) {
     std::uniform_int_distribution<int> evalRandomness(-6,6);
 
@@ -118,6 +155,15 @@ int AlphaBeta::evaluateBoard(std::array<std::array<int,8>,8> board) {
 
 }
 
+/**
+ *  Performs an alpha beta minimax
+ * 
+ * @param depth Depth to Search
+ * @param alpha Alpha Value
+ * @param beta Beta Value
+ * @param whiteTeam Whether it's white teams turn or black teams
+ * @return Score
+ */
 int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
     if(depth == 0){
         return evaluateBoard(controller->getBoard()->getBoard());
@@ -168,6 +214,13 @@ int AlphaBeta::minimax(int depth,int alpha, int beta, bool whiteTeam) {
 
 }
 
+/**
+ *  Minimax Root for finding the "best" move
+ * 
+ * @param depth Depth to search
+ * @param whiteTeam Whether white team or not
+ * @return Best Move
+ */
 Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
     QVector<Move> allMoves = getAllMoves(whiteTeam);
     int bestScore;
@@ -206,6 +259,17 @@ Move AlphaBeta::minimaxRoot(int depth, bool whiteTeam) {
     return bestMove;
 }
 
+/**
+ *  Simulates given move on the game board
+ * 
+ * @param move Move to make
+ * @param temp pointer to store what is being moved ontop of
+ * @param rook 
+ * @param king
+ * @param undoType What type of move we have to undo
+ * @param whitePassant 
+ * @param blackPassant
+ */
 void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType, ElPassant* whitePassant, ElPassant* blackPassant) {
     if(move.special==0){// normal move
 
@@ -346,6 +410,17 @@ void AlphaBeta::doMove(Move move, int* temp, int* rook, int* king, int* undoType
     controller->getBoard()->clearPassant(false);
 }
 
+/**
+ *  Undoes a specified move on the game board
+ * 
+ * @param move Move to undo
+ * @param temp piece that was covered
+ * @param rook 
+ * @param king
+ * @param undoType Type of move to undo
+ * @param whitePassant
+ * @param blackPassant
+ */
 void AlphaBeta::undoMove(Move move, int temp, int rook, int king, int undoType, ElPassant whitePassant, ElPassant blackPassant) {
     if(move.special==0){// normal move
 

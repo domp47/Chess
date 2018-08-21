@@ -1,5 +1,3 @@
-
-
 #include "Controller/chess.h"
 #include <QtWidgets/QApplication>
 #include <thread>

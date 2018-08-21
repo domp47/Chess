@@ -19,7 +19,9 @@
  */
 
 
-
+/**
+ * Maps the chess pieces
+ */
 ImageMap::ImageMap() {
 
     map[-1] = "./Chess/Pieces/pd.png";
@@ -37,6 +39,12 @@ ImageMap::ImageMap() {
     map[6] = "./Chess/Pieces/kl.png";
 }
 
+/**
+ *  Gets the image for a chess piece
+ * 
+ * @param key piece to get
+ * @return image path of piece
+ */
 std::string ImageMap::getItem(int key) {
     return map[key];
 }

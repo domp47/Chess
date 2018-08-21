@@ -1,5 +1,13 @@
 #include "knight.h"
 
+/**
+ *  Gets all the possible moves the knight at position x,y can make
+ * 
+ * @param x X location on board
+ * @param y Y location on board
+ * @param board game board
+ * @return Vector of possible moves
+ */
 QVector<Move> Knight::getMoves(int x, int y, std::array<std::array<int,8>,8> board) {
     QVector<Move> moves;
 
@@ -47,6 +55,16 @@ QVector<Move> Knight::getMoves(int x, int y, std::array<std::array<int,8>,8> boa
     return moves;
 }
 
+/**
+ *
+ * @param vector
+ * @param board
+ * @param x
+ * @param y
+ * @param whiteTeam
+ * @param initX
+ * @param initY
+ */
 void Knight::addToVector(QVector<Move>* vector, std::array<std::array<int,8>,8> board, int x, int y, bool whiteTeam, int initX, int initY) {
     if (board[y][x] == 0) {
         vector->append(Move(QPoint(initX,initY),QPoint(x, y)));

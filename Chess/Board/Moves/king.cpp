@@ -1,5 +1,13 @@
 #include "king.h"
 
+/**
+ *  Gets all the possible moves the king at position x,y can make
+ * 
+ * @param x X location on board
+ * @param y Y location on board
+ * @param controller game controller
+ * @return Vector of possible moves
+ */
 QVector<Move> King::getMoves(int x, int y, Controller* controller) {
     QVector<Move> moves;
 

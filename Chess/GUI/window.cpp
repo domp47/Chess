@@ -2,17 +2,24 @@
 #include "Controller/controller.h"
 #include "Board/board.h"
 
+/**
+ *  Construct GUI with refrence to the game controller
+ * 
+ * @param controller
+ */
 Window::Window(Controller* controller) {
     this->setFixedWidth(850);
     this->setFixedHeight(850);
 
     map = new ImageMap();
 
-
     connect(controller, SIGNAL(sendPawnPromotion(int, int)), this, SLOT(receivePawnPromotion(int, int)));
     connect(controller, SIGNAL(sendMessage(QString)), this, SLOT(showMessage(QString)));
 }
 
+/**
+ * Draws the board on the canvas
+ */
 void Window::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -121,6 +128,11 @@ void Window::paintEvent(QPaintEvent *)
     painter.drawText(775,840,"H");
 }
 
+/**
+ *  Event triggers when there is a mouse click on the canvas
+ * 
+ * @param event
+ */
 void Window::mousePressEvent(QMouseEvent *event) {
     if(event->x()>=STARTING_X&&event->x()<=STARTING_X+800){ //if inside the playing area x
         if(event->y()>=STARTING_Y&&event->y()<=STARTING_Y+800){//if inside the playing area y
@@ -132,12 +144,27 @@ void Window::mousePressEvent(QMouseEvent *event) {
     }
 }
 
+/**
+ *  Shows a messag on the GUI thread
+ * 
+ * @param message message to display
+ */
 void Window::showMessage(QString message) {
     QMessageBox msg;
     msg.setText(message);
     msg.exec();
 }
 
+/**
+ *  Updates cache 
+ *      Board,
+ *      Highlighted Piece,
+ *      Possible Moves
+ * 
+ * @param board
+ * @param highlight
+ * @param possibleMoves
+ */
 void Window::updateCache(std::array<std::array<int, 8>, 8> board, QPoint highlight, QVector<Move> possibleMoves) {
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
@@ -154,6 +181,13 @@ void Window::updateCache(std::array<std::array<int, 8>, 8> board, QPoint highlig
     highlightedCache.setY(highlight.y());
 }
 
+/**
+ *
+ *  Asks User to choose which piece to promote to
+ * 
+ * @param x x location of piece
+ * @param y y location of piece
+ */
 void Window::receivePawnPromotion(int x, int y) {
     QStringList items;
     items << tr("Queen") << tr("Bishop") << tr("Knight") << tr("Rook");

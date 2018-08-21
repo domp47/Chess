@@ -1,6 +1,15 @@
 #include "pawn.h"
 #include "../board.h"
 
+/**
+ *  Gets all the possible moves the pawn at position x,y can make
+ * 
+ * @param x X location on board
+ * @param y Y location on board
+ * @param board game board
+ * @param controller game controller
+ * @return Vector of possible moves
+ */
 QVector<Move> Pawn::getMoves(int x, int y, std::array<std::array<int,8>,8> board, Controller* controller) {
     QVector<Move> moves;
 

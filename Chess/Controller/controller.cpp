@@ -3,8 +3,11 @@
 #include "AI/alphaBeta.h"
 #include "Board/board.h"
 
-//TODO AI pawn promotion
-
+/**
+ *  Creates a new game controller with the specified search depth for alpha beta
+ * 
+ * @param searchDepth depth of alpha beta searching
+ */
 Controller::Controller(int searchDepth) {
     window = new Window(this);
     board = new Board(this);
@@ -14,6 +17,9 @@ Controller::Controller(int searchDepth) {
     connect(window, SIGNAL(sendClick(int, int)), this, SLOT(receiveClick(int, int)));
 }
 
+/**
+ * Starts game based on gamemode chosen
+ */
 void Controller::startGame(){
 
     int result = -1;
@@ -37,6 +43,9 @@ void Controller::startGame(){
     }
 }
 
+/**
+ * lets user choose how many players are going to play the game of chess
+ */
 void Controller::playGame() {
     possibleMoves.clear();
     highlightedPiece = QPoint(-1,-1);
@@ -65,6 +74,11 @@ void Controller::playGame() {
     window->repaint();
 }
 
+/**
+ *  Starts game of chess with two bots facing off
+ * 
+ * @return 0 = tie or stalemate, 1 = white wins, 2 = black wins
+ */
 int Controller::noPlayers() {
     std::cout << "Playing no players" << std::endl;
 
@@ -123,6 +137,11 @@ int Controller::noPlayers() {
     return -1;
 }
 
+/**
+ * starts a game with a human playing agaisnt a bot
+ * 
+ * @return 0 = tie or stalemate, 1 = white wins, 2 = black wins
+ */
 int Controller::onePlayer() {
     std::cout << "Playing one player" << std::endl;
 
@@ -178,7 +197,8 @@ int Controller::onePlayer() {
 }
 
 /**
- *
+ *  starts a game with two human players
+ * 
  * @return 0 = tie or stalemate, 1 = white wins, 2 = black wins
  */
 int Controller::twoPlayers() {
@@ -219,6 +239,12 @@ int Controller::twoPlayers() {
     return -1;
 }
 
+/**
+ *  Receives a click from the GUI
+ * 
+ * @param x X location of click on board
+ * @param y Y location of click on board
+ */
 void Controller::receiveClick(int x, int y) {
     if(needInput){
         int prevX = highlightedPiece.x();
@@ -265,18 +291,39 @@ void Controller::receiveClick(int x, int y) {
 
 }
 
+/**
+ *  gets instance of the GUI
+ * 
+ * @return GUI
+ */
 Window *Controller::getWindow() {
     return window;
 }
 
+/**
+ *  gets instance of the board
+ * 
+ * @return Board
+ */
 Board *Controller::getBoard() {
     return board;
 }
 
+/**
+ * gets all the possible moves for the highlighted piece
+ * 
+ * @return Vector of moves for the highlights piece
+ */
 QVector<Move> Controller::getPossibleMoves() {
     return possibleMoves;
 }
 
+/**
+ *  checks whether click is a possible move
+ * 
+ * @param p Point clicked
+ * @return bool
+ */
 bool Controller::isMovePossible(QPoint p) {
     for(Move move: possibleMoves){
         if(move.end.x()==p.x() && move.end.y()==p.y())
@@ -285,6 +332,13 @@ bool Controller::isMovePossible(QPoint p) {
     return false;
 }
 
+/**
+ * get possible moves that the piece at x,y can make legally
+ * 
+ * @param x X location
+ * @param y Y location
+ * @return Vector of legal moves
+ */
 QVector<Move> Controller::getMoves(int x, int y) {
     if(board->getPiece(x,y)==1 || board->getPiece(x,y)==-1){
         return stripCheck(x,y,Pawn::getMoves(x,y,board->getBoard(), this));
@@ -310,6 +364,11 @@ QVector<Move> Controller::getMoves(int x, int y) {
     return {};
 }
 
+/**
+ *  Executes a move on the board with the specified move
+ * 
+ * @param move Move to execute
+ */
 void Controller::movePiece(Move move) {
     board->clearPassant(true);
     board->clearPassant(false);
@@ -455,6 +514,12 @@ void Controller::movePiece(Move move) {
 
 }
 
+/**
+ *  Checks whether the given team is in check
+ * 
+ * @param whiteTeam White team or Black team
+ * @return bool
+ */
 bool Controller::checkCheck(bool whiteTeam) {
     int kingCords[2];
     board->findKing(whiteTeam, kingCords);
@@ -495,6 +560,14 @@ int Controller::checkMateStalemate(bool whiteTeam) {
     }
 }
 
+/**
+ *  Checks whether the specified spot is under attack
+ * 
+ * @param srcX X location
+ * @param srcY Y location
+ * @param whiteTeam White team or black team
+ * @return bool
+ */
 bool Controller::checkForAttack(int srcX, int srcY, bool whiteTeam) {
 
 
@@ -605,6 +678,15 @@ bool Controller::checkForAttack(int srcX, int srcY, bool whiteTeam) {
 
     return false;
 }
+
+/**
+ *  Strip moves that put the person in check
+ * 
+ * @param x X Location
+ * @param y Y Location
+ * @param moves Moves to check
+ * @return stripped moves
+ */
 QVector<Move> Controller::stripCheck(int x, int y,QVector<Move> moves) {
     QVector<Move> strippedMoves;
     bool whiteTeam = true;
@@ -679,10 +761,23 @@ QVector<Move> Controller::stripCheck(int x, int y,QVector<Move> moves) {
     return strippedMoves;
 }
 
+/**
+ *  Gets the currently highlighted piece
+ * 
+ * @return Position of highlighted piece
+ */
 QPoint Controller::getHighlighted() {
     return highlightedPiece;
 }
 
+/**
+ * Check if clicked location is in the vector of possible moves
+ * 
+ * @param moves possible moves
+ * @param x x location of click
+ * @param y y location of click
+ * @return bool
+ */
 bool Controller::checkVectorOfMoves(QVector<Move> moves, int x, int y) {
     for(Move move: moves){
         if(move.end.y()==y && move.end.x()==x){
@@ -692,6 +787,13 @@ bool Controller::checkVectorOfMoves(QVector<Move> moves, int x, int y) {
     return false;
 }
 
+/**
+ *  Upgrades pawn on the board
+ * 
+ * @param choice piece to upgrade to 
+ * @param x X location
+ * @param y Y location
+ */
 void Controller::receivePawnPromotion(char choice, int x, int y) {
     board->upgradePawn(x, y, choice);
 }
