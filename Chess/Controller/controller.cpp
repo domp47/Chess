@@ -84,7 +84,7 @@ int Controller::noPlayers() {
                 window->repaint();
 
 
-                std::cout << "White Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
+//                std::cout << "White Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
                 whiteResult = 2;
@@ -98,7 +98,7 @@ int Controller::noPlayers() {
                 window->updateCache(board->getBoard());
                 window->repaint();
 
-                std::cout << "Black Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
+//                std::cout << "Black Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
                 blackResult = 2;
@@ -314,16 +314,11 @@ void Controller::movePiece(Move move) {
     board->clearPassant(true);
     board->clearPassant(false);
 
-    board->setWhiteLongCastle(false);//TODO investigate if I still need this
-    board->setWhiteCastle(false);
-    board->setBlackLongCastle(false);
-    board->setBlackCastle(false);
-
-    if(std::abs(board->getPiece(move.init.x(),move.init.y()))==6){
-        std::cout << "Moving King" << std::endl;
-        std::cout << "x: " << move.init.x() << ", y: " << move.init.y() << std::endl;
-        std::cout << "piece " << board->getPiece(move.init.x(),move.init.y()) << std::endl;
-    }
+//    if(std::abs(board->getPiece(move.init.x(),move.init.y()))==6){
+//        std::cout << "Moving King" << std::endl;
+//        std::cout << "x: " << move.init.x() << ", y: " << move.init.y() << std::endl;
+//        std::cout << "piece " << board->getPiece(move.init.x(),move.init.y()) << std::endl;
+//    }
 
     if(move.init.y()==7 && move.init.x()==0 && board->getPiece(move.init.x(),move.init.y())==2){
         board->setWLR(true);

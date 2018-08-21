@@ -78,11 +78,6 @@ void Board::initBoard(){
     whiteRightRookMoved= false;
     blackLeftRookMoved = false;
     blackRightRookMoved= false;
-
-    blackCastle = false;
-    blackLongCastle = false;
-    whiteCastle = false;
-    whiteLongCastle = false;
 }
 
 int Board::getPiece(int x, int y) {
@@ -187,38 +182,6 @@ void Board::setWKing(bool val) {
 
 void Board::setBKing(bool val) {
     blackKingMoved = val;
-}
-
-bool Board::isBlackLongCastle() const {
-    return blackLongCastle;
-}
-
-void Board::setBlackLongCastle(bool blackLongCastle) {
-    Board::blackLongCastle = blackLongCastle;
-}
-
-bool Board::isBlackCastle() const {
-    return blackCastle;
-}
-
-void Board::setBlackCastle(bool blackCastle) {
-    Board::blackCastle = blackCastle;
-}
-
-bool Board::isWhiteLongCastle() const {
-    return whiteLongCastle;
-}
-
-void Board::setWhiteLongCastle(bool whiteLongCastle) {
-    Board::whiteLongCastle = whiteLongCastle;
-}
-
-bool Board::isWhiteCastle() const {
-    return whiteCastle;
-}
-
-void Board::setWhiteCastle(bool whiteCastle) {
-    Board::whiteCastle = whiteCastle;
 }
 
 std::array<std::array<int,8>,8> Board::getBoard() {

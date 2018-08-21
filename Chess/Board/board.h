@@ -38,14 +38,6 @@ public:
     bool getBRR();
     bool getWKing();
     bool getBKing();
-    bool isBlackLongCastle() const;
-    void setBlackLongCastle(bool blackLongCastle);
-    bool isBlackCastle() const;
-    void setBlackCastle(bool blackCastle);
-    bool isWhiteLongCastle() const;
-    void setWhiteLongCastle(bool whiteLongCastle);
-    bool isWhiteCastle() const;
-    void setWhiteCastle(bool whiteCastle);
     std::array<std::array<int,8>,8> getBoard();
     void setWLR(bool val);
     void setWRR(bool val);
@@ -66,10 +58,6 @@ private:
     bool blackRightRookMoved;
     bool whiteKingMoved;
     bool blackKingMoved;
-    bool blackLongCastle;
-    bool blackCastle;
-    bool whiteLongCastle;
-    bool whiteCastle;
     Controller* controller;
 };
 

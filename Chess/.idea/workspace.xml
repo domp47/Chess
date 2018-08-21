@@ -14,15 +14,9 @@
   <component name="ChangeListManager">
     <list default="true" id="36eed80a-0d2b-43b7-9201-4f937be2d3a3" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/alphaBeta.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AI/alphaBeta.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/alphaBeta.h" beforeDir="false" afterPath="$PROJECT_DIR$/AI/alphaBeta.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/random.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/random.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/Moves/king.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/Moves/king.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Board/board.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/board.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/elPassant.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/elPassant.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/window.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/window.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Board/board.h" beforeDir="false" afterPath="$PROJECT_DIR$/Board/board.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controller/controller.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/controller.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,13 +38,15 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="cpp" value="22" />
-          <entry key="h" value="4" />
+          <entry key="cpp" value="24" />
+          <entry key="h" value="5" />
+          <entry key="txt" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="ObjectiveC" value="26" />
+          <entry key="CMakeLists.txt" value="1" />
+          <entry key="ObjectiveC" value="29" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
@@ -69,10 +65,28 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.cpp">
+        <entry file="file://$PROJECT_DIR$/Controller/controller.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="10" column="20" lean-forward="true" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+            <state relative-caret-position="274">
+              <caret line="316" column="39" selection-start-line="316" selection-start-column="39" selection-end-line="319" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Board/board.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1155">
+              <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Board/board.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="572">
+              <caret line="68" selection-start-line="68" selection-start-column="2" selection-end-line="71" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -159,7 +173,6 @@
         <option value="$PROJECT_DIR$/Board/Moves/knight.h" />
         <option value="$PROJECT_DIR$/Board/Moves/knight.cpp" />
         <option value="$PROJECT_DIR$/Board/Moves/king.h" />
-        <option value="$PROJECT_DIR$/Board/board.h" />
         <option value="$PROJECT_DIR$/Controller/chess.cpp" />
         <option value="$PROJECT_DIR$/Board/Moves/pawn.cpp" />
         <option value="$PROJECT_DIR$/Controller/controller.h" />
@@ -167,13 +180,14 @@
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/AI/scoring.h" />
         <option value="$PROJECT_DIR$/AI/scoring.cpp" />
-        <option value="$PROJECT_DIR$/Controller/controller.cpp" />
         <option value="$PROJECT_DIR$/AI/alphaBeta.cpp" />
         <option value="$PROJECT_DIR$/AI/alphaBeta.h" />
         <option value="$PROJECT_DIR$/Board/Moves/king.cpp" />
-        <option value="$PROJECT_DIR$/Board/board.cpp" />
         <option value="$PROJECT_DIR$/Board/elPassant.cpp" />
         <option value="$PROJECT_DIR$/GUI/window.cpp" />
+        <option value="$PROJECT_DIR$/Board/board.h" />
+        <option value="$PROJECT_DIR$/Board/board.cpp" />
+        <option value="$PROJECT_DIR$/Controller/controller.cpp" />
       </list>
     </option>
   </component>
@@ -203,6 +217,16 @@
             <path>
               <item name="Chess" type="b2602c69:ProjectViewProjectNode" />
               <item name="Chess" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Chess" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Chess" type="462c0819:PsiDirectoryNode" />
+              <item name="Board" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Chess" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Chess" type="462c0819:PsiDirectoryNode" />
+              <item name="Controller" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -290,12 +314,12 @@
       <workItem from="1532393530754" duration="673000" />
       <workItem from="1532395863751" duration="532000" />
       <workItem from="1534787204623" duration="1435000" />
-      <workItem from="1534860764716" duration="616000" />
+      <workItem from="1534860764716" duration="1057000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="246980000" />
+    <option name="totallyTimeSpent" value="247421000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -387,13 +411,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Board/board.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="32" column="32" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/include/x86_64-linux-gnu/qt5/QtCore/qgenericatomic.h" />
     <entry file="file:///usr/include/x86_64-linux-gnu/qt5/QtCore/qbasicatomic.h" />
     <entry file="file:///usr/include/x86_64-linux-gnu/qt5/QtCore/qatomic_x86.h" />
@@ -412,13 +429,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="711">
           <caret line="52" column="55" selection-start-line="52" selection-start-column="55" selection-end-line="52" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
-          <caret line="52" column="10" selection-start-line="52" selection-start-column="10" selection-end-line="52" selection-end-column="10" />
         </state>
       </provider>
     </entry>
@@ -512,13 +522,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Board/board.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2518">
-          <caret line="68" column="20" selection-start-line="68" selection-start-column="20" selection-end-line="68" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Board/elPassant.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -537,13 +540,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="362">
           <caret line="29" selection-start-line="29" selection-end-line="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Controller/controller.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8233">
-          <caret line="108" column="15" lean-forward="true" selection-start-line="108" selection-start-column="15" selection-end-line="108" selection-end-column="15" />
         </state>
       </provider>
     </entry>
@@ -569,8 +565,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="10" column="20" lean-forward="true" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+        <state relative-caret-position="435">
+          <caret line="32" column="1" lean-forward="true" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="531">
+          <caret line="52" column="9" selection-start-line="52" selection-start-column="9" selection-end-line="52" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Board/board.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="572">
+          <caret line="68" selection-start-line="68" selection-start-column="2" selection-end-line="71" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Board/board.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1155">
+          <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Controller/controller.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="274">
+          <caret line="316" column="39" selection-start-line="316" selection-start-column="39" selection-end-line="319" selection-end-column="35" />
         </state>
       </provider>
     </entry>
