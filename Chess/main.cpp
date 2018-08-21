@@ -24,7 +24,6 @@ int main(int argc, char* argv[]){
             std::cerr << argv[1] << " is not a valid search depth." << std::endl;
             exit(1);
         }
-        std::cout << "Depth: " << searchDepth << std::endl;
     }
 
     Chess chess(searchDepth);

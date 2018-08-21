@@ -20,6 +20,7 @@ private:
     Controller* controller;
     std::thread gameThread;
     pthread_t pThread;
+    bool cleanExit;
 
 public slots:
     void gameFinished(QString endResult);

@@ -3,13 +3,18 @@
 Chess::Chess(int searchDepth) {
     controller = new Controller(searchDepth);
 
+    cleanExit = false;
+
     connect(controller, SIGNAL(sendEOG(QString)), this, SLOT(gameFinished(QString)));
 }
 
 Chess::~Chess() {
     controller->getWindow()->close();
-    gameThread.detach();
-    pthread_cancel(pThread);
+
+    if(!cleanExit){
+        gameThread.detach();
+        pthread_cancel(pThread);
+    }
 }
 
 void Chess::playChess() {
@@ -39,5 +44,7 @@ void Chess::gameFinished(QString endResult) {
         gameThread.join();
 
         controller->getWindow()->close();
+
+        cleanExit = true;
     }
 }
