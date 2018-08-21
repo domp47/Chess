@@ -2,8 +2,9 @@
 #define ALPHABETA_H
 
 #include <Board/elPassant.h>
-#include "random.h"
 #include "evalMap.h"
+#include "Controller/move.h"
+#include <random>
 
 class Controller;
 

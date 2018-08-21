@@ -19,9 +19,6 @@ void Window::paintEvent(QPaintEvent *)
 
     painter.fillRect(0,0,850,850,Colors::background());
 
-//    int highlightedX = controller->getHighlighted().x();
-//    int highlightedY = controller->getHighlighted().y();
-
     int highlightedX = highlightedCache.x();
     int highlightedY = highlightedCache.y();
 
@@ -66,7 +63,6 @@ void Window::paintEvent(QPaintEvent *)
         int xLoc = (m.end.x() * 100) + STARTING_X;
         int yLoc = (m.end.y() * 100) + STARTING_Y;
 
-//        if(controller->getBoard()->getPiece(m.end.x(),m.end.y())==0)
         if(boardCache[m.end.y()][m.end.x()]==0)
             painter.fillRect(xLoc,yLoc,100,100,Colors::move());
         else
@@ -87,7 +83,6 @@ void Window::paintEvent(QPaintEvent *)
         else
             painter.fillRect(xLoc, yLoc,80,80,Colors::dark());
 
-//        int piece = controller->getBoard()->getPiece(m.end.x(), m.end.y());
         int piece = boardCache[m.end.y()][m.end.x()];
 
         xLoc -= 10;
@@ -102,112 +97,6 @@ void Window::paintEvent(QPaintEvent *)
 
 
     }
-
-    /*if(highlightedY != -1 || highlightedX != -1){//if a piece is highlighted
-        if(controller->getBoard()->getPiece(highlightedX,highlightedY)==-1){//black pawn
-            if(controller->getBoard()->getBlackPassant().getPresent()){//passant possible
-
-                //selected piece is one of the possible passant attacks
-                if(controller->getBoard()->getBlackPassant().getAttacker1().x()==highlightedX && controller->getBoard()->getBlackPassant().getAttacker1().y()==highlightedY){
-                    int x = (controller->getBoard()->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
-                    int y = ((controller->getBoard()->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
-
-                    painter.fillRect(x, y,100,100,Colors::special());
-
-                    if(((controller->getBoard()->getBlackPassant().getVictim().x())+(controller->getBoard()->getBlackPassant().getVictim().y() + 1))%2==0){
-                        painter.fillRect(x+10,y+10,80,80,Colors::light());
-                    }else{
-                        painter.fillRect(x+10,y+10,80,80,Colors::dark());
-                    }
-
-                }
-                if(controller->getBoard()->getBlackPassant().getAttacker2().x()==highlightedX && controller->getBoard()->getBlackPassant().getAttacker2().y()==highlightedY){
-                    int x = (controller->getBoard()->getBlackPassant().getVictim().x() * 100 ) + STARTING_X;
-                    int y = ((controller->getBoard()->getBlackPassant().getVictim().y() + 1) * 100) + STARTING_Y;
-
-                    painter.fillRect(x, y,100,100,Colors::special());
-
-                    if(((controller->getBoard()->getBlackPassant().getVictim().x())+(controller->getBoard()->getBlackPassant().getVictim().y() + 1))%2==0){
-                        painter.fillRect(x+10,y+10,80,80,Colors::light());
-                    }else{
-                        painter.fillRect(x+10,y+10,80,80,Colors::dark());
-                    }
-
-                }
-            }
-        }
-        else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==1){//white pawn
-            if(controller->getBoard()->getWhitePassant().getPresent()){//passant possible
-
-                //selected piece is one of the possible passant attacks
-
-                int attack1x = controller->getBoard()->getWhitePassant().getAttacker1().x();
-                int attack1y = controller->getBoard()->getWhitePassant().getAttacker1().y();
-
-                int attack2x = controller->getBoard()->getWhitePassant().getAttacker2().x();
-                int attack2y = controller->getBoard()->getWhitePassant().getAttacker2().y();
-
-                if(attack1x==highlightedX && attack1y==highlightedY){
-                    int x = (controller->getBoard()->getWhitePassant().getVictim().x() * 100) + STARTING_X;
-                    int y = ((controller->getBoard()->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
-
-                    painter.fillRect(x, y,100,100,Colors::special());
-
-                    if(((controller->getBoard()->getWhitePassant().getVictim().x())+(controller->getBoard()->getWhitePassant().getVictim().y() + 1))%2==0){
-                        painter.fillRect(x+10,y+10,80,80,Colors::light());
-                    }else{
-                        painter.fillRect(x+10,y+10,80,80,Colors::dark());
-                    }
-
-                } else if(attack2x==highlightedX && attack2y==highlightedY){
-                    int x = (controller->getBoard()->getWhitePassant().getVictim().x() * 100) + STARTING_X;
-                    int y = ((controller->getBoard()->getWhitePassant().getVictim().y() - 1) * 100) + STARTING_Y;
-
-                    painter.fillRect(x, y,100,100,Colors::special());
-
-                    if(((controller->getBoard()->getWhitePassant().getVictim().x())+(controller->getBoard()->getWhitePassant().getVictim().y() + 1))%2==0){
-                        painter.fillRect(x+10,y+10,80,80,Colors::light());
-                    }else{
-                        painter.fillRect(x+10,y+10,80,80,Colors::dark());
-                    }
-
-                }
-            }
-        }
-        else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==6){//white knight
-            if(controller->getBoard()->isWhiteLongCastle()){
-                int x = 200 + STARTING_X;
-                int y = 700 + STARTING_Y;
-
-                painter.fillRect(x,y,100,100,Colors::move());
-                painter.fillRect(x+10,y+10,80,80,Colors::dark());
-            }
-            if(controller->getBoard()->isWhiteCastle()){
-                int x = 600 + STARTING_X;
-                int y = 700 + STARTING_Y;
-
-                painter.fillRect(x,y,100,100,Colors::move());
-                painter.fillRect(x+10,y+10,80,80,Colors::dark());
-            }
-        }
-        else if(controller->getBoard()->getPiece(highlightedX,highlightedY)==-6){//black knight
-            if(controller->getBoard()->isBlackLongCastle()){
-                int x = 200 + STARTING_X;
-                int y = 000 + STARTING_Y;
-
-                painter.fillRect(x,y,100,100,Colors::move());
-                painter.fillRect(x+10,y+10,80,80,Colors::light());
-            }
-            if(controller->getBoard()->isBlackCastle()){
-                int x = 600 + STARTING_X;
-                int y = 000 + STARTING_Y;
-
-                painter.fillRect(x,y,100,100,Colors::move());
-                painter.fillRect(x+10,y+10,80,80,Colors::light());
-            }
-        }
-    }*/
-
 
     QFont font = painter.font();
     font.setPixelSize(32);
@@ -237,13 +126,10 @@ void Window::mousePressEvent(QMouseEvent *event) {
         if(event->y()>=STARTING_Y&&event->y()<=STARTING_Y+800){//if inside the playing area y
             int x = (event->x() - STARTING_X)/100; //get x quadrant
             int y = (event->y() - STARTING_Y)/100; //get y quadrant
-//            std::cout << "Mouse Pressed at quadrant:" << x << ", " << y << std::endl;
 
             emit sendClick(x,y);
         }
     }
-
-//    std::cout << "Mouse Pressed at pixels:" << event->x() << ", " << event->y() << std::endl << std::endl;
 }
 
 void Window::showMessage(QString message) {

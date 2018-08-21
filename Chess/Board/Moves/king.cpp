@@ -74,8 +74,5 @@ QVector<Move> King::getMoves(int x, int y, Controller* controller) {
         }
     }
 
-//    controller->getBoard()->printBoard();
-//    std::cout << std::endl;
-
     return moves;
 }

@@ -1,8 +1,5 @@
 #include "elPassant.h"
 
-
-
-
 ElPassant::ElPassant() {
 
 }

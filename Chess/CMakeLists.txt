@@ -27,7 +27,6 @@ set( project_sources
         ./Board/Moves/king.cpp
         ./Board/elPassant.cpp
         ./AI/alphaBeta.cpp
-        ./AI/random.cpp
         ./AI/evalMap.cpp
         ./Controller/controller.cpp
         ./Controller/chess.cpp
@@ -47,7 +46,6 @@ set(headers
         ./Board/Moves/king.h
         ./Board/elPassant.h
         ./AI/alphaBeta.h
-        ./AI/random.h
         ./AI/evalMap.h
         ./Controller/controller.h
         ./Controller/chess.h
