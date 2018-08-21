@@ -74,8 +74,6 @@ int Controller::noPlayers() {
     while (whiteResult==0 && blackResult==0) {//keep taking turns until stalemate or checkmate
 
         if(turn%2==0){
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
             Move move = alphaBeta->findMove(true);
 
             if(move.end.x() != -1){
@@ -86,11 +84,11 @@ int Controller::noPlayers() {
 
                 std::cout << "White Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
             }else{
-                std::cout << "Error finding piece for white team" << std::endl;
+                std::cout << "Error finding piece for black team" << std::endl;
+                whiteResult = 2;
+                break;
             }
         }else{
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
             Move move = alphaBeta->findMove(false);
 
             if(move.end.x() != -1){
@@ -101,6 +99,8 @@ int Controller::noPlayers() {
                 std::cout << "Black Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
+                blackResult = 2;
+                break;
             }
         }
 
@@ -129,21 +129,16 @@ int Controller::onePlayer() {
 
     while (whiteResult==0 && blackResult==0) {//keep taking turns until stalemate or checkmate
 
-        if(turn%2==0){//white team turn
+        if(turn%2==0){ //Human's turn (White)
+
             needInput = true;
 
-//            mutex.lock(); //TODO figure out why this isnt unlocking properly
-//            waitForInput.wait(&mutex);
-            inputGot = false;
-            while (!inputGot){
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            }
-
+            std::unique_lock<std::mutex> lck(mutex);
+            cv.wait(lck);
 
             needInput = false;
-        }else{//black persons turn
-//            std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
+        }else{ //AI's turn (black)
             Move move = alphaBeta->findMove(false);
 
             if(move.end.x() != -1){
@@ -152,6 +147,8 @@ int Controller::onePlayer() {
                 window->repaint();
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
+                blackResult = 2;
+                break;
             }
         }
 
@@ -192,12 +189,8 @@ int Controller::twoPlayers() {
 
         needInput = true;
 
-//        mutex.lock();
-//        waitForInput.wait(&mutex);
-        inputGot = false;
-        while (!inputGot){
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
+        std::unique_lock<std::mutex> lck(mutex);
+        cv.wait(lck);
 
         needInput = false;
 
@@ -257,9 +250,7 @@ void Controller::receiveClick(int x, int y) {
             window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
             window->repaint();
 
-            inputGot = true;
-//            mutex.unlock();
-//            waitForInput.wakeAll();
+            cv.notify_all();
         }
         //if it's another of the same piece highlight that one instead
         else if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ){

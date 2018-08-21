@@ -3,8 +3,8 @@
 
 #include <GUI/window.h>
 //#include <Board/board.h>
-#include <QtCore/QWaitCondition>
-#include <QtCore/QMutex>
+#include <mutex>
+#include <condition_variable>
 #include "move.h"
 //#include "Board/board.h"
 //#include "AI/alphaBeta.h"
@@ -40,9 +40,8 @@ private:
     Window* window;
     Board* board;
     AlphaBeta* alphaBeta;
-    QMutex mutex;
-    QWaitCondition waitForInput;
-    bool inputGot;
+    std::mutex mutex;
+    std::condition_variable cv;
     bool needInput;
     int turn;
     QPoint highlightedPiece;
