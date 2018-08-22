@@ -130,5 +130,44 @@ void NeuralNetwork::calculateScore(std::array<std::array<int, 8>, 8> gameBoard, 
         throw std::runtime_error("Error Getting Network Result");
     }
 
+    auto flat = outputs[0].flat<float>();
 
+    float* data = flat.data();
+    
+    if(flat.size() != 6){
+        throw std::runtime_error("Output vector size mismatch");
+    }
+
+    float max = std::numeric_limits<float>::min();
+    int win = std::numeric_limits<int>::min();
+    for(int i = 0; i < 3; i++){
+        if(data[i] > max){
+            max = data[i];
+            if(i == 0){
+                win = 1;
+            }else if(i == 1){
+                win = -1;
+            }else{
+                win = 0;
+            }
+        }
+    }
+
+    max = std::numeric_limits<float>::min();
+    int queenAdv = std::numeric_limits<int>::min();
+    for(int i = 3; i < 6; i++){
+        if(data[i] > max){
+            max = data[i];
+            if(i == 3){
+                queenAdv = 1;
+            }else if(i == 4){
+                queenAdv = -1;
+            }else{
+                queenAdv = 0;
+            }
+        }
+    }
+
+    output[0] = win;
+    output[1] = queenAdv;
 }

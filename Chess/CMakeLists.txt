@@ -62,7 +62,7 @@ add_executable(chess
 
 link_directories(/lib/x86_64-linux-gnu/)
 
-target_link_libraries(chess -lpthread ${CMAKE_CURRENT_SOURCE_DIR}/../Lib/libtensorflow_cc.so ${CMAKE_CURRENT_SOURCE_DIR}/../Lib/libtensorflow_framework.so)
+target_link_libraries(chess -lpthread ${CMAKE_CURRENT_SOURCE_DIR}/../lib/libtensorflow_cc.so ${CMAKE_CURRENT_SOURCE_DIR}/../lib/libtensorflow_framework.so)
 
 qt5_use_modules( chess Core )
 qt5_use_modules( chess Gui )
