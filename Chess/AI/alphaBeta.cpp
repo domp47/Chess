@@ -7,10 +7,11 @@
  * @param controller game controller
  * @param searchDepth depth of alpha beta to search for
  */
-AlphaBeta::AlphaBeta(Controller* controller, int searchDepth) {
+AlphaBeta::AlphaBeta(Controller* controller, int searchDepth, std::string graphPath, std::string checkpointPath) {
     this->controller = controller;
     this->mt = std::mt19937(rd());
     this->searchDepth = searchDepth;
+    this->nn = new NeuralNetwork(graphPath, checkpointPath);
 }
 
 /**
@@ -144,11 +145,17 @@ int AlphaBeta::evaluateBoard(std::array<std::array<int,8>,8> board) {
     std::uniform_int_distribution<int> evalRandomness(-6,6);
 
     int score = 0;
-    for (int y = 0; y < 8; ++y) {
+    /*for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
             score += map.getItem(board[y][x]);
         }
-    }
+    }*/
+
+    int res[2];
+    this->nn->calculateScore(board, res);
+
+    score += res[0];
+    score += res[1];
 
     score += evalRandomness(mt);
     return score;

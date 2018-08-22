@@ -8,10 +8,10 @@
  * 
  * @param searchDepth depth of alpha beta searching
  */
-Controller::Controller(int searchDepth) {
+Controller::Controller(int searchDepth, std::string graphPath, std::string checkpointPath) {
     window = new Window(this);
     board = new Board(this);
-    alphaBeta = new AlphaBeta(this, searchDepth);
+    alphaBeta = new AlphaBeta(this, searchDepth, graphPath, checkpointPath);
 
     connect(window, SIGNAL(sendPawnPromotion(char, int, int)), this, SLOT(receivePawnPromotion(char, int, int)));
     connect(window, SIGNAL(sendClick(int, int)), this, SLOT(receiveClick(int, int)));

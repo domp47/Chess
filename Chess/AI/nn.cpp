@@ -144,9 +144,9 @@ void NeuralNetwork::calculateScore(std::array<std::array<int, 8>, 8> gameBoard, 
         if(data[i] > max){
             max = data[i];
             if(i == 0){
-                win = 1;
+                win = 1000;
             }else if(i == 1){
-                win = -1;
+                win = -1000;
             }else{
                 win = 0;
             }
@@ -159,9 +159,9 @@ void NeuralNetwork::calculateScore(std::array<std::array<int, 8>, 8> gameBoard, 
         if(data[i] > max){
             max = data[i];
             if(i == 3){
-                queenAdv = 1;
+                queenAdv = 200;
             }else if(i == 4){
-                queenAdv = -1;
+                queenAdv = -200;
             }else{
                 queenAdv = 0;
             }
