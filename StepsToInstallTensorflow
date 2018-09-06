@@ -43,7 +43,7 @@ run configure for tensorflow
 
 #build C++ library
 bazel build --config=opt --config=cuda //tensorflow:libtensorflow_cc.so #For C++ with cuda
-bazel build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 -k //tensorflow:libtensorflow_cc.so #For C++ without cuda
+bazel build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 -k //tensorflow:libtensorflow_cc.so #For C++ without cuda but cpu optimization instructions
 
 
 copy the files to desired include directory
