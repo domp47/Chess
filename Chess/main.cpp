@@ -24,8 +24,8 @@ int main(int argc, char* argv[]){
         }
     }
 
-    const std::string graphPath = "/home/dom/Chess/Model/chess.meta";
-    const std::string checkpointPath = "/home/dom/Chess/Model/chess";
+    const std::string graphPath = "/home/dom/projects/Chess/Model/chess.meta";
+    const std::string checkpointPath = "/home/dom/projects/Chess/Model/chess";
 
     Chess chess(searchDepth, graphPath, checkpointPath);
     chess.playChess();
