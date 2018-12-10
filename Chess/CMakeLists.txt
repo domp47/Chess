@@ -13,6 +13,8 @@ find_package(Qt5Core  REQUIRED)
 find_package(Qt5Gui  REQUIRED)
 find_package(Qt5Widgets  REQUIRED)
 
+include_directories(../Include)
+
 set( project_sources
         ./main.cpp
         ./GUI/window.cpp
@@ -28,6 +30,7 @@ set( project_sources
         ./Board/elPassant.cpp
         ./AI/alphaBeta.cpp
         ./AI/evalMap.cpp
+        ./AI/nn.cpp
         ./Controller/controller.cpp
         ./Controller/chess.cpp
         ./Controller/move.cpp
@@ -47,6 +50,7 @@ set(headers
         ./Board/elPassant.h
         ./AI/alphaBeta.h
         ./AI/evalMap.h
+        ./AI/nn.h
         ./Controller/controller.h
         ./Controller/chess.h
         ./Controller/move.h
@@ -58,7 +62,7 @@ add_executable(chess
 
 link_directories(/lib/x86_64-linux-gnu/)
 
-target_link_libraries(chess -lpthread)
+target_link_libraries(chess -lpthread ${CMAKE_CURRENT_SOURCE_DIR}/../lib/libtensorflow_cc.so ${CMAKE_CURRENT_SOURCE_DIR}/../lib/libtensorflow_framework.so)
 
 qt5_use_modules( chess Core )
 qt5_use_modules( chess Gui )

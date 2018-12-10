@@ -1,0 +1,64 @@
+# Prereq stuff
+
+install cmake
+
+##v3.3.5
+##install eigen3 and move the installed files
+
+    #extract archive then run following commands from inside the extracted folder
+
+    mkdir build
+    cd build
+    cmake ../
+    sudo make install
+
+    sudo mv /usr/local/include/eigen3/Eigen /usr/local/include/
+    sudo mv /usr/local/include/eigen3/unsupported /usr/local/include/
+    sudo rm -r /usr/local/include/eigen3/
+
+##install protoc/protobuf ***3.6.0***
+
+sudo apt-get install autoconf automake libtool curl make g++ unzip
+
+download release: https://github.com/google/protobuf/releases/latest
+
+then run following commands inside the extracted folder
+
+./configure
+make
+make check
+sudo make install
+sudo ldconfig # refresh shared library cache.
+
+install bazel from source
+
+#installing
+
+clone tensorflow and checkout correct ver
+
+#install tensorflow dependencies
+sudo apt-get install python3-numpy python3-dev python3-pip python3-wheel
+
+run configure for tensorflow
+
+#build C++ library
+bazel build --config=opt --config=cuda //tensorflow:libtensorflow_cc.so #For C++ with cuda
+bazel build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 -k //tensorflow:libtensorflow_cc.so #For C++ without cuda but cpu optimization instructions
+
+
+copy the files to desired include directory
+
+folders are :
+    tensorflow
+    bazel-genFiles/tensorflow
+    third_party
+
+copy shared object files in bazel-out to desired lib folder
+
+
+remove the following file endings in the copied folders
+
+cc
+py
+jpg
+gif

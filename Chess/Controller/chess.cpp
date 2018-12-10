@@ -5,8 +5,8 @@
  * 
  * @param searchDepth depth of alpha beta searching
  */
-Chess::Chess(int searchDepth) {
-    controller = new Controller(searchDepth);
+Chess::Chess(int searchDepth, std::string graphPath, std::string checkpointPath) {
+    controller = new Controller(searchDepth, graphPath, checkpointPath);
 
     cleanExit = false;
 

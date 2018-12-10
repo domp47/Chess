@@ -12,7 +12,7 @@ class Chess : public QObject{
     Q_OBJECT
 
 public:
-    Chess(int searchDepth);
+    Chess(int searchDepth, std::string graphPath, std::string checkpointPath);
     ~Chess();
     void playChess();
 

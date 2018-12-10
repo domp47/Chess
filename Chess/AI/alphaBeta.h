@@ -5,13 +5,14 @@
 #include "evalMap.h"
 #include "Controller/move.h"
 #include <random>
+#include "nn.h"
 
 class Controller;
 
 class AlphaBeta{
 
 public:
-    AlphaBeta(Controller* controller, int searchDepth);
+    AlphaBeta(Controller* controller, int searchDepth, std::string graphPath, std::string checkpointPath);
     Move findMove(bool whiteTeam);
     char findUpgrade(Move move);
 
@@ -26,6 +27,7 @@ private:
 
 private:
     Controller* controller;
+    NeuralNetwork* nn;
     EvalMap map;
     std::random_device rd;
     std::mt19937 mt;

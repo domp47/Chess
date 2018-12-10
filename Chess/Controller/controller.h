@@ -17,7 +17,7 @@ class Controller : public QObject{
     Q_OBJECT
 
 public:
-    Controller(int searchDepth);
+    Controller(int searchDepth, std::string graphPath, std::string checkpointPath);
     Window* getWindow();
     Board* getBoard();
     int checkMateStalemate(bool whiteTeam);

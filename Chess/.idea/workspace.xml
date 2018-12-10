@@ -12,27 +12,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36eed80a-0d2b-43b7-9201-4f937be2d3a3" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/alphaBeta.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AI/alphaBeta.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/evalMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AI/evalMap.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/Moves/bishop.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/Moves/bishop.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/Moves/king.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/Moves/king.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/Moves/knight.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/Moves/knight.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/Moves/pawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/Moves/pawn.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/Moves/queen.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/Moves/queen.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/Moves/rook.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/Moves/rook.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/board.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/board.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/board.h" beforeDir="false" afterPath="$PROJECT_DIR$/Board/board.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Board/elPassant.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/elPassant.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controller/chess.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/chess.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controller/controller.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/controller.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controller/move.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/move.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/colors.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/colors.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/imageMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/imageMap.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/window.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/window.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="36eed80a-0d2b-43b7-9201-4f937be2d3a3" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -77,9 +57,18 @@
         </counts>
       </usages-collector>
     </session>
+    <session id="1592875886">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -188,10 +177,10 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-3" />
-    <option name="y" value="-2" />
-    <option name="width" value="1926" />
-    <option name="height" value="932" />
+    <option name="x" value="-2" />
+    <option name="y" value="2159" />
+    <option name="width" value="2564" />
+    <option name="height" value="1416" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -294,11 +283,12 @@
       <workItem from="1532395863751" duration="532000" />
       <workItem from="1534787204623" duration="1435000" />
       <workItem from="1534860764716" duration="1847000" />
+      <workItem from="1534897142032" duration="4000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="248211000" />
+    <option name="totallyTimeSpent" value="248215000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -310,9 +300,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-3" y="-2" width="1926" height="932" extended-state="6" />
+    <frame x="-2" y="2159" width="2564" height="1416" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1171459" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.11795075" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -417,23 +407,8 @@
     <entry file="file://$USER_HOME$/Qt/5.10.0/gcc_64/include/QtCore/qrefcount.h" />
     <entry file="file://$USER_HOME$/Qt/5.10.0/gcc_64/include/QtCore/qarraydata.h" />
     <entry file="file://$USER_HOME$/Qt/5.10.0/gcc_64/include/QtCore/qvector.h" />
-    <entry file="file://$PROJECT_DIR$/AI/random.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="4" column="12" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AI/random.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="4" lean-forward="true" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="26" />
-          <folding>
-            <element signature="e#35#52#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/AI/random.cpp" />
+    <entry file="file://$PROJECT_DIR$/AI/random.h" />
     <entry file="file://$PROJECT_DIR$/AI/alphaBeta.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
