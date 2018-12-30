@@ -80,6 +80,16 @@ void Window::paintEvent(QPaintEvent *)
             int yAttack = (m.init.y() * 100) + STARTING_Y;
 
             painter.fillRect(xAttack,yAttack,100,100,Colors::special());
+            painter.fillRect(xAttack+10, yAttack+10, 80, 80, ((m.end.x()+m.init.y())%2==0) ? Colors::light() : Colors::dark());
+
+            int piece = boardCache[m.init.y()][m.end.x()];
+
+            if(piece != 0){
+                std::string imgLoc = map->getItem(piece);
+                QImage image(QString::fromStdString(imgLoc));
+                QPoint pt(xAttack+20,yAttack+20);
+                painter.drawImage(pt,image);
+            }
         }
 
         yLoc +=10;
