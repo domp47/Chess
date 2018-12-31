@@ -380,7 +380,7 @@ void Board::addMove(int moveNum, QString move) {
     if(moveNum == -1){
         gamePlay += " " + move;
     }else{
-        gamePlay += QString::number(moveNum) + ". " + move;
+        gamePlay += QString::number(moveNum) + ". " + move + " ";
     }
 }
 

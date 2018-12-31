@@ -53,7 +53,7 @@ private:
     QVector<Move> possibleMoves;
     RepresentationMap* repSwap;
     int gamemode;
-    Move humanMove;
+    QString humanMove;
 public slots:
     void receiveClick(int x, int y);
     void receivePawnPromotion(char choice, int x, int y);

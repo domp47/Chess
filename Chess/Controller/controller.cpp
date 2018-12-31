@@ -53,8 +53,7 @@ void Controller::playGame() {
     highlightedPiece = QPoint(-1,-1);
     turn = 0;
 //    board->initBoard();
-
-    window->updateCache(board->getBoard());
+//    window->updateCache(board->getBoard());
 
     QMessageBox msg;
     msg.setText("Choose a game mode");
@@ -89,7 +88,7 @@ void Controller::playGame() {
     }
 
     //same thing but for board starting state
-    QMessageBox setupBox;
+    /**QMessageBox setupBox;
     setupBox.setText("Custom Initial Board?");
     QPushButton *yess = setupBox.addButton("Yes", QMessageBox::ActionRole);
     QPushButton *noo  = setupBox.addButton("No" , QMessageBox::ActionRole);
@@ -106,10 +105,12 @@ void Controller::playGame() {
         }
     }else if(setupBox.clickedButton() == noo){
         board->initBoard();
-    }
+    }**/
+    board->initBoard();
+    window->updateCache(board->getBoard());
 
 
-    exit(0);
+//    exit(0);
 
     window->show();
     window->repaint();
@@ -169,6 +170,9 @@ int Controller::noPlayers() {
                 }else if(checkCheck(true)){
                     blackMove += "+";
                 }
+
+                board->addMove(PGNcntr, whiteMove + " " + blackMove);
+                PGNcntr++;
 //                std::cout << "Black Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
@@ -178,9 +182,6 @@ int Controller::noPlayers() {
         }
 
         turn++;
-
-        board->addMove(PGNcntr, whiteMove + " " + blackMove);
-        PGNcntr++;
 
         whiteResult = checkMateStalemate(true);
         blackResult = checkMateStalemate(false);
@@ -229,7 +230,7 @@ int Controller::onePlayer() {
 
             needInput = false;
 
-            whiteMove = PGNmove(humanMove);
+            whiteMove = humanMove;
             if(checkMateStalemate(false)==1){
                 whiteMove += "#";
             }else if(checkCheck(false)){
@@ -250,15 +251,16 @@ int Controller::onePlayer() {
                 }else if(checkCheck(true)){
                     blackMove += "+";
                 }
+
+                board->addMove(PGNcntr, whiteMove + " " + blackMove);
+                PGNcntr++;
+
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
                 blackResult = 2;
                 break;
             }
         }
-
-        board->addMove(PGNcntr, whiteMove + " " + blackMove);
-        PGNcntr++;
 
         if(checkMateStalemate(true)==0 && checkCheck(true)){//checks if white team is in check
             emit sendMessage("Check On White");
@@ -315,24 +317,24 @@ int Controller::twoPlayers() {
         needInput = false;
 
         if(state == 0){
-            whiteMove = PGNmove(humanMove);
+            whiteMove = humanMove;
             if(checkMateStalemate(false)==1){
                 whiteMove += "#";
             }else if(checkCheck(false)){
                 whiteMove += "+";
             }
-        }else if (state == 1){
-            blackMove = PGNmove(humanMove);
-            if(checkMateStalemate(true)==1){
-                whiteMove += "#";
-            }else if(checkCheck(true)){
-                whiteMove += "+";
-            }
         }else{
+            blackMove = humanMove;
+            if(checkMateStalemate(true)==1){
+                blackMove += "#";
+            }else if(checkCheck(true)){
+                blackMove += "+";
+            }
+
             board->addMove(PGNcntr, whiteMove + " " + blackMove);
             PGNcntr++;
         }
-        state = (state + 1)%3;
+        state = (state + 1)%2;
 
         if(checkMateStalemate(true)==0 && checkCheck(true)){//checks if white team is in check
             emit sendMessage("Check On White");
@@ -396,8 +398,8 @@ void Controller::receiveClick(int x, int y) {
                 }
             }
 
+            humanMove = PGNmove(move);
             movePiece(move);
-            humanMove = move;
             highlightedPiece = QPoint(-1,-1);
             possibleMoves.clear();
             window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
@@ -935,9 +937,9 @@ QString Controller::PGNmove(Move move){
     char col = 'a' + move.end.x();
     int row = 8 - move.end.y();
 
-    QString endLoc = "";
+    std::string endLoc;
     endLoc += col;
-    endLoc += row;
+    endLoc += std::to_string(row);
 
     if(board->getPiece(move.end.x(), move.end.y()) != 0){
         endLoc = "x" + endLoc;
@@ -945,8 +947,8 @@ QString Controller::PGNmove(Move move){
     if(move.special == 4) {
         endLoc += "=Q";
     }else if(move.special == 1){
-        endLoc += "e.p";
+        endLoc = "x" + endLoc + "e.p";
     }
 
-    return QString::fromStdString(piece) + endLoc;
+    return QString::fromStdString(piece) + QString::fromStdString(endLoc);
 }
