@@ -1,5 +1,3 @@
-#include <chrono>
-#include <thread>
 #include "board.h"
 #include "Controller/controller.h"
 /**
@@ -32,7 +30,7 @@ Board::Board(Controller* controller) {
 /**
  * Initiliazes the board for a new game
  */
-void Board::initBoard(){
+void Board::defaultInit(){
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
@@ -75,6 +73,61 @@ void Board::initBoard(){
     board[6][5] = 1;
     board[6][6] = 1;
     board[6][7] = 1;
+
+    whitePassant.clearElPassant();
+    blackPassant.clearElPassant();
+
+    whiteKingMoved = false;
+    blackKingMoved = false;
+
+    whiteLeftRookMoved = false;
+    whiteRightRookMoved= false;
+    blackLeftRookMoved = false;
+    blackRightRookMoved= false;
+}
+
+/**
+ * Sets the board up to the specified pieces for a new game
+ * @param filename CSV file containing piece information
+ */
+void Board::customInit(std::string filename){
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            board[y][x] = 0;
+        }
+    }
+
+    std::ifstream in(filename);
+    std::vector<QStringList> rows;
+
+    //reads file row by row then splits it into a vector of lists to fill the board with
+    std::string str;
+    while(std::getline(in, str)){
+        QStringList cols = QString::fromStdString(str).replace(" ", "").split(",");
+
+        if(cols.size() != 8){
+            throw std::runtime_error("Chess boards must have 8 columns");
+        }
+
+        rows.push_back(cols);
+    }
+
+    if(rows.size() != 8){
+        throw std::runtime_error("Chess boards must have 8 rows");
+    }
+
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+
+            int piece = rows[y][x].toInt();
+
+            if(piece < -6 || piece > 6){
+                throw std::runtime_error("Unknown piece with value: " + std::to_string(piece));
+            }
+
+            board[y][x] = piece;
+        }
+    }
 
     whitePassant.clearElPassant();
     blackPassant.clearElPassant();
@@ -370,5 +423,43 @@ void Board::setPassant(bool white, ElPassant passant) {
         this->whitePassant = passant;
     }else{
         this->blackPassant = passant;
+    }
+}
+
+/**
+ * resets the save file and gameplay
+ * @param filename to save the pgn file to
+ */
+void Board::setupSave(QString filename) {
+    saveFile = filename;
+    gamePlay = "";
+}
+
+/**
+ * Adds move to the gameplay string
+ *
+ * The move consists of the move the white and black team made
+ *
+ * @param moveNum PGN move number
+ * @param move locations of both moves in PGN format
+ */
+void Board::addMove(int moveNum, QString move) {
+    if(moveNum == -1){
+        gamePlay += " " + move;
+    }else{
+        gamePlay += QString::number(moveNum) + ". " + move + " ";
+    }
+}
+
+/**
+ * Writes the game play string to the specified file when setup.
+ * If no file was specified in setup then the game play is not saved.
+ */
+void Board::saveGame() {
+    if(saveFile != ""){
+        std::ofstream out;
+        out.open(saveFile.toStdString());
+        out << gamePlay.toStdString() << '\n';
+        out.close();
     }
 }

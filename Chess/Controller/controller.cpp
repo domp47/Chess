@@ -13,6 +13,8 @@ Controller::Controller(int searchDepth, std::string graphPath, std::string check
     board = new Board(this);
     alphaBeta = new AlphaBeta(this, searchDepth, graphPath, checkpointPath);
 
+    repSwap = new RepresentationMap();
+
     connect(window, SIGNAL(sendPawnPromotion(char, int, int)), this, SLOT(receivePawnPromotion(char, int, int)));
     connect(window, SIGNAL(sendClick(int, int)), this, SLOT(receiveClick(int, int)));
 }
@@ -50,9 +52,8 @@ void Controller::playGame() {
     possibleMoves.clear();
     highlightedPiece = QPoint(-1,-1);
     turn = 0;
-    board->initBoard();
-
-    window->updateCache(board->getBoard());
+//    board->initBoard();
+//    window->updateCache(board->getBoard());
 
     QMessageBox msg;
     msg.setText("Choose a game mode");
@@ -70,6 +71,43 @@ void Controller::playGame() {
         gamemode = 2;
     }
 
+    //Text box for output file
+    QMessageBox outputBox;
+    outputBox.setText("Save Game Output?");
+    QPushButton *yes = outputBox.addButton("Yes", QMessageBox::ActionRole);
+    QPushButton *no  = outputBox.addButton("No",  QMessageBox::ActionRole);
+
+    outputBox.exec();
+
+    if(outputBox.clickedButton() == yes){
+        QString filename = QFileDialog::getSaveFileName(nullptr, tr("File to Save Game to"),tr("./"),tr("PGN Files (*.pgn)"));
+
+        board->setupSave(filename);
+    }else if(outputBox.clickedButton() == no){
+        board->setupSave("");
+    }
+
+    //same thing but for board starting state
+    QMessageBox setupBox;
+    setupBox.setText("Custom Initial Board?");
+    QPushButton *yess = setupBox.addButton("Yes", QMessageBox::ActionRole);
+    QPushButton *noo  = setupBox.addButton("No" , QMessageBox::ActionRole);
+
+    setupBox.exec();
+
+    if(setupBox.clickedButton() == yess){
+        QString filename = QFileDialog::getOpenFileName(nullptr, tr("File to read"), tr("./"), tr("CSV Files (*.csv)"));
+
+        if(filename != ""){
+            board->customInit(filename.toStdString());
+        }else{
+            board->defaultInit();
+        }
+    }else if(setupBox.clickedButton() == noo){
+        board->defaultInit();
+    }
+    window->updateCache(board->getBoard());
+
     window->show();
     window->repaint();
 }
@@ -85,18 +123,28 @@ int Controller::noPlayers() {
     int whiteResult = 0;
     int blackResult = 0;
 
+    int PGNcntr = 1;
+    QString whiteMove = "";
+    QString blackMove = "";
+
     while (whiteResult==0 && blackResult==0) {//keep taking turns until stalemate or checkmate
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         if(turn%2==0){
             Move move = alphaBeta->findMove(true);
+            whiteMove = PGNmove(move);
 
             if(move.end.x() != -1){
                 movePiece(move);
                 window->updateCache(board->getBoard());
                 window->repaint();
 
+                if(checkMateStalemate(false)==1){
+                    whiteMove += "#";
+                }else if(checkCheck(false)){
+                    whiteMove += "+";
+                }
 
 //                std::cout << "White Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
             }else{
@@ -106,12 +154,21 @@ int Controller::noPlayers() {
             }
         }else{
             Move move = alphaBeta->findMove(false);
+            blackMove = PGNmove(move);
 
             if(move.end.x() != -1){
                 movePiece(move);
                 window->updateCache(board->getBoard());
                 window->repaint();
 
+                if(checkMateStalemate(true)==1){
+                    blackMove += "#";
+                }else if(checkCheck(true)){
+                    blackMove += "+";
+                }
+
+                board->addMove(PGNcntr, whiteMove + " " + blackMove);
+                PGNcntr++;
 //                std::cout << "Black Move: " << (char)(65 + move.init.x()) << (8 - move.init.y()) << " -> " << (char)(65 + move.end.x()) << (8 - move.end.y()) << std::endl;
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
@@ -127,10 +184,16 @@ int Controller::noPlayers() {
     }
 
     if(whiteResult == 1){
+        board->addMove(-1, "0-1");
+        board->saveGame();
         return 2;
     }else if(blackResult == 1){
+        board->addMove(-1, "1-0");
+        board->saveGame();
         return 1;
     }else if(whiteResult == 2 || blackResult == 2){
+        board->addMove(-1, "1/2-1/2");
+        board->saveGame();
         return 0;
     }
 
@@ -148,6 +211,10 @@ int Controller::onePlayer() {
     int whiteResult = 0;
     int blackResult = 0;
 
+    int PGNcntr = 1;
+    QString whiteMove = "";
+    QString blackMove = "";
+
     while (whiteResult==0 && blackResult==0) {//keep taking turns until stalemate or checkmate
 
         if(turn%2==0){ //Human's turn (White)
@@ -159,13 +226,31 @@ int Controller::onePlayer() {
 
             needInput = false;
 
+            whiteMove = humanMove;
+            if(checkMateStalemate(false)==1){
+                whiteMove += "#";
+            }else if(checkCheck(false)){
+                whiteMove += "+";
+            }
+
         }else{ //AI's turn (black)
             Move move = alphaBeta->findMove(false);
+            blackMove = PGNmove(move);
 
             if(move.end.x() != -1){
                 movePiece(move);
                 window->updateCache(board->getBoard());
                 window->repaint();
+
+                if(checkMateStalemate(true)==1){
+                    blackMove += "#";
+                }else if(checkCheck(true)){
+                    blackMove += "+";
+                }
+
+                board->addMove(PGNcntr, whiteMove + " " + blackMove);
+                PGNcntr++;
+
             }else{
                 std::cout << "Error finding piece for black team" << std::endl;
                 blackResult = 2;
@@ -186,10 +271,16 @@ int Controller::onePlayer() {
     }
 
     if(whiteResult == 1){
+        board->addMove(-1, "0-1");
+        board->saveGame();
         return 2;
     }else if(blackResult == 1){
+        board->addMove(-1, "1-0");
+        board->saveGame();
         return 1;
     }else if(whiteResult == 2 || blackResult == 2){
+        board->addMove(-1, "1/2-1/2");
+        board->saveGame();
         return 0;
     }
 
@@ -207,6 +298,11 @@ int Controller::twoPlayers() {
     int whiteResult = 0;
     int blackResult = 0;
 
+    int state = 0;
+    int PGNcntr = 1;
+    QString whiteMove = "";
+    QString blackMove = "";
+
     while (whiteResult==0 && blackResult==0){//keep taking turns until stalemate or checkmate
 
         needInput = true;
@@ -215,6 +311,26 @@ int Controller::twoPlayers() {
         cv.wait(lck);
 
         needInput = false;
+
+        if(state == 0){
+            whiteMove = humanMove;
+            if(checkMateStalemate(false)==1){
+                whiteMove += "#";
+            }else if(checkCheck(false)){
+                whiteMove += "+";
+            }
+        }else{
+            blackMove = humanMove;
+            if(checkMateStalemate(true)==1){
+                blackMove += "#";
+            }else if(checkCheck(true)){
+                blackMove += "+";
+            }
+
+            board->addMove(PGNcntr, whiteMove + " " + blackMove);
+            PGNcntr++;
+        }
+        state = (state + 1)%2;
 
         if(checkMateStalemate(true)==0 && checkCheck(true)){//checks if white team is in check
             emit sendMessage("Check On White");
@@ -229,10 +345,16 @@ int Controller::twoPlayers() {
     }
 
     if(whiteResult == 1){
+        board->addMove(-1, "0-1");
+        board->saveGame();
         return 2;
     }else if(blackResult == 1){
+        board->addMove(-1, "1-0");
+        board->saveGame();
         return 1;
     }else if(whiteResult == 2 || blackResult == 2){
+        board->addMove(-1, "1/2-1/2");
+        board->saveGame();
         return 0;
     }
 
@@ -272,6 +394,7 @@ void Controller::receiveClick(int x, int y) {
                 }
             }
 
+            humanMove = PGNmove(move);
             movePiece(move);
             highlightedPiece = QPoint(-1,-1);
             possibleMoves.clear();
@@ -796,4 +919,37 @@ bool Controller::checkVectorOfMoves(QVector<Move> moves, int x, int y) {
  */
 void Controller::receivePawnPromotion(char choice, int x, int y) {
     board->upgradePawn(x, y, choice);
+}
+
+/**
+ * Converts move object into a PGN format string
+ * @param move to convert
+ * @return string containing the move in PGN format
+ */
+QString Controller::PGNmove(Move move){
+    if(move.special == 2){
+        return "O-O-O";
+    }else if(move.special == 3){
+        return "O-O";
+    }
+
+    std::string piece = repSwap->getItem(board->getPiece(move.init.x(), move.init.y()));
+
+    char col = 'a' + move.end.x();
+    int row = 8 - move.end.y();
+
+    std::string endLoc;
+    endLoc += col;
+    endLoc += std::to_string(row);
+
+    if(board->getPiece(move.end.x(), move.end.y()) != 0){
+        endLoc = "x" + endLoc;
+    }
+    if(move.special == 4) {
+        endLoc += "=Q";
+    }else if(move.special == 1){
+        endLoc = "x" + endLoc + "e.p";
+    }
+
+    return QString::fromStdString(piece) + QString::fromStdString(endLoc);
 }
