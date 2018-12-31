@@ -14,8 +14,8 @@
   <component name="ChangeListManager">
     <list default="true" id="36eed80a-0d2b-43b7-9201-4f937be2d3a3" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/Board/board.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Board/board.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Board/board.h" beforeDir="false" afterPath="$PROJECT_DIR$/Board/board.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/controller.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/controller.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controller/controller.h" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/controller.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../chess" beforeDir="false" afterPath="$PROJECT_DIR$/../chess" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -74,14 +74,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="2734" />
-          <entry key="h" value="262" />
+          <entry key="cpp" value="3095" />
+          <entry key="h" value="323" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Doxygen file" value="1" />
-          <entry key="ObjectiveC" value="2995" />
+          <entry key="ObjectiveC" value="3417" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -102,8 +102,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Controller/controller.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="174" column="26" selection-start-line="174" selection-start-column="26" selection-end-line="174" selection-end-column="26" />
+            <state relative-caret-position="420">
+              <caret line="108" column="43" selection-start-line="108" selection-start-column="43" selection-end-line="108" selection-end-column="43" />
             </state>
           </provider>
         </entry>
@@ -123,8 +123,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Board/board.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="377">
-              <caret line="382" column="63" selection-start-line="382" selection-start-column="63" selection-end-line="382" selection-end-column="63" />
+            <state relative-caret-position="452">
+              <caret line="125" lean-forward="true" selection-start-line="125" selection-end-line="125" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -135,8 +135,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Board/board.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-285">
-              <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
+            <state relative-caret-position="300">
+              <caret line="20" selection-start-line="20" selection-end-line="20" />
+              <folding>
+                <element signature="e#33#50#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -244,10 +247,10 @@
         <option value="$PROJECT_DIR$/GUI/imageMap.cpp" />
         <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/GUI/window.cpp" />
-        <option value="$PROJECT_DIR$/Board/board.h" />
         <option value="$PROJECT_DIR$/Controller/RepresentationMap.h" />
         <option value="$PROJECT_DIR$/Controller/RepresentationMap.cpp" />
         <option value="$PROJECT_DIR$/Controller/controller.h" />
+        <option value="$PROJECT_DIR$/Board/board.h" />
         <option value="$PROJECT_DIR$/Board/board.cpp" />
         <option value="$PROJECT_DIR$/Controller/controller.cpp" />
       </list>
@@ -384,12 +387,12 @@
       <workItem from="1534860764716" duration="1847000" />
       <workItem from="1534897142032" duration="4000" />
       <workItem from="1546212463831" duration="78000" />
-      <workItem from="1546216498598" duration="15228000" />
+      <workItem from="1546216498598" duration="17212000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="263521000" />
+    <option name="totallyTimeSpent" value="265505000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -438,7 +441,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Controller/controller.cpp</url>
-          <line>928</line>
+          <line>924</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
@@ -660,13 +663,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Board/board.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-285">
-          <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Qt5.10.1/5.10.1/gcc_64/include/QtCore/qpoint.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="181">
@@ -684,10 +680,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Board/board.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
+          <folding>
+            <element signature="e#33#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Board/board.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="377">
-          <caret line="382" column="63" selection-start-line="382" selection-start-column="63" selection-end-line="382" selection-end-column="63" />
+        <state relative-caret-position="452">
+          <caret line="125" lean-forward="true" selection-start-line="125" selection-end-line="125" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -696,8 +702,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Controller/controller.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="174" column="26" selection-start-line="174" selection-start-column="26" selection-end-line="174" selection-end-column="26" />
+        <state relative-caret-position="420">
+          <caret line="108" column="43" selection-start-line="108" selection-start-column="43" selection-end-line="108" selection-end-column="43" />
         </state>
       </provider>
     </entry>

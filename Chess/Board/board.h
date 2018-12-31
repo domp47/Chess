@@ -17,6 +17,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QPushButton>
 #include <QWidget>
+#include <vector>
 
 class Controller;
 
@@ -27,7 +28,8 @@ class Board : public QObject{
 public:
 
     Board(Controller* controller);
-    void initBoard();
+    void defaultInit();
+    void customInit(std::string filename);
     int getPiece(int x, int y);
     void setPiece(int x, int y, int val);
     ElPassant getWhitePassant();

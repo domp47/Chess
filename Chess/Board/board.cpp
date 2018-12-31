@@ -30,7 +30,7 @@ Board::Board(Controller* controller) {
 /**
  * Initiliazes the board for a new game
  */
-void Board::initBoard(){
+void Board::defaultInit(){
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
@@ -73,6 +73,49 @@ void Board::initBoard(){
     board[6][5] = 1;
     board[6][6] = 1;
     board[6][7] = 1;
+
+    whitePassant.clearElPassant();
+    blackPassant.clearElPassant();
+
+    whiteKingMoved = false;
+    blackKingMoved = false;
+
+    whiteLeftRookMoved = false;
+    whiteRightRookMoved= false;
+    blackLeftRookMoved = false;
+    blackRightRookMoved= false;
+}
+
+void Board::customInit(std::string filename){
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            board[y][x] = 0;
+        }
+    }
+
+    std::ifstream in(filename);
+    std::vector<QStringList> rows;
+
+    std::string str;
+    while(std::getline(in, str)){
+        QStringList cols = QString::fromStdString(str).replace(" ", "").split(",");
+
+        if(cols.size() != 8){
+            throw std::runtime_error("Chess boards must have 8 columns");
+        }
+
+        rows.push_back(cols);
+    }
+
+    if(rows.size() != 8){
+        throw std::runtime_error("Chess boards must have 8 rows");
+    }
+
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            board[y][x] = rows[y][x].toInt();
+        }
+    }
 
     whitePassant.clearElPassant();
     blackPassant.clearElPassant();

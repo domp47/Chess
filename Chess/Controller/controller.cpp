@@ -88,7 +88,7 @@ void Controller::playGame() {
     }
 
     //same thing but for board starting state
-    /**QMessageBox setupBox;
+    QMessageBox setupBox;
     setupBox.setText("Custom Initial Board?");
     QPushButton *yess = setupBox.addButton("Yes", QMessageBox::ActionRole);
     QPushButton *noo  = setupBox.addButton("No" , QMessageBox::ActionRole);
@@ -99,18 +99,14 @@ void Controller::playGame() {
         QString filename = QFileDialog::getOpenFileName(nullptr, tr("File to read"), tr("./"), tr("CSV Files (*.csv)"));
 
         if(filename != ""){
-            //TODO setup board with the csv file
+            board->customInit(filename.toStdString());
         }else{
-            board->initBoard();
+            board->defaultInit();
         }
     }else if(setupBox.clickedButton() == noo){
-        board->initBoard();
-    }**/
-    board->initBoard();
+        board->defaultInit();
+    }
     window->updateCache(board->getBoard());
-
-
-//    exit(0);
 
     window->show();
     window->repaint();
