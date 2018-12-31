@@ -6,6 +6,10 @@
 #include <mutex>
 #include <condition_variable>
 #include "move.h"
+#include "RepresentationMap.h"
+#include <QCheckBox>
+#include <QFileDialog>
+#include <QDebug>
 //#include "Board/board.h"
 //#include "AI/alphaBeta.h"
 
@@ -36,6 +40,7 @@ private:
     int twoPlayers();
     bool isMovePossible(QPoint p);
     bool checkVectorOfMoves(QVector<Move> moves, int x, int y);
+    QString PGNmove(Move move);
 private:
     Window* window;
     Board* board;
@@ -46,7 +51,9 @@ private:
     int turn;
     QPoint highlightedPiece;
     QVector<Move> possibleMoves;
+    RepresentationMap* repSwap;
     int gamemode;
+    QString humanMove;
 public slots:
     void receiveClick(int x, int y);
     void receivePawnPromotion(char choice, int x, int y);
