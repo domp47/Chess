@@ -921,6 +921,11 @@ void Controller::receivePawnPromotion(char choice, int x, int y) {
     board->upgradePawn(x, y, choice);
 }
 
+/**
+ * Converts move object into a PGN format string
+ * @param move to convert
+ * @return string containing the move in PGN format
+ */
 QString Controller::PGNmove(Move move){
     if(move.special == 2){
         return "O-O-O";

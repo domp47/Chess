@@ -86,6 +86,10 @@ void Board::defaultInit(){
     blackRightRookMoved= false;
 }
 
+/**
+ * Sets the board up to the specified pieces for a new game
+ * @param filename CSV file containing piece information
+ */
 void Board::customInit(std::string filename){
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
@@ -96,6 +100,7 @@ void Board::customInit(std::string filename){
     std::ifstream in(filename);
     std::vector<QStringList> rows;
 
+    //reads file row by row then splits it into a vector of lists to fill the board with
     std::string str;
     while(std::getline(in, str)){
         QStringList cols = QString::fromStdString(str).replace(" ", "").split(",");
@@ -113,7 +118,14 @@ void Board::customInit(std::string filename){
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
-            board[y][x] = rows[y][x].toInt();
+
+            int piece = rows[y][x].toInt();
+
+            if(piece < -6 || piece > 6){
+                throw std::runtime_error("Unknown piece with value: " + std::to_string(piece));
+            }
+
+            board[y][x] = piece;
         }
     }
 
@@ -414,11 +426,23 @@ void Board::setPassant(bool white, ElPassant passant) {
     }
 }
 
+/**
+ * resets the save file and gameplay
+ * @param filename to save the pgn file to
+ */
 void Board::setupSave(QString filename) {
     saveFile = filename;
     gamePlay = "";
 }
 
+/**
+ * Adds move to the gameplay string
+ *
+ * The move consists of the move the white and black team made
+ *
+ * @param moveNum PGN move number
+ * @param move locations of both moves in PGN format
+ */
 void Board::addMove(int moveNum, QString move) {
     if(moveNum == -1){
         gamePlay += " " + move;
@@ -427,6 +451,10 @@ void Board::addMove(int moveNum, QString move) {
     }
 }
 
+/**
+ * Writes the game play string to the specified file when setup.
+ * If no file was specified in setup then the game play is not saved.
+ */
 void Board::saveGame() {
     if(saveFile != ""){
         std::ofstream out;
