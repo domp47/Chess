@@ -1,5 +1,3 @@
-#include <chrono>
-#include <thread>
 #include "board.h"
 #include "Controller/controller.h"
 /**
@@ -370,5 +368,27 @@ void Board::setPassant(bool white, ElPassant passant) {
         this->whitePassant = passant;
     }else{
         this->blackPassant = passant;
+    }
+}
+
+void Board::setupSave(QString filename) {
+    saveFile = filename;
+    gamePlay = "";
+}
+
+void Board::addMove(int moveNum, QString move) {
+    if(moveNum == -1){
+        gamePlay += " " + move;
+    }else{
+        gamePlay += QString::number(moveNum) + ". " + move;
+    }
+}
+
+void Board::saveGame() {
+    if(saveFile != ""){
+        std::ofstream out;
+        out.open(saveFile.toStdString());
+        out << gamePlay.toStdString() << '\n';
+        out.close();
     }
 }

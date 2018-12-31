@@ -34,7 +34,7 @@ set( project_sources
         ./Controller/controller.cpp
         ./Controller/chess.cpp
         ./Controller/move.cpp
-        )
+        Controller/RepresentationMap.cpp Controller/RepresentationMap.h)
 
 set(headers
         ./GUI/window.h

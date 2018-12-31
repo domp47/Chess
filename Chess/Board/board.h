@@ -1,6 +1,9 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <chrono>
+#include <thread>
+#include <fstream>
 #include <QtCore/QPoint>
 #include <QVector>
 #include "elPassant.h"
@@ -48,6 +51,9 @@ public:
     void upgradePawn(int x, int y, char upgrade);
     void findKing(bool whiteTeam, int cords[2]);
     void printBoard();
+    void setupSave(QString filename);
+    void addMove(int moveNum, QString move);
+    void saveGame();
 private:
     std::array<std::array<int,8>,8> board;
     ElPassant whitePassant;
@@ -58,6 +64,8 @@ private:
     bool blackRightRookMoved;
     bool whiteKingMoved;
     bool blackKingMoved;
+    QString gamePlay;
+    QString saveFile;
     Controller* controller;
 };
 
