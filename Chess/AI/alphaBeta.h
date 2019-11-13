@@ -13,7 +13,7 @@ class AlphaBeta{
 
 public:
     AlphaBeta(Controller* controller, int searchDepth, std::string graphPath, std::string checkpointPath);
-    Move findMove(bool whiteTeam);
+    Move findMove(bool whiteTeam, int moveNumber);
     char findUpgrade(Move move);
 
 private:

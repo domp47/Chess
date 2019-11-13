@@ -20,9 +20,51 @@ AlphaBeta::AlphaBeta(Controller* controller, int searchDepth, std::string graphP
  * @param whiteTeam whether or not we're searching for a white move or black move
  * @return "best" move to make
  */
-Move AlphaBeta::findMove(bool whiteTeam) {
+Move AlphaBeta::findMove(bool whiteTeam, int moveNumber) {
 
-    Move move = minimaxRoot(this->searchDepth, whiteTeam);
+    if(!whiteTeam && moveNumber == 1){
+        QPoint strt;
+        strt.setX(4);
+        strt.setY(1);
+
+        QPoint end;
+        end.setX(4);
+        end.setY(3);
+
+        return {strt,end,0};
+    }else if(!whiteTeam && moveNumber == 2){
+        QPoint strt;
+        strt.setX(1);
+        strt.setY(0);
+
+        QPoint end;
+        end.setX(2);
+        end.setY(2);
+
+        return {strt,end,0};
+    }else if(!whiteTeam && moveNumber == 3){
+        QPoint strt;
+        strt.setX(5);
+        strt.setY(0);
+
+        QPoint end;
+        end.setX(2);
+        end.setY(3);
+
+        return {strt,end,0};
+    }
+
+    int ply;
+
+    if(moveNumber < 5 && this->searchDepth - 4 > 0){
+        ply = this->searchDepth - 4;
+    }else if(moveNumber < 10 && this->searchDepth - 2 > 0){
+        ply = this->searchDepth - 2;
+    }else{
+        ply = this->searchDepth;
+    }
+
+    Move move = minimaxRoot(ply, whiteTeam);
 
     return move;
 }

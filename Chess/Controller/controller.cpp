@@ -132,7 +132,7 @@ int Controller::noPlayers() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         if(turn%2==0){
-            Move move = alphaBeta->findMove(true);
+            Move move = alphaBeta->findMove(true, PGNcntr);
             whiteMove = PGNmove(move);
 
             if(move.end.x() != -1){
@@ -153,7 +153,7 @@ int Controller::noPlayers() {
                 break;
             }
         }else{
-            Move move = alphaBeta->findMove(false);
+            Move move = alphaBeta->findMove(false, PGNcntr);
             blackMove = PGNmove(move);
 
             if(move.end.x() != -1){
@@ -234,7 +234,7 @@ int Controller::onePlayer() {
             }
 
         }else{ //AI's turn (black)
-            Move move = alphaBeta->findMove(false);
+            Move move = alphaBeta->findMove(false, PGNcntr);
             blackMove = PGNmove(move);
 
             if(move.end.x() != -1){

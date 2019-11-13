@@ -9,8 +9,8 @@ int main(int argc, char* argv[]){
     int searchDepth;
 
     if(argc != 2){
-        std::cout << "You have not entered an Alpha Beta search depth. Using default value of 4." << std::endl;
-        searchDepth = 4;
+        std::cout << "You have not entered an Alpha Beta search depth. Using default value of 6." << std::endl;
+        searchDepth = 6;
     }else{
         try{
             searchDepth = std::stoi(argv[1]);
