@@ -56,6 +56,7 @@ public:
     void setupSave(QString filename);
     void addMove(int moveNum, QString move);
     void saveGame();
+    Board* createCopy();
 private:
     std::array<std::array<int,8>,8> board;
     ElPassant whitePassant;

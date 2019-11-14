@@ -8,10 +8,10 @@
  * @param controller game controller
  * @return Vector of possible moves
  */
-QVector<Move> King::getMoves(int x, int y, Controller* controller) {
+QVector<Move> King::getMoves(int x, int y, Controller* controller, Board* board) {
     QVector<Move> moves;
 
-    std::array<std::array<int,8>,8> gameBoard = controller->getBoard()->getBoard();
+    std::array<std::array<int,8>,8> gameBoard = board->getBoard();
 
     bool whiteTeam = true;
 
@@ -45,36 +45,36 @@ QVector<Move> King::getMoves(int x, int y, Controller* controller) {
     }
 
     if(whiteTeam){
-        if(!controller->checkCheck(true)){// white kings not in check
-            if(!controller->getBoard()->getWLR()&&!controller->getBoard()->getWKing()){//white long check if rook nd king havent been moved
-                if(controller->getBoard()->getPiece(1,7)==0 && controller->getBoard()->getPiece(2,7)==0 && controller->getBoard()->getPiece(3,7)==0){ //check if empty between the rook and king
+        if(!controller->checkCheck(board, true)){// white kings not in check
+            if(!board->getWLR()&&!board->getWKing()){//white long check if rook nd king havent been moved
+                if(board->getPiece(1,7)==0 && board->getPiece(2,7)==0 && board->getPiece(3,7)==0){ //check if empty between the rook and king
                     //check if any of the two places the king is moving over or is moving to can be attacked
-                    if(!controller->checkForAttack(2,7, true) && !controller->checkForAttack(3,7, true)){
+                    if(!controller->checkForAttack(board, 2,7, true) && !controller->checkForAttack(board, 3,7, true)){
                         moves.append(Move(QPoint(4,7),QPoint(2,7),2));
                     }
                 }
             }
-            if(!controller->getBoard()->getWRR() && !controller->getBoard()->getWKing()){
-                if(controller->getBoard()->getPiece(5,7)==0 && controller->getBoard()->getPiece(6,7)==0){
-                    if(!controller->checkForAttack(5,7,true) && !controller->checkForAttack(6,7,true)){
+            if(!board->getWRR() && !board->getWKing()){
+                if(board->getPiece(5,7)==0 && board->getPiece(6,7)==0){
+                    if(!controller->checkForAttack(board, 5,7,true) && !controller->checkForAttack(board, 6,7,true)){
                         moves.append(Move(QPoint(4,7),QPoint(6,7),3));
                     }
                 }
             }
         }
     }else{
-        if(!controller->checkCheck(false)){
-            if(!controller->getBoard()->getBLR()&&!controller->getBoard()->getBKing()){//black long check if rook nd king havent been moved
-                if(controller->getBoard()->getPiece(1,0)==0 && controller->getBoard()->getPiece(2,0)==0 && controller->getBoard()->getPiece(3,0)==0){ //check if empty between the rook and king
+        if(!controller->checkCheck(board, false)){
+            if(!board->getBLR()&&!board->getBKing()){//black long check if rook nd king havent been moved
+                if(board->getPiece(1,0)==0 && board->getPiece(2,0)==0 && board->getPiece(3,0)==0){ //check if empty between the rook and king
                     //check if any of the two places the king is moving over or is moving to can be attacked
-                    if(!controller->checkForAttack(2,0, false) && !controller->checkForAttack(3,0, false)){
+                    if(!controller->checkForAttack(board, 2,0, false) && !controller->checkForAttack(board, 3,0, false)){
                         moves.append(Move(QPoint(4,0),QPoint(2,0),2));
                     }
                 }
             }
-            if(!controller->getBoard()->getBRR() && !controller->getBoard()->getBKing()){
-                if(controller->getBoard()->getPiece(5,0)==0 && controller->getBoard()->getPiece(6,0)==0){
-                    if(!controller->checkForAttack(5,0,false) && !controller->checkForAttack(6,0,false)){
+            if(!board->getBRR() && !board->getBKing()){
+                if(board->getPiece(5,0)==0 && board->getPiece(6,0)==0){
+                    if(!controller->checkForAttack(board, 5,0,false) && !controller->checkForAttack(board, 6,0,false)){
                         moves.append(Move(QPoint(4,0),QPoint(6,0),3));
                     }
                 }

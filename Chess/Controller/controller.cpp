@@ -136,13 +136,13 @@ int Controller::noPlayers() {
             whiteMove = PGNmove(move);
 
             if(move.end.x() != -1){
-                movePiece(move);
+                movePiece(this->board, move);
                 window->updateCache(board->getBoard());
                 window->repaint();
 
-                if(checkMateStalemate(false)==1){
+                if(checkMateStalemate(this->board,false)==1){
                     whiteMove += "#";
-                }else if(checkCheck(false)){
+                }else if(checkCheck(this->board,false)){
                     whiteMove += "+";
                 }
 
@@ -157,13 +157,13 @@ int Controller::noPlayers() {
             blackMove = PGNmove(move);
 
             if(move.end.x() != -1){
-                movePiece(move);
+                movePiece(this->board,move);
                 window->updateCache(board->getBoard());
                 window->repaint();
 
-                if(checkMateStalemate(true)==1){
+                if(checkMateStalemate(this->board,true)==1){
                     blackMove += "#";
-                }else if(checkCheck(true)){
+                }else if(checkCheck(this->board,true)){
                     blackMove += "+";
                 }
 
@@ -179,8 +179,8 @@ int Controller::noPlayers() {
 
         turn++;
 
-        whiteResult = checkMateStalemate(true);
-        blackResult = checkMateStalemate(false);
+        whiteResult = checkMateStalemate(this->board,true);
+        blackResult = checkMateStalemate(this->board,false);
     }
 
     if(whiteResult == 1){
@@ -227,9 +227,9 @@ int Controller::onePlayer() {
             needInput = false;
 
             whiteMove = humanMove;
-            if(checkMateStalemate(false)==1){
+            if(checkMateStalemate(this->board, false)==1){
                 whiteMove += "#";
-            }else if(checkCheck(false)){
+            }else if(checkCheck(this->board, false)){
                 whiteMove += "+";
             }
 
@@ -238,13 +238,13 @@ int Controller::onePlayer() {
             blackMove = PGNmove(move);
 
             if(move.end.x() != -1){
-                movePiece(move);
+                movePiece(this->board, move);
                 window->updateCache(board->getBoard());
                 window->repaint();
 
-                if(checkMateStalemate(true)==1){
+                if(checkMateStalemate(this->board, true)==1){
                     blackMove += "#";
-                }else if(checkCheck(true)){
+                }else if(checkCheck(this->board, true)){
                     blackMove += "+";
                 }
 
@@ -258,16 +258,16 @@ int Controller::onePlayer() {
             }
         }
 
-        if(checkMateStalemate(true)==0 && checkCheck(true)){//checks if white team is in check
+        if(checkMateStalemate(this->board, true)==0 && checkCheck(this->board, true)){//checks if white team is in check
             emit sendMessage("Check On White");
-        }else if(checkMateStalemate(false)==0 && checkCheck(false)){//checks if black team is in check
+        }else if(checkMateStalemate(this->board, false)==0 && checkCheck(this->board, false)){//checks if black team is in check
             emit sendMessage("Check On Black");
         }
 
         turn++;
 
-        whiteResult = checkMateStalemate(true);
-        blackResult = checkMateStalemate(false);
+        whiteResult = checkMateStalemate(this->board, true);
+        blackResult = checkMateStalemate(this->board, false);
     }
 
     if(whiteResult == 1){
@@ -314,16 +314,16 @@ int Controller::twoPlayers() {
 
         if(state == 0){
             whiteMove = humanMove;
-            if(checkMateStalemate(false)==1){
+            if(checkMateStalemate(this->board, false)==1){
                 whiteMove += "#";
-            }else if(checkCheck(false)){
+            }else if(checkCheck(this->board, false)){
                 whiteMove += "+";
             }
         }else{
             blackMove = humanMove;
-            if(checkMateStalemate(true)==1){
+            if(checkMateStalemate(this->board, true)==1){
                 blackMove += "#";
-            }else if(checkCheck(true)){
+            }else if(checkCheck(this->board, true)){
                 blackMove += "+";
             }
 
@@ -332,16 +332,16 @@ int Controller::twoPlayers() {
         }
         state = (state + 1)%2;
 
-        if(checkMateStalemate(true)==0 && checkCheck(true)){//checks if white team is in check
+        if(checkMateStalemate(this->board, true)==0 && checkCheck(this->board, true)){//checks if white team is in check
             emit sendMessage("Check On White");
-        }else if(checkMateStalemate(false)==0 && checkCheck(false)){//checks if black team is in check
+        }else if(checkMateStalemate(this->board, false)==0 && checkCheck(this->board, false)){//checks if black team is in check
             emit sendMessage("Check On Black");
         }
 
         turn++;
 
-        whiteResult = checkMateStalemate(true);
-        blackResult = checkMateStalemate(false);
+        whiteResult = checkMateStalemate(this->board, true);
+        blackResult = checkMateStalemate(this->board, false);
     }
 
     if(whiteResult == 1){
@@ -375,7 +375,7 @@ void Controller::receiveClick(int x, int y) {
         if(prevY==-1 && prevX==-1){ //if nothing previously selected its on highlight piece state
             if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ) {
                 highlightedPiece = QPoint(x, y);
-                possibleMoves = getMoves(x, y);
+                possibleMoves = getMoves(this->board,x, y);
                 window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
                 window->repaint();
             }
@@ -395,7 +395,7 @@ void Controller::receiveClick(int x, int y) {
             }
 
             humanMove = PGNmove(move);
-            movePiece(move);
+            movePiece(this->board,move);
             highlightedPiece = QPoint(-1,-1);
             possibleMoves.clear();
             window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
@@ -406,7 +406,7 @@ void Controller::receiveClick(int x, int y) {
         //if it's another of the same piece highlight that one instead
         else if( (board->getPiece(x,y)>0 && turn%2==0) || (board->getPiece(x,y)<0 && turn%2==1) ){
             highlightedPiece = QPoint(x,y);
-            possibleMoves = getMoves(x,y);
+            possibleMoves = getMoves(this->board,x,y);
             window->updateCache(board->getBoard(), highlightedPiece, possibleMoves);
             window->repaint();
         }
@@ -462,25 +462,25 @@ bool Controller::isMovePossible(QPoint p) {
  * @param y Y location
  * @return Vector of legal moves
  */
-QVector<Move> Controller::getMoves(int x, int y) {
+QVector<Move> Controller::getMoves(Board* board, int x, int y) {
     if(board->getPiece(x,y)==1 || board->getPiece(x,y)==-1){
-        return stripCheck(x,y,Pawn::getMoves(x,y,board->getBoard(), this));
+        return stripCheck(board, x,y,Pawn::getMoves(x,y,board->getBoard(), this));
     }
     if(board->getPiece(x,y)==2 || board->getPiece(x,y)==-2){
-        return stripCheck(x,y,Rook::getMoves(x,y,board->getBoard()));
+        return stripCheck(board, x,y,Rook::getMoves(x,y,board->getBoard()));
     }
     if(board->getPiece(x,y)==3 || board->getPiece(x,y)==-3){
-        return stripCheck(x,y,Knight::getMoves(x,y,board->getBoard()));
+        return stripCheck(board,x,y,Knight::getMoves(x,y,board->getBoard()));
     }
     if(board->getPiece(x,y)==4 || board->getPiece(x,y)==-4){
-        return stripCheck(x,y,Bishop::getMoves(x,y,board->getBoard()));
+        return stripCheck(board, x,y,Bishop::getMoves(x,y,board->getBoard()));
     }
     if(board->getPiece(x,y)==5 || board->getPiece(x,y)==-5){
-        return stripCheck(x,y,Queen::getMoves(x,y,board->getBoard()));
+        return stripCheck(board, x,y,Queen::getMoves(x,y,board->getBoard()));
     }
     if(board->getPiece(x,y)==6 || board->getPiece(x,y)==-6){
-        QVector<Move> moves = King::getMoves(x,y, this);
-        moves = stripCheck(x,y,moves);
+        QVector<Move> moves = King::getMoves(x,y, this, board);
+        moves = stripCheck(board, x,y,moves);
         return moves;
     }
 
@@ -492,7 +492,7 @@ QVector<Move> Controller::getMoves(int x, int y) {
  * 
  * @param move Move to execute
  */
-void Controller::movePiece(Move move) {
+void Controller::movePiece(Board* board, Move move) {
     board->clearPassant(true);
     board->clearPassant(false);
 
@@ -533,7 +533,7 @@ void Controller::movePiece(Move move) {
                 int kingCords[2];
                 board->findKing(true,kingCords);
 
-                if(!checkForAttack(kingCords[1],kingCords[0], true)){
+                if(!checkForAttack(board, kingCords[1],kingCords[0], true)){
                     board->setPassant(true,QPoint(move.end.x()-1,move.end.y()),QPoint(move.end.x(),move.end.y()));
                 }
 
@@ -551,7 +551,7 @@ void Controller::movePiece(Move move) {
                 int kingCords[2];
                 board->findKing(true,kingCords);
 
-                if(!checkForAttack(kingCords[1],kingCords[0], true)){
+                if(!checkForAttack(board, kingCords[1],kingCords[0], true)){
                     board->setPassant(true,QPoint(move.end.x()+1,move.end.y()),QPoint(move.end.x(),move.end.y()));
                 }
 
@@ -573,7 +573,7 @@ void Controller::movePiece(Move move) {
                 int kingCords[2];
                 board->findKing(false,kingCords);
 
-                if(!checkForAttack(kingCords[1],kingCords[0], false)){
+                if(!checkForAttack(board, kingCords[1],kingCords[0], false)){
                     board->setPassant(false,QPoint(move.end.x()-1,move.end.y()),QPoint(move.end.x(),move.end.y()));
                 }
 
@@ -590,7 +590,7 @@ void Controller::movePiece(Move move) {
 
                 int kingCords[2];
                 board->findKing(false,kingCords);
-                if(!checkForAttack(kingCords[1],kingCords[0], false)){
+                if(!checkForAttack(board, kingCords[1],kingCords[0], false)){
                     board->setPassant(false,QPoint(move.end.x()+1,move.end.y()),QPoint(move.end.x(),move.end.y()));
                 }
 
@@ -643,11 +643,11 @@ void Controller::movePiece(Move move) {
  * @param whiteTeam White team or Black team
  * @return bool
  */
-bool Controller::checkCheck(bool whiteTeam) {
+bool Controller::checkCheck(Board* board, bool whiteTeam) {
     int kingCords[2];
     board->findKing(whiteTeam, kingCords);
 
-    return checkForAttack(kingCords[1],kingCords[0], whiteTeam);
+    return checkForAttack(board, kingCords[1],kingCords[0], whiteTeam);
 }
 
 /**
@@ -657,26 +657,26 @@ bool Controller::checkCheck(bool whiteTeam) {
  * @param whiteTeam - is white team the one being attacked on
  * @return 0 = no mate or stalemate, 1 = mate, 2 = stalemate
  */
-int Controller::checkMateStalemate(bool whiteTeam) {
+int Controller::checkMateStalemate(Board* board, bool whiteTeam) {
 
     //if the team cannot make any moves that don't end up in them check and currently in check
     // then it's check mate game over
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
             if(whiteTeam && board->getPiece(x,y) > 0){
-                if(!getMoves(x,y).empty()){
+                if(!getMoves(board, x,y).empty()){
                     return 0;
                 }
             }
             else if(!whiteTeam && board->getPiece(x,y) < 0){
-                if(!getMoves(x,y).empty()){
+                if(!getMoves(board, x,y).empty()){
                     return 0;
                 }
             }
         }
     }
 
-    if(checkCheck(whiteTeam)){
+    if(checkCheck(board, whiteTeam)){
         return 1;
     }else{
         return 2;
@@ -691,7 +691,7 @@ int Controller::checkMateStalemate(bool whiteTeam) {
  * @param whiteTeam White team or black team
  * @return bool
  */
-bool Controller::checkForAttack(int srcX, int srcY, bool whiteTeam) {
+bool Controller::checkForAttack(Board* board, int srcX, int srcY, bool whiteTeam) {
 
 
     for (int y = 0; y < 8; ++y) {
@@ -810,7 +810,7 @@ bool Controller::checkForAttack(int srcX, int srcY, bool whiteTeam) {
  * @param moves Moves to check
  * @return stripped moves
  */
-QVector<Move> Controller::stripCheck(int x, int y,QVector<Move> moves) {
+QVector<Move> Controller::stripCheck(Board* board, int x, int y,QVector<Move> moves) {
     QVector<Move> strippedMoves;
     bool whiteTeam = true;
 
@@ -854,7 +854,7 @@ QVector<Move> Controller::stripCheck(int x, int y,QVector<Move> moves) {
         }
 
         board->findKing(whiteTeam, kingCords);
-        bool check = checkForAttack(kingCords[1],kingCords[0], whiteTeam);
+        bool check = checkForAttack(board, kingCords[1],kingCords[0], whiteTeam);
 
         if(!check){
             strippedMoves.append(move);

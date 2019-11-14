@@ -463,3 +463,25 @@ void Board::saveGame() {
         out.close();
     }
 }
+
+Board *Board::createCopy() {
+    auto* b = new Board(this->controller);
+
+    for(int y = 0; y < 8; y++){
+        for(int x = 0; x < 8; x++){
+            b->setPiece(x, y, this->getPiece(x, y));
+        }
+    }
+
+    b->setPassant(true, this->whitePassant);
+    b->setPassant(false, this->blackPassant);
+
+    b->setWLR(this->whiteLeftRookMoved);
+    b->setWRR(this->whiteRightRookMoved);
+    b->setBLR(this->blackLeftRookMoved);
+    b->setBRR(this->blackRightRookMoved);
+    b->setWKing(this->whiteKingMoved);
+    b->setBKing(this->blackKingMoved);
+
+    return b;
+}

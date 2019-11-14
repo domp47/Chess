@@ -24,17 +24,17 @@ public:
     Controller(int searchDepth, std::string graphPath, std::string checkpointPath);
     Window* getWindow();
     Board* getBoard();
-    int checkMateStalemate(bool whiteTeam);
-    void movePiece(Move move);
-    QVector<Move> getMoves(int x, int y);
-    bool checkCheck(bool whiteTeam);
-    bool checkForAttack(int x, int y, bool whiteTeam);
+    int checkMateStalemate(Board* board, bool whiteTeam);
+    void movePiece(Board* board, Move move);
+    QVector<Move> getMoves(Board* board, int x, int y);
+    bool checkCheck(Board* board, bool whiteTeam);
+    bool checkForAttack(Board* board, int x, int y, bool whiteTeam);
     void playGame();
     QVector<Move> getPossibleMoves();
     QPoint getHighlighted();
     void startGame();
 private:
-    QVector<Move> stripCheck(int x, int y, QVector<Move> moves);
+    QVector<Move> stripCheck(Board* board, int x, int y, QVector<Move> moves);
     int noPlayers();
     int onePlayer();
     int twoPlayers();

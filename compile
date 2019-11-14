@@ -1,8 +1,17 @@
 #!/bin/bash
 
-cd Build
+if [[ $1 == '1' ]]
+then
+    cd cmake-build-release
+    mode="Release"
+else
+    cd cmake-build-debug
+    mode="Debug"
+fi
 
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/home/dom/Qt5.10.1/5.10.1/gcc_64/lib/cmake ../Chess/
+echo "Compiling in $mode"
+
+cmake -DCMAKE_BUILD_TYPE=$mode -DCMAKE_PREFIX_PATH=/home/dom/Qt5.10.1/5.10.1/gcc_64/lib/cmake ../Chess/
 cmake --build ./ --target all -- -j4
 
 cd ../
